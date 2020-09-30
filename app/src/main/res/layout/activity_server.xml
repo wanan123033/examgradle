@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/ll_server"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="服务器地址:"/>
+        <EditText
+            android:id="@+id/et_server"
+            android:layout_width="500dp"
+            android:layout_height="35dp"
+            android:layout_marginLeft="15dp"
+            android:background="@drawable/edit_search_bg"
+            android:paddingLeft="5dp"
+            android:text="http://"/>
+    </LinearLayout>
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="300dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="70dp"
+        android:layout_below="@id/ll_server"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/btn_click_bg_selected"
+        android:text="去登录"
+        android:textColor="@color/colorWhite"
+        android:textSize="16sp" />
+</RelativeLayout>

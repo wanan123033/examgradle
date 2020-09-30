@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">睿力恒打分终端</string>
+    <string name="student_nonentity">该考生不存在</string>
+    <string name="no_project">无此项目</string>
+    <string name="addStu_dialog_title">新增提示</string>
+    <string name="addStu_dialog_content">无考生信息，是否新增</string>
+    <string name="qr_length_error">条码与当前设置位数不一致,请重扫条码</string>
+    <string name="read_iccard_failed">读卡失败</string>
+</resources>
