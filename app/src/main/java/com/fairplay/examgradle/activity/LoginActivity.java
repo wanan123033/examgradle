@@ -6,10 +6,10 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.app.layout.activity_login;
-import com.blankj.utilcode.util.ToastUtils;
 import com.fairplay.examgradle.R;
 import com.fairplay.examgradle.bean.LoginBean;
 import com.fairplay.examgradle.contract.MMKVContract;
+import com.fairplay.examgradle.utils.ToastUtils;
 import com.fairplay.examgradle.viewmodel.LoginViewModel;
 import com.gwm.annotation.layout.Layout;
 import com.gwm.annotation.layout.OnClick;
@@ -35,9 +35,9 @@ public class LoginActivity extends BaseMvvmActivity<LoginBean, LoginViewModel, a
     public void onClick(View view){
         switch (view.getId()){
             case R.id.btn_login:
-//                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-//                startActivity(intent);
-                login();
+                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                startActivity(intent);
+//                login();
                 break;
             case R.id.tv_server:
                 Intent intent1 = new Intent(getApplicationContext(),ServerActivity.class);

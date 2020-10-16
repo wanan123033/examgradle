@@ -34,7 +34,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    api fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':logger')
     implementation project(':devicelib')
     implementation 'com.github.mjdev:libaums:0.6.0'

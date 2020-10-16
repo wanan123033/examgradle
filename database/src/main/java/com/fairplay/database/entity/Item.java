@@ -29,17 +29,26 @@ public class Item {
     private int minScore;         //项目最低分
     private int ratio;            //分值比例系数
     private int isLowestPoint;     //是否给最低分  0:否，1:是
+    private int markScore;  // 打分类型  (0: 测量项目，1: 打分项目)
+    private int scoreCount;  //打分个数
+    private int calScoreType;  //算分方式  (0: 取最好, 1.去掉最高最低取平均分, 2: 取平均分)
+    private String calScoreExpression;  //算分表达式
+    private int enableTempGroup;   //启用临时分组  (0: 不启用, 1: 启用)
+    private int enableTempGroupRight;  // 启用临时分组后设置测量用户给临时分组的打分权限(0: 不启用, 1: 启用)
     private String remark1;
     private String remark2;
     private String remark3;
-    @Generated(hash = 1870965711)
+    @Generated(hash = 486754733)
     public Item(Long id, String itemName, String itemCode, String subitemCode,
             String machineCode, String unit, int testType, int testNum, int digital,
             int carryMode, int minValue, int maxValue, int lastResultMode,
             int scoreCountMode, int scoreCountRule, int scoreCarryMode,
             int scoreCarryByHundredth, int itemProperty, int exmItemType,
             int limitGender, int minScore, int ratio, int isLowestPoint,
-            String remark1, String remark2, String remark3) {
+            int markScore, int scoreCount, int calScoreType,
+            String calScoreExpression, int enableTempGroup,
+            int enableTempGroupRight, String remark1, String remark2,
+            String remark3) {
         this.id = id;
         this.itemName = itemName;
         this.itemCode = itemCode;
@@ -63,6 +72,12 @@ public class Item {
         this.minScore = minScore;
         this.ratio = ratio;
         this.isLowestPoint = isLowestPoint;
+        this.markScore = markScore;
+        this.scoreCount = scoreCount;
+        this.calScoreType = calScoreType;
+        this.calScoreExpression = calScoreExpression;
+        this.enableTempGroup = enableTempGroup;
+        this.enableTempGroupRight = enableTempGroupRight;
         this.remark1 = remark1;
         this.remark2 = remark2;
         this.remark3 = remark3;
@@ -207,6 +222,42 @@ public class Item {
     }
     public void setIsLowestPoint(int isLowestPoint) {
         this.isLowestPoint = isLowestPoint;
+    }
+    public int getMarkScore() {
+        return this.markScore;
+    }
+    public void setMarkScore(int markScore) {
+        this.markScore = markScore;
+    }
+    public int getScoreCount() {
+        return this.scoreCount;
+    }
+    public void setScoreCount(int scoreCount) {
+        this.scoreCount = scoreCount;
+    }
+    public int getCalScoreType() {
+        return this.calScoreType;
+    }
+    public void setCalScoreType(int calScoreType) {
+        this.calScoreType = calScoreType;
+    }
+    public String getCalScoreExpression() {
+        return this.calScoreExpression;
+    }
+    public void setCalScoreExpression(String calScoreExpression) {
+        this.calScoreExpression = calScoreExpression;
+    }
+    public int getEnableTempGroup() {
+        return this.enableTempGroup;
+    }
+    public void setEnableTempGroup(int enableTempGroup) {
+        this.enableTempGroup = enableTempGroup;
+    }
+    public int getEnableTempGroupRight() {
+        return this.enableTempGroupRight;
+    }
+    public void setEnableTempGroupRight(int enableTempGroupRight) {
+        this.enableTempGroupRight = enableTempGroupRight;
     }
     public String getRemark1() {
         return this.remark1;

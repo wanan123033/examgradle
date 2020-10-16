@@ -36,6 +36,7 @@ public class DBManager {
         daoMaster = new DaoMaster(db);
         daoSession = daoMaster.newSession();
         studentDao = daoSession.getStudentDao();
+        moData();
     }
 
     public List<Student> queryStudentFeatures() {
@@ -55,5 +56,20 @@ public class DBManager {
 
     public StudentItem queryStuItemByStuCode(String studentCode) {
         return null;
+    }
+
+    public void insertStudent(Student student) {
+        studentDao.insertInTx(student);
+    }
+
+    public void moData(){
+        for(int i = 0 ; i < 10 ; i++){
+            Student student = new Student();
+            student.setSex(0);
+            student.setSchoolName("五华中学");
+            student.setStudentCode("202010130000"+i);
+            student.setStudentName("六六六"+i);
+            student.setDownloadTime("1234567");
+        }
     }
 }

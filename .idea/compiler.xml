@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel target="1.7">
+      <module name="examgradle.app" target="1.8" />
+      <module name="examgradle.appframework" target="1.8" />
+      <module name="examgradle.common" target="1.8" />
+      <module name="examgradle.database" target="1.8" />
+      <module name="examgradle.devicelib" target="1.8" />
+      <module name="examgradle.libarcface" target="1.8" />
+      <module name="examgradle.logger" target="1.8" />
+      <module name="examgradle.uvccamerasdk" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

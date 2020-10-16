@@ -22,7 +22,7 @@ import java.util.List;
  * @param <D>
  */
 public abstract class BaseRecyclerViewAdapter<VH extends BaseRecyclerViewAdapter.ViewHolder,V extends IViewBind,D> extends RecyclerView.Adapter<VH> {
-    private Context context;
+    protected Context context;
     public List<D> data;
     public AdapterView.OnItemClickListener onItemClickListener;
     private View view;

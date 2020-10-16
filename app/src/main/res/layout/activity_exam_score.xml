@@ -171,18 +171,19 @@
                 android:layout_toRightOf="@id/tvj"
                 android:layout_marginLeft="15dp"
                 android:background="@drawable/score_btn_bg"
-                android:text="返回"/>
-            <TextView
+                android:text="结束"/>
+            <ImageView
                 android:id="@+id/tv_enter2"
                 android:layout_width="100dp"
                 android:layout_height="172dp"
-                android:gravity="center"
                 android:textSize="28sp"
                 android:layout_alignTop="@id/tv_9"
                 android:layout_toRightOf="@id/tv_9"
                 android:layout_marginLeft="15dp"
+                android:paddingLeft="25dp"
+                android:paddingRight="25dp"
                 android:background="@drawable/score_btn_bg"
-                android:text="返回"/>
+                android:src="@mipmap/icon_tuige"/>
             <TextView
                 android:id="@+id/tv_send"
                 android:layout_width="100dp"
