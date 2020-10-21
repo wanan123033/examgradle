@@ -50,6 +50,11 @@ public class TwoScoreAdapter extends BaseRecyclerViewAdapter<TwoScoreAdapter.Vie
                 ((ExamScoreActivity)context).scoreTwo(position,scoreBean);
             }
         });
+        if (scoreBean.isLook){
+            mBinding.iv_lock.setVisibility(View.VISIBLE);
+        }else {
+            mBinding.iv_lock.setVisibility(View.GONE);
+        }
     }
 
     @Override

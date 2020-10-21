@@ -3,6 +3,7 @@ package com.fairplay.database.entity;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Unique;
 
 @Entity
 public class Student {
@@ -11,12 +12,14 @@ public class Student {
     public static final int FEMALE = 1;
 
     private String faceFeature;
+    @Unique
     private String studentCode;
 
     @Id(autoincrement = true)
     private Long id;//学生ID
     private int sex;//性别 0-男  1-女
     private String idCardNo;//身份证号
+
     private String icCardNo;//IC卡号
     private String className;//班级
     private String schoolName;//学校名称

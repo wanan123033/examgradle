@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="wrap_content"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginBottom="15dp">
+<LinearLayout
+    android:id="@+id/ll_score"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
     <TextView
         android:id="@+id/tv_pos"
         android:layout_width="wrap_content"
@@ -21,3 +26,12 @@
         android:gravity="center"
         android:background="@drawable/score_bg"/>
 </LinearLayout>
+    <ImageView
+        android:id="@+id/iv_lock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignRight="@id/ll_score"
+        android:layout_marginRight="5dp"
+        android:background="@mipmap/icon_lock"/>
+</RelativeLayout>

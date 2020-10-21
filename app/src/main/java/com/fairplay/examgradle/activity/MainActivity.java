@@ -10,7 +10,6 @@ import com.gwm.annotation.layout.Layout;
 import com.gwm.annotation.layout.OnClick;
 import com.gwm.base.BaseTitleActivity;
 import com.gwm.view.titlebar.TitleBarBuilder;
-//import com.king.zxing.CaptureActivity;
 
 @Layout(R.layout.activity_main)
 public class MainActivity extends BaseTitleActivity<activity_main> {

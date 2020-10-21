@@ -20,7 +20,7 @@ public abstract class BaseMvvmActivity<M,VM extends ViewModel<M>,V extends IView
         viewModel = viewModelProvider.get(getViewModelClass());
         viewModel.getLiveData().observe(this,this);
         getLifecycle().addObserver(viewModel);
-        DataBindUtil.cache(this);
+
     }
 
     public ViewModelProvider getViewModelProvider(){
@@ -31,7 +31,5 @@ public abstract class BaseMvvmActivity<M,VM extends ViewModel<M>,V extends IView
 
     @Override
     public void onChanged(M o) {
-        if (o != null)
-            DataBindUtil.bind(getView(),o);
     }
 }

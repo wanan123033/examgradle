@@ -1,5 +1,8 @@
 package com.gwm.base;
 
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.os.Process;
 
 import androidx.multidex.MultiDexApplication;
@@ -13,6 +16,7 @@ import com.gwm.util.LayoutInflaterUtil;
 import com.tencent.mmkv.MMKV;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -23,12 +27,12 @@ import java.util.List;
  */
 public abstract class BaseApplication extends MultiDexApplication {
 
-    private List<BaseBroadcastReceiver> receivers = new ArrayList<>();
 	private static BaseApplication instance;
 	private List<String> firstToasts;
 	private LayoutInflaterUtil inflaterUtil;
 	private HttpClients clients;
 	private HermsMessageUtil hermsMessageUtil;
+	private List<Activity> activities;
 
 	private MMKV mmkv;
 
@@ -49,26 +53,28 @@ public abstract class BaseApplication extends MultiDexApplication {
 			instance = this;
 		}
 		firstToasts = new ArrayList<>();
+		activities = new LinkedList<>();
 		ContextUtil.setGlobalContext(getApplicationContext());
 		MMKV.initialize(getApplicationContext());
 		mmkv = MMKV.defaultMMKV();
+		inflaterUtil = getLayoutUtil();
 //		HermsMessageBus.init(this);
-    }
-
-
-    public List<BaseBroadcastReceiver> getReceivers(){
-        return receivers;
     }
 	/**
 	 * 退出该应用程序
 	 */
 	public void exit(){
 		firstToasts.clear();
-		receivers.clear();
 		inflaterUtil.clear();
 		LayoutEventUtil.getInstance().clear();
 		MMKV.onExit();
-		Process.killProcess(Process.myPid()); //自杀
+		for (Activity activity : activities){
+			if (!activity.isFinishing()){
+				activity.finish();
+			}
+		}
+		activities.clear();
+		android.os.Process.killProcess(android.os.Process.myPid());
 		System.exit(0);
 	}
 
@@ -120,5 +126,9 @@ public abstract class BaseApplication extends MultiDexApplication {
 
 	public MMKV getMmkv() {
 		return mmkv;
+	}
+
+	public List<Activity> getActivities() {
+		return activities;
 	}
 }

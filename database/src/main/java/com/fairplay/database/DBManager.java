@@ -76,7 +76,7 @@ public class DBManager {
     }
 
     public void insertStudent(Student student) {
-        studentDao.insertInTx(student);
+        studentDao.insertOrReplaceInTx(student);
     }
 
     public void moData(){

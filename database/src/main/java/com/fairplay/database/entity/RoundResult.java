@@ -45,16 +45,17 @@ public class RoundResult {
     private byte[] cycleResult;//中长跑每一圈成绩
     private String scheduleNo;  //日程编号
     private String mtEquipment;//监控设备
+    private int isMultioleResult; // 是否启用多值属性  0:不启用 1:启用
     private String remark1;
     private String remark2;
     private String remark3;
-    @Generated(hash = 1443236540)
+    @Generated(hash = 332512602)
     public RoundResult(Long id, @NotNull String studentCode, @NotNull String itemCode,
             String subitemCode, int machineCode, int roundNo, int testNo, int machineResult,
             int penaltyNum, @NotNull String result, String result2, int wight, int score,
             int resultState, int isLastResult, int examType, @NotNull String testTime, String printTime,
             String endTime, int stumbleCount, int updateState, byte[] cycleResult, String scheduleNo,
-            String mtEquipment, String remark1, String remark2, String remark3) {
+            String mtEquipment, int isMultioleResult, String remark1, String remark2, String remark3) {
         this.id = id;
         this.studentCode = studentCode;
         this.itemCode = itemCode;
@@ -79,6 +80,7 @@ public class RoundResult {
         this.cycleResult = cycleResult;
         this.scheduleNo = scheduleNo;
         this.mtEquipment = mtEquipment;
+        this.isMultioleResult = isMultioleResult;
         this.remark1 = remark1;
         this.remark2 = remark2;
         this.remark3 = remark3;
@@ -247,6 +249,12 @@ public class RoundResult {
     }
     public void setSubitemCode(String subitemCode) {
         this.subitemCode = subitemCode;
+    }
+    public int getIsMultioleResult() {
+        return this.isMultioleResult;
+    }
+    public void setIsMultioleResult(int isMultioleResult) {
+        this.isMultioleResult = isMultioleResult;
     }
 
 }

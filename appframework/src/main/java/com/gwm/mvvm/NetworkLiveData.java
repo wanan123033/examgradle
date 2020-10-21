@@ -1,5 +1,6 @@
 package com.gwm.mvvm;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -11,7 +12,6 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 
-import com.gwm.base.BaseBroadcastReceiver;
 import com.gwm.util.ContextUtil;
 
 /**
@@ -53,7 +53,7 @@ public class NetworkLiveData extends LiveData<NetworkInfo> {
         mContext.unregisterReceiver(mNetworkReceiver);
     }
 
-    private static class NetworkReceiver extends BaseBroadcastReceiver {
+    private static class NetworkReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {

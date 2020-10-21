@@ -121,7 +121,8 @@ public class AppProcessor extends BaseProcessor {
                         .addModifiers(Modifier.PUBLIC)
                         .addAnnotation(Override.class)
                         .addCode("layoutArr.clear();\n" +
-                                "layouts.clear();\n")
+                                "layouts.clear();\n" +
+                                "instance = null;\n")
                         .build();
                 datainflater.addMethod(clear);
 

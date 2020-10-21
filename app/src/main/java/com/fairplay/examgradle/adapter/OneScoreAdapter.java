@@ -32,6 +32,11 @@ public class OneScoreAdapter extends BaseRecyclerViewAdapter<OneScoreAdapter.Vie
         }else {
             mBinding.tv_score.setBackgroundResource(R.drawable.score_bg);
         }
+        if (scoreBean.isLook){
+            mBinding.iv_lock.setVisibility(View.VISIBLE);
+        }else {
+            mBinding.iv_lock.setVisibility(View.GONE);
+        }
     }
 
     @Override

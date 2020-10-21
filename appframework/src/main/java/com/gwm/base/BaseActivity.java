@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.gwm.R;
 import com.gwm.annotation.Permission;
 import com.gwm.annotation.layout.Layout;
@@ -58,6 +59,7 @@ public abstract class BaseActivity<V extends IViewBind> extends AppCompatActivit
 		super.onCreate(savedInstanceState);
 		handler = new SoftReference<>(new MyHandler(this)).get();
 		MessageBus.getBus().register(this);
+		BaseApplication.getInstance().getActivities().add(this);
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		setContentView();
 		initPermission();
@@ -137,9 +139,9 @@ public abstract class BaseActivity<V extends IViewBind> extends AppCompatActivit
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		List<String> activitys = BaseApplication.getInstance().getFisrstToasts();
-		if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
 			if((System.currentTimeMillis() - exitTime) > 2000 && (activitys.indexOf(getActivityName()) != -1)){
-				Toast.makeText(getApplicationContext(), R.string.app_add_first,Toast.LENGTH_SHORT).show();
+				ToastUtils.showShort(R.string.app_add_first);
 				exitTime = System.currentTimeMillis();
 			} else if ((BaseApplication.getInstance().getFisrstToasts().indexOf(getActivityName()) != -1)) {
 				if(getApplication() instanceof BaseApplication){

@@ -112,6 +112,7 @@ public class ExamScoreActivity extends BaseMvvmTitleActivity<Object, ExamScoreVi
             case R.id.tv_enter1:
                 break;
             case R.id.tv_enter2:
+                viewModel.removeScore(mBinding);
                 break;
             case R.id.tv_send:
                 viewModel.saveResult(bean,mBinding,maxLine,itemCode);
