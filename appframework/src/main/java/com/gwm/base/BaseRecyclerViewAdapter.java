@@ -1,6 +1,7 @@
 package com.gwm.base;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,6 +94,10 @@ public abstract class BaseRecyclerViewAdapter<VH extends BaseRecyclerViewAdapter
         return null;
     }
 
+    public List<D> getData() {
+        return data;
+    }
+
     public static abstract class ViewHolder<V extends IViewBind,D> extends RecyclerView.ViewHolder{
         protected BaseRecyclerViewAdapter adapter;
         public V mBinding;
@@ -117,6 +122,8 @@ public abstract class BaseRecyclerViewAdapter<VH extends BaseRecyclerViewAdapter
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.e("TAG",adapter+"----");
+                    Log.e("TAG",adapter.onItemClickListener+"----");
                     if (adapter != null && adapter.onItemClickListener != null)
                         adapter.onItemClickListener.onItemClick(null,itemView,position,0);
                 }

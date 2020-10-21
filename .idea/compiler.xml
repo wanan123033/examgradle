@@ -9,6 +9,7 @@
       <module name="examgradle.devicelib" target="1.8" />
       <module name="examgradle.libarcface" target="1.8" />
       <module name="examgradle.logger" target="1.8" />
+      <module name="examgradle.sweet-library" target="1.8" />
       <module name="examgradle.uvccamerasdk" target="1.8" />
     </bytecodeTargetLevel>
   </component>

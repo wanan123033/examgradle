@@ -6,6 +6,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import com.app.layout.item_operation;
+import com.bumptech.glide.Glide;
 import com.fairplay.examgradle.R;
 import com.fairplay.examgradle.bean.OperationBean;
 import com.gwm.annotation.layout.Layout;
@@ -21,7 +22,8 @@ public class OperationAdapter extends BaseRecyclerViewAdapter<OperationAdapter.V
 
     @Override
     protected void setData(OperationBean operationBean, int position) {
-//        Glide.with(context).load()
+        Glide.with(context).load(operationBean.res).into(mBinding.img_item_price);
+        mBinding.tv_item.setText(operationBean.name);
     }
 
     @Override

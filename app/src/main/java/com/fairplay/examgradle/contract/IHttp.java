@@ -1,6 +1,7 @@
 package com.fairplay.examgradle.contract;
 
 import com.fairplay.examgradle.bean.BaseBean;
+import com.fairplay.examgradle.bean.EnvInfoBean;
 import com.fairplay.examgradle.bean.ItemGroupBean;
 import com.fairplay.examgradle.bean.ItemInfoBean;
 import com.fairplay.examgradle.bean.LoginBean;
@@ -20,7 +21,7 @@ public interface IHttp {
      * @param password
      * @return
      */
-    @HTTP(url = "/auth/terminal/token",way = HTTP.WAY.POST)
+    @HTTP(url = "/auth/terminal/token")
     Observable<LoginBean> login(@Query("username")String username,@Query("password")String password);
 
     /**
@@ -28,7 +29,7 @@ public interface IHttp {
      * @param json
      * @return
      */
-    @HTTP(url = "/run/downItemInfo",way = HTTP.WAY.POST)
+    @HTTP(url = "/run/downItemInfo")
     Observable<ItemInfoBean> downItemInfo(@HeaderString ("Authorization")String token,@JSON String json);
 
     /**
@@ -36,7 +37,7 @@ public interface IHttp {
      * @param json
      * @return
      */
-    @HTTP(url = "/run/downSiteScheduleInfo",way = HTTP.WAY.POST)
+    @HTTP(url = "/run/downSiteScheduleInfo")
     Observable<ScheduleInfoBean> downSiteScheduleInfo(@HeaderString ("Authorization")String token,@JSON String json);
 
     /**
@@ -44,7 +45,7 @@ public interface IHttp {
      * @param json
      * @return
      */
-    @HTTP(url = " /run/downSiteStudent",way = HTTP.WAY.POST)
+    @HTTP(url = " /run/downSiteStudent")
     Observable<SiteStudentBean> downSiteStudent(@HeaderString ("Authorization")String token,@JSON String json);
 
     /**
@@ -52,30 +53,15 @@ public interface IHttp {
      * @param json
      * @return
      */
-    @HTTP(url = "/run/downSiteScheduleItemStudent",way = HTTP.WAY.POST)
+    @HTTP(url = "/run/downSiteScheduleItemStudent")
     Observable<SiteStudentBean> downSiteScheduleItemStudent(@HeaderString ("Authorization")String token,@JSON String json);
-
-    /**
-     * 下载考点日程分组信息
-     * @param json
-     * @return
-     */
-    @HTTP(url = "/run/downSiteScheduleItemGroup",way = HTTP.WAY.POST)
-    Observable<ItemGroupBean> downSiteScheduleItemGroup(@HeaderString ("Authorization")String token,@JSON String json);
-    /**
-     * 下载考点日程分组单独⼀组信息
-     * @param json
-     * @return
-     */
-    @HTTP(url = "/run/downSiteScheduleItemGroupByGroupNo",way = HTTP.WAY.POST)
-    Observable<ItemGroupBean> downSiteScheduleItemGroupByGroupNo(@HeaderString ("Authorization")String token,@JSON String json);
 
     /**
      * 成绩上传
      * @param json
      * @return
      */
-    @HTTP(url = "/run/uploadStudentResult",way = HTTP.WAY.POST)
+    @HTTP(url = "/run/uploadStudentResult")
     Observable<BaseBean> uploadStudentResult(@HeaderString ("Authorization")String token,@JSON String json);
 
     /**
@@ -83,6 +69,9 @@ public interface IHttp {
      * @param json
      * @return
      */
-    @HTTP(url = "/run/checkStudentResult",way = HTTP.WAY.POST)
+    @HTTP(url = "/run/checkStudentResult")
     Observable<BaseBean<Integer>> checkStudentResult(@HeaderString ("Authorization")String token,@JSON String json);
+
+    @HTTP(url = "/run/downEnvInfo")
+    Observable<EnvInfoBean> downEnvInfo(@HeaderString ("Authorization")String token,@JSON String json);
 }

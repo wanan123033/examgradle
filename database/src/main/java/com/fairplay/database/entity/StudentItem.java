@@ -19,14 +19,17 @@ public class StudentItem {
     @NotNull
     private int examType;//考试类型 0.正常，1.缓考，2.补考
     private String scheduleNo;  //日程编号
+
+    private String sortName;//组别
+    private int groupNo;//组号（分组）
     private String remark1;
     private String remark2;
     private String remark3;
-    @Generated(hash = 806513269)
+    @Generated(hash = 613654219)
     public StudentItem(Long id, @NotNull String studentCode,
             @NotNull String itemCode, String subitemCode, int machineCode,
-            int studentType, int examType, String scheduleNo, String remark1,
-            String remark2, String remark3) {
+            int studentType, int examType, String scheduleNo, String sortName,
+            int groupNo, String remark1, String remark2, String remark3) {
         this.id = id;
         this.studentCode = studentCode;
         this.itemCode = itemCode;
@@ -35,6 +38,8 @@ public class StudentItem {
         this.studentType = studentType;
         this.examType = examType;
         this.scheduleNo = scheduleNo;
+        this.sortName = sortName;
+        this.groupNo = groupNo;
         this.remark1 = remark1;
         this.remark2 = remark2;
         this.remark3 = remark3;
@@ -107,5 +112,17 @@ public class StudentItem {
     }
     public void setRemark3(String remark3) {
         this.remark3 = remark3;
+    }
+    public String getSortName() {
+        return this.sortName;
+    }
+    public void setSortName(String sortName) {
+        this.sortName = sortName;
+    }
+    public int getGroupNo() {
+        return this.groupNo;
+    }
+    public void setGroupNo(int groupNo) {
+        this.groupNo = groupNo;
     }
 }

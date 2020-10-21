@@ -33,7 +33,10 @@
         <activity android:name=".activity.LoginActivity" android:launchMode="singleTask"/>
         <activity android:name=".activity.ServerActivity" android:launchMode="singleTask"/>
         <activity android:name=".activity.ExamScoreActivity" />
-        <activity android:name=".activity.UmpireMainActivity" />
         <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.DataManagerActivity" />
+        <activity android:name=".activity.DataSelectActivity" />
+        <activity android:name="com.feipulai.common.dbutils.FileSelectActivity" />
+        <activity android:name=".activity.DataDisplayActivity" />
     </application>
 </manifest>

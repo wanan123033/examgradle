@@ -13,9 +13,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <androidx.recyclerview.widget.RecyclerView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp" />
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/et_studentCode"
+                android:layout_width="200dp"
+                android:layout_height="50dp"  />
+            <Button
+                android:id="@+id/btn_score1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="开始打分(1)"/>
+            <Button
+                android:id="@+id/btn_score2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="开始打分(2)"/>
+        </LinearLayout>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">

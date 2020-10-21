@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.gwm.annotation.json.JSON;
 import com.gwm.annotation.json.Param;
+import com.gwm.base.BaseApplication;
 import com.gwm.util.ContextUtil;
 import com.orhanobut.logger.Logger;
 import com.tencent.mmkv.MMKV;
@@ -41,7 +42,7 @@ public abstract class JsonDataPresenter<J extends JsonDataPresenter.HttpBaseBean
 
     public JsonDataPresenter(Class<J> clazz) {
         super();
-        mmkv = MMKV.defaultMMKV();
+        mmkv = BaseApplication.getInstance().getMmkv();
         try {
             jsonCreator = Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{clazz}, new GenJsonString());
         }catch (IllegalArgumentException e){
@@ -68,6 +69,9 @@ public abstract class JsonDataPresenter<J extends JsonDataPresenter.HttpBaseBean
      * @return
      */
     protected String aesEncodeString(String data){
+        if (data == null){
+            return "";
+        }
         // 加密
         SecretKey secretKey = new SecretKeySpec(AES_KEY.getBytes(), "AES");
         try {
@@ -83,6 +87,9 @@ public abstract class JsonDataPresenter<J extends JsonDataPresenter.HttpBaseBean
     }
 
     public static String getSignData(String signData) {
+        if (signData == null) {
+            return "";
+        }
         String sign = new String(Hex.encodeHex(DigestUtils.sha1(signData)));
         Logger.i("getSignData===>" + sign);
         String randomS = randomString(BASESTRING, 10);
@@ -153,5 +160,9 @@ public abstract class JsonDataPresenter<J extends JsonDataPresenter.HttpBaseBean
                     @Param("requestTime")String requestTime,
                     @Param("sign")String sign,
                     @Param("token")String token);
+    }
+
+    public String getToken(){
+        return "Bearer " + mmkv.getString(MMKVContract.TOKEN,"");
     }
 }

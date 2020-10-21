@@ -3,7 +3,6 @@ package com.feipulai.common.utils;
 import android.app.AlarmManager;
 import android.content.Context;
 
-import com.feipulai.device.udp.UdpLEDUtil;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -259,18 +258,5 @@ public class DateUtil {
 
     public static String getDefaultTimeZone() {
         return TimeZone.getDefault().getDisplayName();
-    }
-
-
-
-    public static void setSysDate(Context mContext, long time) {
-//        String curr_time = "20160606.120403";
-//        UdpLEDUtil.shellExec("/system/bin/date -s " + curr_time+"\n clock -w\n");
-//        String curr_time = "052514412019.52";
-        String curr_time =formatTime(time,"MMddhhmmyyyy.ss");
-        LogUtil.logDebugMessage(curr_time);
-        UdpLEDUtil.shellExec("date " +
-                curr_time  + "\n busybox hwclock -w \n");
-
     }
 }

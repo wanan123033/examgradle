@@ -36,7 +36,7 @@ public class DownStudentInfoPresenter extends JsonDataPresenter<DownStudentInfoP
     public void downStudent(int batch,int batchTotal,int examType) {
         String dataJson = getJsonCreator().downStudentInfo(batch,batchTotal,examType,0,null);
         String json = genJsonString(100020120,dataJson);
-        String token = "Bearer "+ MMKV.defaultMMKV().getString(MMKVContract.TOKEN,"");
+        String token = getToken();
         Observable<SiteStudentBean> siteStudentBeanObservable = getHttpPresenter().downSiteStudent(token, json);
         addHttpSubscriber(siteStudentBeanObservable,SiteStudentBean.class);
     }
@@ -53,7 +53,7 @@ public class DownStudentInfoPresenter extends JsonDataPresenter<DownStudentInfoP
     public void downSiteItemStudent(String scheduleNo,String examItemCode,String subitemCode,int batch,int batchTotal,int examType){
         String dataJson = getJsonCreator().downSiteItemStudentInfo(scheduleNo,examItemCode,subitemCode,batch,batchTotal,examType,0,null);
         String json = genJsonString(100020121,dataJson);
-        String token = "Bearer "+ MMKV.defaultMMKV().getString(MMKVContract.TOKEN,"");
+        String token = getToken();
         Observable<SiteStudentBean> siteStudentBeanObservable = getHttpPresenter().downSiteScheduleItemStudent(token, json);
         addHttpSubscriber(siteStudentBeanObservable,SiteStudentBean.class);
     }

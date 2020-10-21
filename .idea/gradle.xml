@@ -16,10 +16,7 @@
             <option value="$PROJECT_DIR$/appframework" />
             <option value="$PROJECT_DIR$/common" />
             <option value="$PROJECT_DIR$/database" />
-            <option value="$PROJECT_DIR$/devicelib" />
-            <option value="$PROJECT_DIR$/libarcface" />
             <option value="$PROJECT_DIR$/logger" />
-            <option value="$PROJECT_DIR$/uvccamerasdk" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

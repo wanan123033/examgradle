@@ -27,7 +27,7 @@ public class DownItemInfoPresenter extends JsonDataPresenter<DownItemInfoPresent
      */
     public void downItem() {
         String json = genJsonString(100020111,null);
-        String token =  "Bearer "+MMKV.defaultMMKV().getString(MMKVContract.TOKEN,"");
+        String token = getToken();
         Observable<ItemInfoBean> itemInfoBeanObservable = getHttpPresenter().downItemInfo(token, json);
         addHttpSubscriber(itemInfoBeanObservable,ItemInfoBean.class);
     }

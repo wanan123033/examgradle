@@ -17,15 +17,18 @@ public class Schedule {
     private String endTime;
     private String itemCode;  //项目素质代码
     private String subitemCode; //项目专项代码
-    @Generated(hash = 721857544)
+    private String siteName;  //考点名称
+
+    @Generated(hash = 518253546)
     public Schedule(Long id, @NotNull String scheduleNo, @NotNull String beginTime,
-            String endTime, String itemCode, String subitemCode) {
+            String endTime, String itemCode, String subitemCode, String siteName) {
         this.id = id;
         this.scheduleNo = scheduleNo;
         this.beginTime = beginTime;
         this.endTime = endTime;
         this.itemCode = itemCode;
         this.subitemCode = subitemCode;
+        this.siteName = siteName;
     }
     @Generated(hash = 729319394)
     public Schedule() {
@@ -65,5 +68,11 @@ public class Schedule {
     }
     public void setSubitemCode(String subitemCode) {
         this.subitemCode = subitemCode;
+    }
+    public String getSiteName() {
+        return this.siteName;
+    }
+    public void setSiteName(String siteName) {
+        this.siteName = siteName;
     }
 }

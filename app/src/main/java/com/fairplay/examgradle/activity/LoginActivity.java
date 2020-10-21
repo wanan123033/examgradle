@@ -7,17 +7,19 @@ import android.view.View;
 
 import com.app.layout.activity_login;
 import com.fairplay.examgradle.R;
+import com.fairplay.examgradle.bean.EnvInfoBean;
 import com.fairplay.examgradle.bean.LoginBean;
 import com.fairplay.examgradle.contract.MMKVContract;
 import com.fairplay.examgradle.utils.ToastUtils;
 import com.fairplay.examgradle.viewmodel.LoginViewModel;
 import com.gwm.annotation.layout.Layout;
 import com.gwm.annotation.layout.OnClick;
+import com.gwm.base.BaseApplication;
 import com.gwm.mvvm.BaseMvvmActivity;
 import com.tencent.mmkv.MMKV;
 
 @Layout(R.layout.activity_login)
-public class LoginActivity extends BaseMvvmActivity<LoginBean, LoginViewModel, activity_login> {
+public class LoginActivity extends BaseMvvmActivity<EnvInfoBean, LoginViewModel, activity_login> {
     private MMKV mmkv;
     @Override
     protected Class<LoginViewModel> getViewModelClass() {
@@ -27,7 +29,7 @@ public class LoginActivity extends BaseMvvmActivity<LoginBean, LoginViewModel, a
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mmkv = MMKV.defaultMMKV();
+        mmkv = BaseApplication.getInstance().getMmkv();
         mBinding.et_username.setText(mmkv.getString(MMKVContract.USERNAME,""));
         mBinding.et_password.setText(mmkv.getString(MMKVContract.PASSWORD,""));
     }
@@ -65,8 +67,9 @@ public class LoginActivity extends BaseMvvmActivity<LoginBean, LoginViewModel, a
     }
 
     @Override
-    public void onChanged(LoginBean o) {
-        super.onChanged(o);
-
+    public void onChanged(EnvInfoBean o) {
+        if (o != null){
+            //TODO 启动mqtt
+        }
     }
 }

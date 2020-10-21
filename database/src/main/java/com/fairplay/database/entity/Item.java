@@ -3,10 +3,13 @@ package com.fairplay.database.entity;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Unique;
+
 @Entity
 public class Item {
     @Id(autoincrement = true)
     private Long id;//
+    @Unique
     private String itemName;  //项目名称
     private String itemCode;  //项目素质代码
     private String subitemCode;  //项目专项代码

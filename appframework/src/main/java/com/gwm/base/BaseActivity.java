@@ -38,8 +38,7 @@ import java.util.List;
  * 4.实现了短信消息监听（可以用来做短信验证码的自动填充）
  * 5.支持MessageBus消息站
  * 6.支持Layout注解
- * 7.Router 跳转(支持短链接)
- * 8.权限申请管理
+ * 7.权限申请管理
  */
 public abstract class BaseActivity<V extends IViewBind> extends AppCompatActivity implements ViewClick{
 	private static final int PERMISSION_REQUEST_CODE = 666;

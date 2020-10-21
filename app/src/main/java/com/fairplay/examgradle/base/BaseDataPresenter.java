@@ -2,6 +2,7 @@ package com.fairplay.examgradle.base;
 
 import com.fairplay.examgradle.contract.IHttp;
 import com.fairplay.examgradle.contract.MMKVContract;
+import com.gwm.base.BaseApplication;
 import com.gwm.http.HttpParams;
 import com.gwm.mvvm.ViewModel;
 import com.gwm.retrofit.Observable;
@@ -13,7 +14,7 @@ public abstract class BaseDataPresenter<D> extends com.gwm.base.BaseDataPresente
     private ViewModel viewModel;
     public BaseDataPresenter() {
         super(IHttp.class);
-        String baseUrl = MMKV.defaultMMKV().getString(MMKVContract.BASE_URL,"");
+        String baseUrl = BaseApplication.getInstance().getMmkv().getString(MMKVContract.BASE_URL,"");
         setBaseUrl(baseUrl);
     }
     public void addHttpSubscriber(Observable<D> observable,Class<D> clazz){

@@ -13,6 +13,7 @@ public class RoundResult {
     private String studentCode;
     @NotNull
     private String itemCode;//默认为default
+    private String subitemCode;//默认为default
     @NotNull
     private int machineCode;
     @NotNull
@@ -22,7 +23,10 @@ public class RoundResult {
     private int machineResult;// 获取到的机器成绩
     private int penaltyNum;// 判罚值   判罚值有正负
     @NotNull
-    private int result;//成绩      单位为"毫米(mm)"、"毫秒(ms)"、"克(g)"、"次","毫升"
+    private String result;//成绩      单位为"毫米(mm)"、"毫秒(ms)"、"克(g)"、"次","毫升"
+
+    private String result2; //成绩2
+    private int wight; //体重
 
     private int score;//分数      没有单位  根据成绩和得分比例系数算出分数
     @NotNull
@@ -44,21 +48,25 @@ public class RoundResult {
     private String remark1;
     private String remark2;
     private String remark3;
-    @Generated(hash = 1932004443)
-    public RoundResult(Long id, @NotNull String studentCode, @NotNull String itemCode, int machineCode,
-            int roundNo, int testNo, int machineResult, int penaltyNum, int result, int score,
+    @Generated(hash = 1443236540)
+    public RoundResult(Long id, @NotNull String studentCode, @NotNull String itemCode,
+            String subitemCode, int machineCode, int roundNo, int testNo, int machineResult,
+            int penaltyNum, @NotNull String result, String result2, int wight, int score,
             int resultState, int isLastResult, int examType, @NotNull String testTime, String printTime,
             String endTime, int stumbleCount, int updateState, byte[] cycleResult, String scheduleNo,
             String mtEquipment, String remark1, String remark2, String remark3) {
         this.id = id;
         this.studentCode = studentCode;
         this.itemCode = itemCode;
+        this.subitemCode = subitemCode;
         this.machineCode = machineCode;
         this.roundNo = roundNo;
         this.testNo = testNo;
         this.machineResult = machineResult;
         this.penaltyNum = penaltyNum;
         this.result = result;
+        this.result2 = result2;
+        this.wight = wight;
         this.score = score;
         this.resultState = resultState;
         this.isLastResult = isLastResult;
@@ -126,11 +134,23 @@ public class RoundResult {
     public void setPenaltyNum(int penaltyNum) {
         this.penaltyNum = penaltyNum;
     }
-    public int getResult() {
+    public String getResult() {
         return this.result;
     }
-    public void setResult(int result) {
+    public void setResult(String result) {
         this.result = result;
+    }
+    public String getResult2() {
+        return this.result2;
+    }
+    public void setResult2(String result2) {
+        this.result2 = result2;
+    }
+    public int getWight() {
+        return this.wight;
+    }
+    public void setWight(int wight) {
+        this.wight = wight;
     }
     public int getScore() {
         return this.score;
@@ -222,4 +242,11 @@ public class RoundResult {
     public void setRemark3(String remark3) {
         this.remark3 = remark3;
     }
+    public String getSubitemCode() {
+        return this.subitemCode;
+    }
+    public void setSubitemCode(String subitemCode) {
+        this.subitemCode = subitemCode;
+    }
+
 }

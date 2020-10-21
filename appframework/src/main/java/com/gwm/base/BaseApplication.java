@@ -30,6 +30,8 @@ public abstract class BaseApplication extends MultiDexApplication {
 	private HttpClients clients;
 	private HermsMessageUtil hermsMessageUtil;
 
+	private MMKV mmkv;
+
 	/**
 	 * 获取该类的实例
 	 * @return
@@ -49,6 +51,7 @@ public abstract class BaseApplication extends MultiDexApplication {
 		firstToasts = new ArrayList<>();
 		ContextUtil.setGlobalContext(getApplicationContext());
 		MMKV.initialize(getApplicationContext());
+		mmkv = MMKV.defaultMMKV();
 //		HermsMessageBus.init(this);
     }
 
@@ -113,5 +116,9 @@ public abstract class BaseApplication extends MultiDexApplication {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public MMKV getMmkv() {
+		return mmkv;
 	}
 }

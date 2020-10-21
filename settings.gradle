@@ -1,1 +1,1 @@
-include ':app', ':annotation', ':Compiler', ':appframework', ':uvccamerasdk', ':libarcface', ':devicelib', ':logger', ':database', ':common'
+include ':app', ':annotation', ':Compiler', ':appframework', ':logger', ':database', ':common'

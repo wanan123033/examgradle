@@ -22,17 +22,18 @@ public class Student {
     private String schoolName;//学校名称
     private String downloadTime;//下载时间  时间戳
     private String portrait;//头像
-
+    private String sortName;//组别
+    private int groupNo;//组号（分组）
     private String remark1;
     private String remark2;
     private String remark3;
     private String studentName;
 
-    @Generated(hash = 1307626767)
+    @Generated(hash = 1394321061)
     public Student(String faceFeature, String studentCode, Long id, int sex,
             String idCardNo, String icCardNo, String className, String schoolName,
-            String downloadTime, String portrait, String remark1, String remark2,
-            String remark3, String studentName) {
+            String downloadTime, String portrait, String sortName, int groupNo,
+            String remark1, String remark2, String remark3, String studentName) {
         this.faceFeature = faceFeature;
         this.studentCode = studentCode;
         this.id = id;
@@ -43,6 +44,8 @@ public class Student {
         this.schoolName = schoolName;
         this.downloadTime = downloadTime;
         this.portrait = portrait;
+        this.sortName = sortName;
+        this.groupNo = groupNo;
         this.remark1 = remark1;
         this.remark2 = remark2;
         this.remark3 = remark3;
@@ -136,5 +139,17 @@ public class Student {
 
     public String getStudentName() {
         return studentName;
+    }
+    public String getSortName() {
+        return this.sortName;
+    }
+    public void setSortName(String sortName) {
+        this.sortName = sortName;
+    }
+    public int getGroupNo() {
+        return this.groupNo;
+    }
+    public void setGroupNo(int groupNo) {
+        this.groupNo = groupNo;
     }
 }

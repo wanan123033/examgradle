@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 
 import com.feipulai.common.R;
 import com.feipulai.common.utils.ToastUtils;
@@ -13,7 +14,6 @@ import com.feipulai.common.view.dialog.DialogUtils;
 import com.feipulai.common.view.dialog.EditDialog;
 import com.orhanobut.logger.Logger;
 
-import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
  * Created by James on 2018/1/4 0004.
@@ -52,20 +52,18 @@ public abstract class ClearDataProcess {
     protected abstract int getUnUploadNum();
 
     private void showUnUploadDialog() {
-
-        new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE).setTitleText(context.getString(R.string.clear_dialog_title))
-                .setContentText(context.getString(R.string.clear_dialog_content))
-                .setConfirmText(context.getString(R.string.confirm)).setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+        new AlertDialog.Builder(context).setTitle(R.string.clear_dialog_title)
+                .setMessage(R.string.clear_dialog_content)
+                .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        showClearWarning();
+                        dialog.dismiss();
+                    }
+                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                Logger.i("有未上传数据,用户手动确定,下一步-->等待用户确定删除本地数据");
-                sweetAlertDialog.dismissWithAnimation();
-                showClearWarning();
-            }
-        }).setCancelText(context.getString(R.string.cancel)).setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-            @Override
-            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                sweetAlertDialog.dismissWithAnimation();
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
             }
         }).show();
     }
@@ -99,20 +97,18 @@ public abstract class ClearDataProcess {
     // }
 
     private void showAlertClearDataDialog() {
-
-        new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE).setTitleText(context.getString(R.string.clear_dialog_title))
-                .setContentText(context.getString(R.string.clear_dialog_content2))
-                .setConfirmText(context.getString(R.string.confirm)).setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+        new AlertDialog.Builder(context).setTitle(R.string.clear_dialog_title)
+                .setMessage(R.string.clear_dialog_content2)
+                .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        showAuthCodeDialog();
+                        dialog.dismiss();
+                    }
+                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                Logger.i("用户手动确定清除本地考生信息和成绩信息,下一步-->等待用户输入验证码");
-                sweetAlertDialog.dismissWithAnimation();
-                showAuthCodeDialog();
-            }
-        }).setCancelText(context.getString(R.string.cancel)).setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-            @Override
-            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                sweetAlertDialog.dismissWithAnimation();
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
             }
         }).show();
     }

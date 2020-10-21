@@ -79,6 +79,7 @@ public class MqttManager implements Imanager {
             Logger.e( "MqttManager has connected");
             return;
         }
+        mMqttAndroidConnect = new MqttAndroidConnect();
         mMqttAndroidConnect.start();
     }
 
@@ -89,6 +90,7 @@ public class MqttManager implements Imanager {
             return;
         }
         mMqttAndroidConnect.disConnect();
+        mMqttAndroidConnect = null;
     }
 
     /**

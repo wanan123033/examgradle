@@ -60,6 +60,6 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/btn_click_bg_selected"
         android:text="登录"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/white"
         android:textSize="16sp" />
 </RelativeLayout>
