@@ -19,10 +19,7 @@ public class ServerActivity extends BaseTitleActivity<activity_server> {
     private MMKV mmkv;
     @Override
     public TitleBarBuilder setTitleBarBuilder(TitleBarBuilder builder) {
-        return builder.setTitle("服务器")
-                .setLeftText("返回")
-                .setLeftImageResource(R.mipmap.icon_white_goback)
-                .setLeftImageVisibility(View.VISIBLE);
+        return super.setTitleBarBuilder(builder.setTitle("服务器"));
     }
 
     @Override

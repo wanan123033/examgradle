@@ -4,7 +4,7 @@ public class DataRetrieveBean {
     private String studentCode;
     private String studentName;
     private int sex;
-    private int score;
+    private String score;
     private String faition;
     private int wight;
 
@@ -32,11 +32,11 @@ public class DataRetrieveBean {
         this.sex = sex;
     }
 
-    public void setScore(int score) {
+    public void setScore(String score) {
         this.score = score;
     }
 
-    public int getScore() {
+    public String getScore() {
         return score;
     }
 
@@ -54,5 +54,17 @@ public class DataRetrieveBean {
 
     public int getWight() {
         return wight;
+    }
+
+    @Override
+    public String toString() {
+        return "DataRetrieveBean{" +
+                "studentCode='" + studentCode + '\'' +
+                ", studentName='" + studentName + '\'' +
+                ", sex=" + sex +
+                ", score='" + score + '\'' +
+                ", faition='" + faition + '\'' +
+                ", wight=" + wight +
+                '}';
     }
 }

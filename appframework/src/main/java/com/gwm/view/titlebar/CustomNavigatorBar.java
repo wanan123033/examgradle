@@ -106,7 +106,7 @@ public class CustomNavigatorBar extends RelativeLayout implements View.OnClickLi
             }else if (index == R.styleable.CustomNavigatorBar_leftText){
                 leftText.setText(typedArray.getString(index));
             }else if (index == R.styleable.CustomNavigatorBar_leftTextFontSize){
-                leftText.setTextSize(typedArray.getDimensionPixelSize(index, (int) sp2px(16)));
+                leftText.setTextSize(typedArray.getDimensionPixelSize(index, (int) sp2px(10)));
             }else if (index == R.styleable.CustomNavigatorBar_leftTextColor){
                 leftText.setTextColor(typedArray.getColor(index, Color.WHITE));
             }else if (index == R.styleable.CustomNavigatorBar_leftTextVisibale){
@@ -116,7 +116,7 @@ public class CustomNavigatorBar extends RelativeLayout implements View.OnClickLi
             }else if (index == R.styleable.CustomNavigatorBar_midTextVisiable){
                 getVisible(typedArray,midText,index);
             }else if (index == R.styleable.CustomNavigatorBar_midTextFontSize){
-                midText.setTextSize(typedArray.getDimensionPixelSize(index,(int) sp2px(18)));
+                midText.setTextSize(typedArray.getDimensionPixelSize(index,(int) sp2px(10)));
             }else if (index == R.styleable.CustomNavigatorBar_midTextFontColor){
                 midText.setTextColor(typedArray.getColor(index,Color.WHITE));
             }else if (index == R.styleable.CustomNavigatorBar_rightImage){
@@ -126,7 +126,7 @@ public class CustomNavigatorBar extends RelativeLayout implements View.OnClickLi
             }else if (index == R.styleable.CustomNavigatorBar_rightText){
                 rightText.setText(typedArray.getString(index));
             }else if (index == R.styleable.CustomNavigatorBar_rightTextFontSize){
-                rightText.setTextSize(typedArray.getDimensionPixelSize(index,(int) sp2px(16)));
+                rightText.setTextSize(typedArray.getDimensionPixelSize(index,(int) sp2px(10)));
             }else if (index == R.styleable.CustomNavigatorBar_rightTextColor){
                 rightText.setTextColor(typedArray.getColor(index, Color.WHITE));
             }else if (index == R.styleable.CustomNavigatorBar_rightTextVisible){
@@ -223,7 +223,10 @@ public class CustomNavigatorBar extends RelativeLayout implements View.OnClickLi
             midText.setTextColor(builder.getTitleTextColor());
             midText.setVisibility(builder.getTitleVisibility());
             setBackgroundColor(builder.getBackgroundColor());
-            addViewClickListener(builder.getOnCustomClickListener());
+            setLeftImageOnClickListener(builder.getLeftImageOnClickListener());
+            setLeftTextOnClickListener(builder.getLeftTextOnClickListener());
+            setRightTextOnClickListener(builder.getRightTextOnClickListener());
+            setRightImageOnClickListener(builder.getRightImageOnClickListener());
         }else {
             setVisibility(GONE);
         }
@@ -235,8 +238,9 @@ public class CustomNavigatorBar extends RelativeLayout implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
-        if (customClickListener != null)
+        if (customClickListener != null) {
             customClickListener.onClickListener(view);
+        }
     }
 
     /**

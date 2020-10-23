@@ -7,6 +7,8 @@ import com.fairplay.database.entity.DaoSession;
 import com.fairplay.database.entity.GroupDao;
 import com.fairplay.database.entity.Item;
 import com.fairplay.database.entity.ItemDao;
+import com.fairplay.database.entity.MultipleResult;
+import com.fairplay.database.entity.MultipleResultDao;
 import com.fairplay.database.entity.RoundResult;
 import com.fairplay.database.entity.RoundResultDao;
 import com.fairplay.database.entity.Student;
@@ -34,6 +36,7 @@ public class DBManager {
     private ItemDao itemDao;
     private StudentItemDao studentItemDao;
     private RoundResultDao roundResultDao;
+    private MultipleResultDao multipleResultDao;
 
     public static synchronized DBManager getInstance() {
         if (mInstance == null) {
@@ -53,6 +56,7 @@ public class DBManager {
         itemDao = daoSession.getItemDao();
         roundResultDao = daoSession.getRoundResultDao();
         studentItemDao = daoSession.getStudentItemDao();
+        multipleResultDao = daoSession.getMultipleResultDao();
         moData();
     }
 
@@ -90,12 +94,8 @@ public class DBManager {
 //        }
     }
 
-    public void insertRoundResult(RoundResult result) {
-        roundResultDao.insertInTx(result);
-    }
-
-    public void getRoundResult(String studentCode, int round) {
-
+    public Long insertRoundResult(RoundResult result) {
+        return roundResultDao.insertOrReplace(result);
     }
 
     public List<Student> getStudentByItemCode(String itemCode, int limit, int offset) {
@@ -170,5 +170,13 @@ public class DBManager {
 
     public List<RoundResult> getRoundResultByStuCode(String studentCode) {
         return roundResultDao.queryBuilder().where(RoundResultDao.Properties.StudentCode.eq(studentCode)).list();
+    }
+
+    public List<MultipleResult> getMultioleResult(Long roundResultId) {
+        return multipleResultDao.queryBuilder().where(MultipleResultDao.Properties.RoundId.eq(roundResultId)).list();
+    }
+
+    public void insertMultipResult(MultipleResult multipleResult1) {
+        multipleResultDao.insertInTx(multipleResult1);
     }
 }

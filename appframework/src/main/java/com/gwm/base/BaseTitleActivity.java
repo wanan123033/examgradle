@@ -20,6 +20,13 @@ public abstract class BaseTitleActivity<V extends IViewBind> extends BaseActivit
         return R.layout.activity_base_title;
     }
 
+    private View.OnClickListener leftOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            finish();
+        }
+    };
+
     @Override
     protected void setContentView() {
         Layout layout = getClass().getAnnotation(Layout.class);
@@ -38,5 +45,14 @@ public abstract class BaseTitleActivity<V extends IViewBind> extends BaseActivit
         LayoutEventUtil.getInstance().bind(this,view);
     }
 
-    public abstract TitleBarBuilder setTitleBarBuilder(TitleBarBuilder builder);
+    public TitleBarBuilder setTitleBarBuilder(TitleBarBuilder builder){
+        return builder.setLeftText("返回")
+                .setLeftTextSize(18)
+                .setTitleTextSize(18)
+                .setLeftImageResource(R.mipmap.icon_white_goback)
+                .setLeftImageVisibility(View.VISIBLE)
+                .setBackgroundColor(getResources().getColor(R.color.colorPrimary))
+                .setLeftTextOnClickListener(leftOnClickListener)
+                .setLeftImageOnClickListener(leftOnClickListener);
+    }
 }

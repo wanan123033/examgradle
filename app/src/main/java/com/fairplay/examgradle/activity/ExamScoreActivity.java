@@ -1,12 +1,11 @@
 package com.fairplay.examgradle.activity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,7 +13,6 @@ import com.app.layout.activity_exam_score;
 import com.blankj.utilcode.util.ToastUtils;
 import com.fairplay.database.DBManager;
 import com.fairplay.database.entity.Item;
-import com.fairplay.database.entity.RoundResult;
 import com.fairplay.database.entity.Student;
 import com.fairplay.database.entity.StudentItem;
 import com.fairplay.examgradle.R;
@@ -29,9 +27,11 @@ import com.gwm.base.BaseApplication;
 import com.gwm.base.BaseRecyclerViewAdapter;
 import com.gwm.mvvm.BaseMvvmTitleActivity;
 import com.gwm.view.titlebar.TitleBarBuilder;
-import com.tencent.mmkv.MMKV;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Layout(R.layout.activity_exam_score)
@@ -41,9 +41,12 @@ public class ExamScoreActivity extends BaseMvvmTitleActivity<Object, ExamScoreVi
     private TwoScoreAdapter twoScoreAdapter;
     private List<ScoreBean> scoreBeans;
     private ScoreBean bean;
+    private boolean isFlag = false;
 
     private static final int maxLine = 3;
     private String itemCode = "12";
+
+    private boolean isTime = false;
 
     @Override
     protected Class<ExamScoreViewModel> getViewModelClass() {
@@ -52,10 +55,7 @@ public class ExamScoreActivity extends BaseMvvmTitleActivity<Object, ExamScoreVi
 
     @Override
     public TitleBarBuilder setTitleBarBuilder(TitleBarBuilder builder) {
-        return builder.setTitle("足球")
-                .setLeftText("返回")
-                .setLeftImageResource(R.mipmap.icon_white_goback)
-                .setLeftImageVisibility(View.VISIBLE);
+        return super.setTitleBarBuilder(builder.setTitle("足球"));
     }
 
     @Override
@@ -67,7 +67,7 @@ public class ExamScoreActivity extends BaseMvvmTitleActivity<Object, ExamScoreVi
     }
 
     @OnClick({R.id.tv_0,R.id.tv_1,R.id.tv_2,R.id.tv_3,R.id.tv_4,R.id.tv_5,R.id.tv_6,R.id.tv_7,R.id.tv_8,R.id.tv_9,
-            R.id.tv_dian,R.id.tv,R.id.tvj,R.id.tv_enter1,R.id.tv_enter2,R.id.tv_send,R.id.btn_score1,R.id.btn_score2})
+            R.id.tv_dian,R.id.tv,R.id.tvj,R.id.tv_enter1,R.id.tv_enter2,R.id.tv_send,R.id.btn_score1,R.id.btn_score2,R.id.btn,R.id.btn_1})
     public void onClick(View view){
         switch (view.getId()){
             case R.id.tv_0:
@@ -104,10 +104,26 @@ public class ExamScoreActivity extends BaseMvvmTitleActivity<Object, ExamScoreVi
                 viewModel.onScore(bean,mBinding,".");
                 break;
             case R.id.tv:
+                viewModel.onScore(bean,mBinding,":");
                 break;
             case R.id.tvj:
-                bean.isLook = false;
-                ToastUtils.showLong("已解锁");
+                new AlertDialog.Builder(this).setTitle("提示信息")
+                        .setMessage("是否申请解锁")
+                        .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                bean.isLook = false;
+                                ToastUtils.showLong("已解锁");
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton("否", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).show();
+
                 break;
             case R.id.tv_enter1:
                 break;
@@ -115,17 +131,42 @@ public class ExamScoreActivity extends BaseMvvmTitleActivity<Object, ExamScoreVi
                 viewModel.removeScore(mBinding);
                 break;
             case R.id.tv_send:
-                viewModel.saveResult(bean,mBinding,maxLine,itemCode);
+                if (isTime){
+                    if (!bean.twoPos){
+                        String time = bean.result1.toString();
+                        boolean isdd = isLegalDate(time);
+                        if (!isdd){
+                            ToastUtils.showShort("时间格式不对,mm:ss.SSS");
+                            break;
+                        }
+                    }else {
+                        String time1 = bean.result2.toString();
+                        boolean isdd1 = isLegalDate(time1);
+                        if (!isdd1){
+                            ToastUtils.showShort("时间格式不对,mm:ss.SSS");
+                            break;
+                        }
+                    }
+
+                }
+                viewModel.saveResult(bean,mBinding,maxLine,itemCode,isFlag);
                 BaseRecyclerViewAdapter adapter = (BaseRecyclerViewAdapter) mBinding.stu_info.rv_score_data.getAdapter();
                 if (adapter instanceof OneScoreAdapter){
+                    if (adapter.getItemCount() <= ((OneScoreAdapter) adapter).getSelectPosition()){
+                        ((OneScoreAdapter) adapter).setSelectPosition(0);
+                    }
                     bean = scoreBeans.get(((OneScoreAdapter) adapter).getSelectPosition());
-                }else {
+                }else if (adapter instanceof TwoScoreAdapter){
+                    if (adapter.getItemCount() <= ((TwoScoreAdapter) adapter).getSelectPosition()){
+                        ((TwoScoreAdapter) adapter).setSelectPosition(0);
+                    }
                     bean = scoreBeans.get(((TwoScoreAdapter) adapter).getSelectPosition());
                 }
 
                 break;
             case R.id.btn_score1:
                 initStudent();
+                isFlag = false;
                 scoreBeans = new ArrayList<>();
                 for (int i = 0 ; i < maxLine ; i++){
                     ScoreBean scoreBean = new ScoreBean();
@@ -138,6 +179,7 @@ public class ExamScoreActivity extends BaseMvvmTitleActivity<Object, ExamScoreVi
                 break;
             case R.id.btn_score2:
                 initStudent();
+                isFlag = false;
                 scoreBeans = new ArrayList<>();
                 for (int i = 0 ; i < maxLine ; i++){
                     ScoreBean scoreBean = new ScoreBean();
@@ -148,17 +190,26 @@ public class ExamScoreActivity extends BaseMvvmTitleActivity<Object, ExamScoreVi
                 mBinding.stu_info.rv_score_data.setAdapter(twoScoreAdapter);
                 mBinding.stu_info.tv_studentCode.setText(mBinding.et_studentCode.getText().toString());
                 break;
+            case R.id.btn:
+                isFlag = true;
+                initStudent();
+                scoreBeans = new ArrayList<>();
+                for (int i = 0 ; i < maxLine ; i++){
+                    ScoreBean scoreBean = new ScoreBean();
+                    scoreBeans.add(scoreBean);
+                }
+                bean = scoreBeans.get(0);
+                oneScoreAdapter = new OneScoreAdapter(this,scoreBeans);
+                mBinding.stu_info.rv_score_data.setAdapter(oneScoreAdapter);
+                mBinding.stu_info.tv_studentCode.setText(mBinding.et_studentCode.getText().toString());
+                break;
+            case R.id.btn_1:
+                isTime = !isTime;
+                break;
         }
     }
 
     private void initStudent() {
-        //1.添加项目
-        Item item = new Item();
-        item.setItemCode(itemCode);
-        item.setSubitemCode(itemCode);
-        item.setItemName("项目1");
-        DBManager.getInstance().insertItem(item);
-
         //2.添加学生
         Student student = new Student();
         student.setStudentCode(mBinding.et_studentCode.getText().toString());
@@ -193,5 +244,23 @@ public class ExamScoreActivity extends BaseMvvmTitleActivity<Object, ExamScoreVi
         twoScoreAdapter.setSelectPosition(position);
         bean = scoreBeans.get(position);
         mBinding.stu_info.rv_score_data.setAdapter(twoScoreAdapter);
+    }
+    private static boolean isLegalDate(String sDate) {
+        DateFormat formatter = new SimpleDateFormat(ScoreBean.dataFormat);
+        try {
+            Date date = formatter.parse(sDate);
+            return sDate.equals(formatter.format(date));
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if (keyCode == KeyEvent.KEYCODE_BACK){
+//            ToastUtils.showLong("正在打分中...");
+//            return true;
+//        }
+        return super.onKeyDown(keyCode, event);
     }
 }

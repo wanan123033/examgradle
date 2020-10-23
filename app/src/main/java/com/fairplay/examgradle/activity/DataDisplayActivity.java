@@ -31,10 +31,7 @@ public class DataDisplayActivity extends BaseMvvmTitleActivity<Object, DataDispl
 
     @Override
     public TitleBarBuilder setTitleBarBuilder(TitleBarBuilder builder) {
-        return builder.setTitle("数据详情")
-                .setLeftText("返回")
-                .setLeftImageResource(R.mipmap.icon_white_goback)
-                .setLeftImageVisibility(View.VISIBLE);
+        return super.setTitleBarBuilder(builder.setTitle("数据详情"));
     }
 
     @Override

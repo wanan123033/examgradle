@@ -1,6 +1,8 @@
 package com.fairplay.examgradle.adapter;
 
 import android.content.Context;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 
 import androidx.annotation.NonNull;

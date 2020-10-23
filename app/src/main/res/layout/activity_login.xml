@@ -12,12 +12,15 @@
         android:textSize="18sp"
         android:drawableRight="@mipmap/setting"
         android:text="服务器"/>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
     <TextView
         android:id="@+id/tv_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="睿力恒打分终端"
-        android:layout_below="@id/tv_server"
         android:textSize="50sp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
@@ -62,4 +65,5 @@
         android:text="登录"
         android:textColor="@color/white"
         android:textSize="16sp" />
+    </RelativeLayout>
 </RelativeLayout>

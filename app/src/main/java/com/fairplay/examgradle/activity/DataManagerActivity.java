@@ -51,10 +51,7 @@ public class DataManagerActivity extends BaseMvvmTitleActivity<Object, DataManag
 
     @Override
     public TitleBarBuilder setTitleBarBuilder(TitleBarBuilder builder) {
-        return builder.setTitle("数据管理")
-                .setLeftText("返回")
-                .setLeftImageResource(R.mipmap.icon_white_goback)
-                .setLeftImageVisibility(View.VISIBLE);
+        return super.setTitleBarBuilder(builder.setTitle("数据管理"));
     }
 
     @Override

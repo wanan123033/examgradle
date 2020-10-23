@@ -21,6 +21,7 @@ public class MainActivity extends BaseTitleActivity<activity_main> {
     public void onClick(View view){
         switch (view.getId()){
             case R.id.card_test:
+
                 Intent intent = new Intent(getApplicationContext(),ExamScoreActivity.class);
                 startActivity(intent);
                 break;
@@ -32,6 +33,8 @@ public class MainActivity extends BaseTitleActivity<activity_main> {
 
                 break;
             case R.id.card_cannal:
+                Intent intent3 = new Intent(getApplicationContext(),ItemInitActivity.class);
+                startActivity(intent3);
                 break;
         }
     }

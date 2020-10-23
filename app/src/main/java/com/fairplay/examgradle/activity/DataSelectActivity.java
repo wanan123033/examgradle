@@ -2,6 +2,8 @@ package com.fairplay.examgradle.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -10,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.layout.activity_data_select;
 import com.fairplay.database.DBManager;
+import com.fairplay.database.entity.MultipleResult;
 import com.fairplay.database.entity.RoundResult;
 import com.fairplay.database.entity.Student;
 import com.fairplay.examgradle.R;
@@ -100,9 +103,26 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
                     bean.setSex(student.getSex());
                     bean.setStudentName(student.getStudentName());
                     bean.setStudentCode(student.getStudentCode());
-                    bean.setScore(result.getScore());
                     bean.setFaition(result.getResult());
-                    bean.setWight(result.getWight());
+                    bean.setScore(result.getScore());
+                    if (result.getIsMultioleResult() == 1) {
+                        List<MultipleResult> multioleResult = DBManager.getInstance().getMultioleResult(result.getId());
+                        StringBuffer resultbuffer = new StringBuffer();
+                        StringBuffer scorebuffer = new StringBuffer();
+                        for (MultipleResult results : multioleResult) {
+                            if (!TextUtils.isEmpty(results.getResult()))
+                                resultbuffer.append(results.getDesc() + ":" + results.getResult() + "/");
+                            if (!TextUtils.isEmpty(results.getScore()))
+                                scorebuffer.append(results.getDesc() + ":" + results.getScore() + "/");
+                        }
+                        if (resultbuffer.length() > 1)
+                            resultbuffer.deleteCharAt(resultbuffer.length() - 1);
+                        if (scorebuffer.length() > 1)
+                            scorebuffer.deleteCharAt(scorebuffer.length() - 1);
+                        bean.setFaition(resultbuffer.toString().replaceAll("null","0"));
+                        bean.setScore(scorebuffer.toString().replaceAll("null","0"));
+                    }
+                    Log.e("TAG",bean.toString());
                     mList.add(bean);
                 }
                 mBinding.refreshview.finishRefreshAndLoad();
@@ -127,10 +147,7 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
 
     @Override
     public TitleBarBuilder setTitleBarBuilder(TitleBarBuilder builder) {
-        return builder.setTitle("数据查看")
-                .setLeftText("返回")
-                .setLeftImageResource(R.mipmap.icon_white_goback)
-                .setLeftImageVisibility(View.VISIBLE);
+        return super.setTitleBarBuilder(builder.setTitle("数据查看"));
     }
     private void setStuCount(Object sumCount, Object womenCount, Object mamCount) {
         mBinding.txt_stu_sumNumber.setText(sumCount + "");

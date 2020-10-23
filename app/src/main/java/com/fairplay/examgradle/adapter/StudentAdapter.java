@@ -27,9 +27,8 @@ public class StudentAdapter extends BaseRecyclerViewAdapter<StudentAdapter.ViewH
         mBinding.tv_stuCode.setText(student.getStudentCode());
         mBinding.tv_stuName.setText(student.getStudentName());
         mBinding.tv_sex.setText(student.getSex() == 1 ? "女":"男");
-        mBinding.tv_score.setText(student.getScore()+"");
+        mBinding.tv_score.setText(student.getScore());
         mBinding.tv_fraction.setText(student.getFaition());
-        mBinding.tv_wight.setText(student.getWight()+"");
 
     }
 

@@ -40,7 +40,6 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="1dp"
         android:layout_weight="1"
-
         android:background="@drawable/data_retieve_selector"
         android:gravity="center"
         android:textSize="18sp" />
@@ -53,20 +52,10 @@
         android:layout_weight="1"
         android:background="@drawable/data_retieve_selector"
         android:gravity="center"
+        android:textColor="@color/black"
         android:textSize="18sp" />
     <TextView
         android:id="@+id/tv_fraction"
-        style="@style/style_txt_white_title"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="1dp"
-        android:background="@drawable/data_retieve_selector"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:textSize="18sp"
-        android:textColor="@color/black"/>
-    <TextView
-        android:id="@+id/tv_wight"
         style="@style/style_txt_white_title"
         android:layout_width="0dp"
         android:layout_height="match_parent"

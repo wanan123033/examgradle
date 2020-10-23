@@ -231,6 +231,7 @@
             android:layout_weight="1"
             android:background="#AAD3FF"
             android:gravity="center"
+            android:visibility="gone"
             android:text="体重" />
 
     </LinearLayout>

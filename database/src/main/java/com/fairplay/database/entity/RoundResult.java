@@ -22,13 +22,12 @@ public class RoundResult {
     private int testNo;//测试次数
     private int machineResult;// 获取到的机器成绩
     private int penaltyNum;// 判罚值   判罚值有正负
-    @NotNull
     private String result;//成绩      单位为"毫米(mm)"、"毫秒(ms)"、"克(g)"、"次","毫升"
 
     private String result2; //成绩2
     private int wight; //体重
 
-    private int score;//分数      没有单位  根据成绩和得分比例系数算出分数
+    private String score;//分数      没有单位  根据成绩和得分比例系数算出分数
     @NotNull
     private int resultState;//成绩状态 //是否犯规 0:未检录 1:正常 2:犯规 3:中退 4:弃权 5:测试     体侧系统没有中退和放弃,且犯规均为机器判定的犯规
     @NotNull
@@ -49,12 +48,12 @@ public class RoundResult {
     private String remark1;
     private String remark2;
     private String remark3;
-    @Generated(hash = 332512602)
+    @Generated(hash = 1185620269)
     public RoundResult(Long id, @NotNull String studentCode, @NotNull String itemCode,
             String subitemCode, int machineCode, int roundNo, int testNo, int machineResult,
-            int penaltyNum, @NotNull String result, String result2, int wight, int score,
-            int resultState, int isLastResult, int examType, @NotNull String testTime, String printTime,
-            String endTime, int stumbleCount, int updateState, byte[] cycleResult, String scheduleNo,
+            int penaltyNum, String result, String result2, int wight, String score, int resultState,
+            int isLastResult, int examType, @NotNull String testTime, String printTime, String endTime,
+            int stumbleCount, int updateState, byte[] cycleResult, String scheduleNo,
             String mtEquipment, int isMultioleResult, String remark1, String remark2, String remark3) {
         this.id = id;
         this.studentCode = studentCode;
@@ -106,6 +105,12 @@ public class RoundResult {
     public void setItemCode(String itemCode) {
         this.itemCode = itemCode;
     }
+    public String getSubitemCode() {
+        return this.subitemCode;
+    }
+    public void setSubitemCode(String subitemCode) {
+        this.subitemCode = subitemCode;
+    }
     public int getMachineCode() {
         return this.machineCode;
     }
@@ -154,10 +159,10 @@ public class RoundResult {
     public void setWight(int wight) {
         this.wight = wight;
     }
-    public int getScore() {
+    public String getScore() {
         return this.score;
     }
-    public void setScore(int score) {
+    public void setScore(String score) {
         this.score = score;
     }
     public int getResultState() {
@@ -226,6 +231,12 @@ public class RoundResult {
     public void setMtEquipment(String mtEquipment) {
         this.mtEquipment = mtEquipment;
     }
+    public int getIsMultioleResult() {
+        return this.isMultioleResult;
+    }
+    public void setIsMultioleResult(int isMultioleResult) {
+        this.isMultioleResult = isMultioleResult;
+    }
     public String getRemark1() {
         return this.remark1;
     }
@@ -243,18 +254,6 @@ public class RoundResult {
     }
     public void setRemark3(String remark3) {
         this.remark3 = remark3;
-    }
-    public String getSubitemCode() {
-        return this.subitemCode;
-    }
-    public void setSubitemCode(String subitemCode) {
-        this.subitemCode = subitemCode;
-    }
-    public int getIsMultioleResult() {
-        return this.isMultioleResult;
-    }
-    public void setIsMultioleResult(int isMultioleResult) {
-        this.isMultioleResult = isMultioleResult;
     }
 
 }

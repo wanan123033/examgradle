@@ -30,6 +30,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="开始打分(2)"/>
+            <Button
+                android:id="@+id/btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="打成绩"/>
+            <Button
+                android:id="@+id/btn_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="时间格式"/>
         </LinearLayout>
         <RelativeLayout
             android:layout_width="match_parent"
@@ -44,7 +54,7 @@
                 android:layout_height="60dp"
                 android:gravity="center"
                 android:textSize="28sp"
-                android:background="@drawable/score_btn_bg"
+                android:background="@drawable/exam_score_selector"
                 android:text="7"/>
             <TextView
                 android:id="@+id/tv_8"
@@ -54,7 +64,7 @@
                 android:textSize="28sp"
                 android:layout_toRightOf="@id/tv_7"
                 android:layout_marginLeft="15dp"
-                android:background="@drawable/score_btn_bg"
+                android:background="@drawable/exam_score_selector"
                 android:text="8"/>
             <TextView
                 android:id="@+id/tv_9"
@@ -64,7 +74,7 @@
                 android:textSize="28sp"
                 android:layout_toRightOf="@id/tv_8"
                 android:layout_marginLeft="15dp"
-                android:background="@drawable/score_btn_bg"
+                android:background="@drawable/exam_score_selector"
                 android:text="9"/>
             <TextView
                 android:id="@+id/tv_4"
@@ -75,7 +85,7 @@
                 android:layout_below="@id/tv_7"
                 android:layout_alignLeft="@id/tv_7"
                 android:layout_marginTop="15dp"
-                android:background="@drawable/score_btn_bg"
+                android:background="@drawable/exam_score_selector"
                 android:text="4"/>
             <TextView
                 android:id="@+id/tv_5"
@@ -86,7 +96,7 @@
                 android:layout_alignTop="@id/tv_4"
                 android:layout_toRightOf="@id/tv_4"
                 android:layout_marginLeft="15dp"
-                android:background="@drawable/score_btn_bg"
+                android:background="@drawable/exam_score_selector"
                 android:text="5"/>
             <TextView
                 android:id="@+id/tv_6"
@@ -97,7 +107,7 @@
                 android:layout_alignTop="@id/tv_4"
                 android:layout_toRightOf="@id/tv_5"
                 android:layout_marginLeft="15dp"
-                android:background="@drawable/score_btn_bg"
+                android:background="@drawable/exam_score_selector"
                 android:text="6"/>
             <TextView
                 android:id="@+id/tv_1"
@@ -108,7 +118,7 @@
                 android:layout_below="@id/tv_4"
                 android:layout_alignLeft="@id/tv_4"
                 android:layout_marginTop="15dp"
-                android:background="@drawable/score_btn_bg"
+                android:background="@drawable/exam_score_selector"
                 android:text="1"/>
             <TextView
                 android:id="@+id/tv_2"
@@ -119,7 +129,7 @@
                 android:layout_alignTop="@id/tv_1"
                 android:layout_toRightOf="@id/tv_1"
                 android:layout_marginLeft="15dp"
-                android:background="@drawable/score_btn_bg"
+                android:background="@drawable/exam_score_selector"
                 android:text="2"/>
             <TextView
                 android:id="@+id/tv_3"
@@ -130,7 +140,7 @@
                 android:layout_alignTop="@id/tv_2"
                 android:layout_toRightOf="@id/tv_2"
                 android:layout_marginLeft="15dp"
-                android:background="@drawable/score_btn_bg"
+                android:background="@drawable/exam_score_selector"
                 android:text="3"/>
             <TextView
                 android:id="@+id/tv_0"
@@ -141,7 +151,7 @@
                 android:layout_marginTop="15dp"
                 android:layout_below="@id/tv_1"
                 android:layout_alignLeft="@id/tv_4"
-                android:background="@drawable/score_btn_bg"
+                android:background="@drawable/exam_score_selector"
                 android:text="0"/>
             <TextView
                 android:id="@+id/tv_dian"
@@ -152,7 +162,7 @@
                 android:layout_alignTop="@id/tv_0"
                 android:layout_toRightOf="@id/tv_0"
                 android:layout_marginLeft="15dp"
-                android:background="@drawable/score_btn_bg"
+                android:background="@drawable/exam_score_selector"
                 android:text="."/>
             <TextView
                 android:id="@+id/tv"
@@ -163,7 +173,7 @@
                 android:layout_alignTop="@id/tv_dian"
                 android:layout_toRightOf="@id/tv_dian"
                 android:layout_marginLeft="15dp"
-                android:background="@drawable/score_btn_bg"
+                android:background="@drawable/exam_score_selector"
                 android:text=":"/>
             <TextView
                 android:id="@+id/tvj"
@@ -174,7 +184,7 @@
                 android:layout_below="@id/tv_0"
                 android:layout_alignLeft="@id/tv_0"
                 android:layout_marginTop="15dp"
-                android:background="@drawable/score_btn_bg"
+                android:background="@drawable/exam_score_selector"
                 android:text="申请解锁"/>
             <TextView
                 android:id="@+id/tv_enter1"
@@ -185,7 +195,7 @@
                 android:layout_alignTop="@id/tvj"
                 android:layout_toRightOf="@id/tvj"
                 android:layout_marginLeft="15dp"
-                android:background="@drawable/score_btn_bg"
+                android:background="@drawable/exam_score_selector"
                 android:text="结束"/>
             <ImageView
                 android:id="@+id/tv_enter2"
@@ -197,7 +207,7 @@
                 android:layout_marginLeft="15dp"
                 android:paddingLeft="25dp"
                 android:paddingRight="25dp"
-                android:background="@drawable/score_btn_bg"
+                android:background="@drawable/exam_score_selector"
                 android:src="@mipmap/icon_tuige"/>
             <TextView
                 android:id="@+id/tv_send"
@@ -208,9 +218,17 @@
                 android:layout_below="@id/tv_enter2"
                 android:layout_marginTop="16dp"
                 android:layout_alignLeft="@id/tv_enter2"
-                android:background="@drawable/score_btn_bg"
+                android:background="@drawable/exam_score_selector"
                 android:text="确定"/>
             </RelativeLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:textSize="18sp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="5dp"
+                android:text="时间格式:  mm:ss.SSS"/>
         </RelativeLayout>
     </LinearLayout>
 

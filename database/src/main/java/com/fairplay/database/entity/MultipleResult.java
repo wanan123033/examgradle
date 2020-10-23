@@ -9,7 +9,7 @@ public class MultipleResult {
     @Id(autoincrement = true)
     private Long id;
 
-    private int roundId;  //成绩表ID
+    private Long roundId;  //成绩表ID
 
     private String order;
     private String group;
@@ -20,8 +20,8 @@ public class MultipleResult {
     private String machineResult;
     private String score;
     private String machineScore;
-    @Generated(hash = 48121649)
-    public MultipleResult(Long id, int roundId, String order, String group,
+    @Generated(hash = 458558285)
+    public MultipleResult(Long id, Long roundId, String order, String group,
             String desc, String unit, String scoreMultiple, String result,
             String machineResult, String score, String machineScore) {
         this.id = id;
@@ -45,10 +45,10 @@ public class MultipleResult {
     public void setId(Long id) {
         this.id = id;
     }
-    public int getRoundId() {
+    public Long getRoundId() {
         return this.roundId;
     }
-    public void setRoundId(int roundId) {
+    public void setRoundId(Long roundId) {
         this.roundId = roundId;
     }
     public String getOrder() {
@@ -104,5 +104,22 @@ public class MultipleResult {
     }
     public void setMachineScore(String machineScore) {
         this.machineScore = machineScore;
+    }
+
+    @Override
+    public String toString() {
+        return "MultipleResult{" +
+                "id=" + id +
+                ", roundId=" + roundId +
+                ", order='" + order + '\'' +
+                ", group='" + group + '\'' +
+                ", desc='" + desc + '\'' +
+                ", unit='" + unit + '\'' +
+                ", scoreMultiple='" + scoreMultiple + '\'' +
+                ", result='" + result + '\'' +
+                ", machineResult='" + machineResult + '\'' +
+                ", score='" + score + '\'' +
+                ", machineScore='" + machineScore + '\'' +
+                '}';
     }
 }

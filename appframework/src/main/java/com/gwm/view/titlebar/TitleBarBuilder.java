@@ -27,6 +27,10 @@ public class TitleBarBuilder {
     private int rightTextVisibility = View.VISIBLE;
     private int titleVisibility;
     private int backgroundColor;
+    private View.OnClickListener leftImageOnClickListener;
+    private View.OnClickListener leftTextOnClickListener;
+    private View.OnClickListener rightTextOnClickListener;
+    private View.OnClickListener rightImageOnClickListener;
 
     public String getLeftText() {
         return leftText;
@@ -187,6 +191,42 @@ public class TitleBarBuilder {
 
     public TitleBarBuilder setBackgroundColor(int backgroundColor) {
         this.backgroundColor = backgroundColor;
+        return this;
+    }
+
+    public View.OnClickListener getLeftImageOnClickListener() {
+        return leftImageOnClickListener;
+    }
+
+    public View.OnClickListener getLeftTextOnClickListener() {
+        return leftTextOnClickListener;
+    }
+
+    public View.OnClickListener getRightTextOnClickListener() {
+        return rightTextOnClickListener;
+    }
+
+    public View.OnClickListener getRightImageOnClickListener() {
+        return rightImageOnClickListener;
+    }
+
+    public TitleBarBuilder setLeftImageOnClickListener(View.OnClickListener leftImageOnClickListener) {
+        this.leftImageOnClickListener = leftImageOnClickListener;
+        return this;
+    }
+
+    public TitleBarBuilder setLeftTextOnClickListener(View.OnClickListener leftTextOnClickListener) {
+        this.leftTextOnClickListener = leftTextOnClickListener;
+        return this;
+    }
+
+    public TitleBarBuilder setRightTextOnClickListener(View.OnClickListener rightTextOnClickListener) {
+        this.rightTextOnClickListener = rightTextOnClickListener;
+        return this;
+    }
+
+    public TitleBarBuilder setRightImageOnClickListener(View.OnClickListener rightImageOnClickListener) {
+        this.rightImageOnClickListener = rightImageOnClickListener;
         return this;
     }
 }

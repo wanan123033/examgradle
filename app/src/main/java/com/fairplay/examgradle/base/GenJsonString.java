@@ -32,7 +32,7 @@ public class GenJsonString implements InvocationHandler {
             }
             return obj.toString();
         }else {
-            throw new IllegalArgumentException("This method does not use JSONObj annotation");
+            throw new IllegalArgumentException("This method does not use JSON annotation");
         }
     }
 }

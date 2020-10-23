@@ -8,4 +8,6 @@ public class ScoreBean {
     public boolean twoPos;     //两个成绩时第二个成绩选中状态
 
     public boolean isLook = false;   //锁的状态
+
+    public static final String dataFormat = "mm:ss.SSS";
 }
