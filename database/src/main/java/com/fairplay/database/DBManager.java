@@ -179,4 +179,12 @@ public class DBManager {
     public void insertMultipResult(MultipleResult multipleResult1) {
         multipleResultDao.insertInTx(multipleResult1);
     }
+
+    public Item getItemByItemCode(String itemCode) {
+        return itemDao.queryBuilder().where(ItemDao.Properties.ItemCode.eq(itemCode)).limit(1).unique();
+    }
+
+    public List<Item> getItemList() {
+        return itemDao.loadAll();
+    }
 }

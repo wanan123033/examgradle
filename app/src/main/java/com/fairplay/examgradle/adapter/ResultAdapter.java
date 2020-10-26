@@ -38,9 +38,9 @@ public class ResultAdapter extends BaseRecyclerViewAdapter<ResultAdapter.ViewHod
             StringBuffer scorebuffer = new StringBuffer();
             for (MultipleResult result : multioleResult){
                 if (!TextUtils.isEmpty(result.getResult()))
-                    resultbuffer.append(result.getDesc()+":"+result.getResult()+"/");
+                    resultbuffer.append(result.getDesc()+":"+result.getResult()+"\n");
                 if (!TextUtils.isEmpty(result.getScore()))
-                    scorebuffer.append(result.getDesc()+":"+result.getScore()+"/");
+                    scorebuffer.append(result.getDesc()+":"+result.getScore()+"\n");
             }
             if (resultbuffer.length() > 1)
                 resultbuffer.deleteCharAt(resultbuffer.length() - 1);

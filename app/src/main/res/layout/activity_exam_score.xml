@@ -25,21 +25,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="开始打分(1)"/>
-            <Button
-                android:id="@+id/btn_score2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="开始打分(2)"/>
-            <Button
-                android:id="@+id/btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="打成绩"/>
-            <Button
-                android:id="@+id/btn_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="时间格式"/>
         </LinearLayout>
         <RelativeLayout
             android:layout_width="match_parent"

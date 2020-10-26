@@ -25,7 +25,6 @@ public class RoundResult {
     private String result;//成绩      单位为"毫米(mm)"、"毫秒(ms)"、"克(g)"、"次","毫升"
 
     private String result2; //成绩2
-    private int wight; //体重
 
     private String score;//分数      没有单位  根据成绩和得分比例系数算出分数
     @NotNull
@@ -48,10 +47,10 @@ public class RoundResult {
     private String remark1;
     private String remark2;
     private String remark3;
-    @Generated(hash = 1185620269)
+    @Generated(hash = 152652558)
     public RoundResult(Long id, @NotNull String studentCode, @NotNull String itemCode,
             String subitemCode, int machineCode, int roundNo, int testNo, int machineResult,
-            int penaltyNum, String result, String result2, int wight, String score, int resultState,
+            int penaltyNum, String result, String result2, String score, int resultState,
             int isLastResult, int examType, @NotNull String testTime, String printTime, String endTime,
             int stumbleCount, int updateState, byte[] cycleResult, String scheduleNo,
             String mtEquipment, int isMultioleResult, String remark1, String remark2, String remark3) {
@@ -66,7 +65,6 @@ public class RoundResult {
         this.penaltyNum = penaltyNum;
         this.result = result;
         this.result2 = result2;
-        this.wight = wight;
         this.score = score;
         this.resultState = resultState;
         this.isLastResult = isLastResult;
@@ -152,12 +150,6 @@ public class RoundResult {
     }
     public void setResult2(String result2) {
         this.result2 = result2;
-    }
-    public int getWight() {
-        return this.wight;
-    }
-    public void setWight(int wight) {
-        this.wight = wight;
     }
     public String getScore() {
         return this.score;

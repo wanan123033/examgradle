@@ -44,7 +44,7 @@ public class ExamScoreActivity extends BaseMvvmTitleActivity<Object, ExamScoreVi
     private boolean isFlag = false;
 
     private static final int maxLine = 3;
-    private String itemCode = "12";
+    private String itemCode = "22";
 
     private boolean isTime = false;
 
@@ -67,7 +67,7 @@ public class ExamScoreActivity extends BaseMvvmTitleActivity<Object, ExamScoreVi
     }
 
     @OnClick({R.id.tv_0,R.id.tv_1,R.id.tv_2,R.id.tv_3,R.id.tv_4,R.id.tv_5,R.id.tv_6,R.id.tv_7,R.id.tv_8,R.id.tv_9,
-            R.id.tv_dian,R.id.tv,R.id.tvj,R.id.tv_enter1,R.id.tv_enter2,R.id.tv_send,R.id.btn_score1,R.id.btn_score2,R.id.btn,R.id.btn_1})
+            R.id.tv_dian,R.id.tv,R.id.tvj,R.id.tv_enter1,R.id.tv_enter2,R.id.tv_send,R.id.btn_score1})
     public void onClick(View view){
         switch (view.getId()){
             case R.id.tv_0:
@@ -176,35 +176,6 @@ public class ExamScoreActivity extends BaseMvvmTitleActivity<Object, ExamScoreVi
                 oneScoreAdapter = new OneScoreAdapter(this,scoreBeans);
                 mBinding.stu_info.rv_score_data.setAdapter(oneScoreAdapter);
                 mBinding.stu_info.tv_studentCode.setText(mBinding.et_studentCode.getText().toString());
-                break;
-            case R.id.btn_score2:
-                initStudent();
-                isFlag = false;
-                scoreBeans = new ArrayList<>();
-                for (int i = 0 ; i < maxLine ; i++){
-                    ScoreBean scoreBean = new ScoreBean();
-                    scoreBeans.add(scoreBean);
-                }
-                twoScoreAdapter = new TwoScoreAdapter(this,scoreBeans);
-                bean = scoreBeans.get(0);
-                mBinding.stu_info.rv_score_data.setAdapter(twoScoreAdapter);
-                mBinding.stu_info.tv_studentCode.setText(mBinding.et_studentCode.getText().toString());
-                break;
-            case R.id.btn:
-                isFlag = true;
-                initStudent();
-                scoreBeans = new ArrayList<>();
-                for (int i = 0 ; i < maxLine ; i++){
-                    ScoreBean scoreBean = new ScoreBean();
-                    scoreBeans.add(scoreBean);
-                }
-                bean = scoreBeans.get(0);
-                oneScoreAdapter = new OneScoreAdapter(this,scoreBeans);
-                mBinding.stu_info.rv_score_data.setAdapter(oneScoreAdapter);
-                mBinding.stu_info.tv_studentCode.setText(mBinding.et_studentCode.getText().toString());
-                break;
-            case R.id.btn_1:
-                isTime = !isTime;
                 break;
         }
     }

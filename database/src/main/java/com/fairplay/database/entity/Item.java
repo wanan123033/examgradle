@@ -30,7 +30,7 @@ public class Item {
     private int exmItemType;      //考试项目类型 0:素质，1:专项
     private int limitGender;      //项目限制性别
     private int minScore;         //项目最低分
-    private int ratio;            //分值比例系数
+    private double ratio;            //分值比例系数
     private int isLowestPoint;     //是否给最低分  0:否，1:是
     private int markScore;  // 打分类型  (0: 测量项目，1: 打分项目)
     private int scoreCount;  //打分个数
@@ -41,13 +41,13 @@ public class Item {
     private String remark1;
     private String remark2;
     private String remark3;
-    @Generated(hash = 486754733)
+    @Generated(hash = 1699013482)
     public Item(Long id, String itemName, String itemCode, String subitemCode,
             String machineCode, String unit, int testType, int testNum, int digital,
             int carryMode, int minValue, int maxValue, int lastResultMode,
             int scoreCountMode, int scoreCountRule, int scoreCarryMode,
             int scoreCarryByHundredth, int itemProperty, int exmItemType,
-            int limitGender, int minScore, int ratio, int isLowestPoint,
+            int limitGender, int minScore, double ratio, int isLowestPoint,
             int markScore, int scoreCount, int calScoreType,
             String calScoreExpression, int enableTempGroup,
             int enableTempGroupRight, String remark1, String remark2,
@@ -214,10 +214,10 @@ public class Item {
     public void setMinScore(int minScore) {
         this.minScore = minScore;
     }
-    public int getRatio() {
+    public double getRatio() {
         return this.ratio;
     }
-    public void setRatio(int ratio) {
+    public void setRatio(double ratio) {
         this.ratio = ratio;
     }
     public int getIsLowestPoint() {
@@ -280,4 +280,5 @@ public class Item {
     public void setRemark3(String remark3) {
         this.remark3 = remark3;
     }
+
 }
