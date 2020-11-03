@@ -1,6 +1,7 @@
 package com.fairplay.examgradle.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -22,7 +23,8 @@ public class OperationAdapter extends BaseRecyclerViewAdapter<OperationAdapter.V
 
     @Override
     protected void setData(OperationBean operationBean, int position) {
-        Glide.with(context).load(operationBean.res).into(mBinding.img_item_price);
+        Log.e("TAG===",operationBean.toString());
+        mBinding.img_item_price.setBackgroundResource(operationBean.res);
         mBinding.tv_item.setText(operationBean.name);
     }
 

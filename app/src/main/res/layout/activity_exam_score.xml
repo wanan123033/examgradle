@@ -213,7 +213,7 @@
                 android:textSize="18sp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginBottom="5dp"
-                android:text="时间格式:  mm:ss.SSS"/>
+                android:text="时间格式:  mm:ss"/>
         </RelativeLayout>
     </LinearLayout>
 

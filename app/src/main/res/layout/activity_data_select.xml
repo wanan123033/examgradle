@@ -10,42 +10,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="25dp"
         android:layout_marginTop="25dp"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:orientation="horizontal">
-
-
-        <RadioButton
-            android:id="@+id/rb_all"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:button="@null"
-            android:drawableLeft="@drawable/checkbox_selected"
-            android:drawablePadding="10dp"
-            android:text="所有"
-            android:textSize="20sp" />
-
-        <CheckBox
-            android:id="@+id/cb_un_upload"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:button="@null"
-            android:drawableLeft="@drawable/checkbox_selected"
-            android:drawablePadding="10dp"
-            android:text="未上传"
-            android:textSize="20sp" />
-
-        <CheckBox
-            android:id="@+id/cb_uploaded"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:button="@null"
-            android:drawableLeft="@drawable/checkbox_selected"
-            android:drawablePadding="10dp"
-            android:text="已上传"
-            android:textSize="20sp" />
 
         <EditText
             android:id="@+id/et_input_text"
@@ -69,6 +35,7 @@
             android:textColor="@color/white"
             android:textSize="20sp" />
         <Spinner
+            android:id="@+id/sp_item"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:layout_marginLeft="15dp"

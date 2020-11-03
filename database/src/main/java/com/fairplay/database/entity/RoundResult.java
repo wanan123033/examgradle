@@ -20,13 +20,14 @@ public class RoundResult {
     private int roundNo;//轮次
     @NotNull
     private int testNo;//测试次数
-    private int machineResult;// 获取到的机器成绩
+    private String machineResult;// 获取到的机器成绩
     private int penaltyNum;// 判罚值   判罚值有正负
     private String result;//成绩      单位为"毫米(mm)"、"毫秒(ms)"、"克(g)"、"次","毫升"
 
     private String result2; //成绩2
 
     private String score;//分数      没有单位  根据成绩和得分比例系数算出分数
+    private String machineScore;// 获取到的机器成绩
     @NotNull
     private int resultState;//成绩状态 //是否犯规 0:未检录 1:正常 2:犯规 3:中退 4:弃权 5:测试     体侧系统没有中退和放弃,且犯规均为机器判定的犯规
     @NotNull
@@ -47,13 +48,17 @@ public class RoundResult {
     private String remark1;
     private String remark2;
     private String remark3;
-    @Generated(hash = 152652558)
+    private int trackNo;
+    private String itemName;
+
+    @Generated(hash = 1716245500)
     public RoundResult(Long id, @NotNull String studentCode, @NotNull String itemCode,
-            String subitemCode, int machineCode, int roundNo, int testNo, int machineResult,
-            int penaltyNum, String result, String result2, String score, int resultState,
-            int isLastResult, int examType, @NotNull String testTime, String printTime, String endTime,
-            int stumbleCount, int updateState, byte[] cycleResult, String scheduleNo,
-            String mtEquipment, int isMultioleResult, String remark1, String remark2, String remark3) {
+            String subitemCode, int machineCode, int roundNo, int testNo, String machineResult,
+            int penaltyNum, String result, String result2, String score, String machineScore,
+            int resultState, int isLastResult, int examType, @NotNull String testTime, String printTime,
+            String endTime, int stumbleCount, int updateState, byte[] cycleResult, String scheduleNo,
+            String mtEquipment, int isMultioleResult, String remark1, String remark2, String remark3,
+            int trackNo, String itemName) {
         this.id = id;
         this.studentCode = studentCode;
         this.itemCode = itemCode;
@@ -66,6 +71,7 @@ public class RoundResult {
         this.result = result;
         this.result2 = result2;
         this.score = score;
+        this.machineScore = machineScore;
         this.resultState = resultState;
         this.isLastResult = isLastResult;
         this.examType = examType;
@@ -81,6 +87,8 @@ public class RoundResult {
         this.remark1 = remark1;
         this.remark2 = remark2;
         this.remark3 = remark3;
+        this.trackNo = trackNo;
+        this.itemName = itemName;
     }
     @Generated(hash = 1393632943)
     public RoundResult() {
@@ -127,10 +135,10 @@ public class RoundResult {
     public void setTestNo(int testNo) {
         this.testNo = testNo;
     }
-    public int getMachineResult() {
+    public String getMachineResult() {
         return this.machineResult;
     }
-    public void setMachineResult(int machineResult) {
+    public void setMachineResult(String machineResult) {
         this.machineResult = machineResult;
     }
     public int getPenaltyNum() {
@@ -156,6 +164,12 @@ public class RoundResult {
     }
     public void setScore(String score) {
         this.score = score;
+    }
+    public String getMachineScore() {
+        return this.machineScore;
+    }
+    public void setMachineScore(String machineScore) {
+        this.machineScore = machineScore;
     }
     public int getResultState() {
         return this.resultState;
@@ -248,4 +262,19 @@ public class RoundResult {
         this.remark3 = remark3;
     }
 
+    public int getTrackNo() {
+        return trackNo;
+    }
+
+    public void setTrackNo(int trackNo) {
+        this.trackNo = trackNo;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
 }

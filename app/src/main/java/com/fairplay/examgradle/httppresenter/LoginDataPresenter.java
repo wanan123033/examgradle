@@ -16,19 +16,16 @@ public class LoginDataPresenter extends BaseDataPresenter<LoginBean> {
      * @param password
      */
     public void login(String username,String password){
-        Observable<LoginBean> loginhttp = getHttpPresenter().login(username,password);
+        String token = "Basic dGVybWluYWw6dGVybWluYWxfc2VjcmV0";
+        Observable<LoginBean> loginhttp = getHttpPresenter().login(token,username,password);
         addHttpSubscriber(loginhttp,LoginBean.class);
     }
     @Override
     protected void onNextResult(LoginBean response, int id) {
+        System.out.println(response+"----25");
         BaseApplication.getInstance().getMmkv().putString(MMKVContract.TOKEN,response.data.token);
         DownEnvInfoPresenter envInfoPresenter = new DownEnvInfoPresenter();
         envInfoPresenter.setViewModel(getViewModel());
         envInfoPresenter.downEnv();
-    }
-
-    @Override
-    protected void onErrorResult(Exception e, int id) {
-
     }
 }

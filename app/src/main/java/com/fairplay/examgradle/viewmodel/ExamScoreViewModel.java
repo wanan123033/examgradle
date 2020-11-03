@@ -93,7 +93,7 @@ public class ExamScoreViewModel extends BaseViewModel<Object> {
         multipleResult1.setDesc("左");
         multipleResult1.setOrder("1");
         if (!isFlag) {
-            multipleResult1.setResult(bean.result1.toString());
+            multipleResult1.setScore(bean.result1.toString());
         }else {
             multipleResult1.setScore(bean.result1.toString());
         }
@@ -104,7 +104,7 @@ public class ExamScoreViewModel extends BaseViewModel<Object> {
         multipleResult2.setDesc("右");
         multipleResult2.setOrder("2");
         if (!isFlag) {
-            multipleResult2.setResult(bean.result2.toString());
+            multipleResult2.setScore(bean.result2.toString());
         }else {
             multipleResult2.setScore(bean.result2.toString());
         }

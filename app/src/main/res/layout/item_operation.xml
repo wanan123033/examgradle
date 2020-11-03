@@ -11,7 +11,7 @@
         android:id="@+id/item_view_card"
         android:layout_width="116dp"
         android:layout_height="116dp"
-        custom:cardBackgroundColor="@color/colorPrimary"
+        custom:cardBackgroundColor="@color/colorAccent"
         custom:cardCornerRadius="10dp"
         custom:cardElevation="0dp">
 

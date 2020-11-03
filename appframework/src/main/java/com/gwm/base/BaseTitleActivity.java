@@ -12,7 +12,7 @@ import com.gwm.view.titlebar.CustomNavigatorBar;
 import com.gwm.view.titlebar.TitleBarBuilder;
 
 public abstract class BaseTitleActivity<V extends IViewBind> extends BaseActivity {
-    private CustomNavigatorBar titleBar;
+    protected CustomNavigatorBar titleBar;
     private FrameLayout content;
     protected V mBinding;
     @Override

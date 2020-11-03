@@ -47,6 +47,7 @@ public class RetrofitOKHttp<T> extends BaseOkHttp{
                 if(!params.url.startsWith("http") && !params.url.startsWith("ws:")) {
                     params.url = baseurl + params.url;
                 }
+                ((HttpParams<E>) httpParams).secretKey = observable.secretKey();
                 params.result = observable.getClazz();
                 Observable observable1 = handler.getObservable(method);
                 params.observer = observable1.getObserver();

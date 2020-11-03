@@ -3,6 +3,7 @@ package com.fairplay.examgradle.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import com.app.layout.activity_login;
@@ -10,12 +11,17 @@ import com.fairplay.examgradle.R;
 import com.fairplay.examgradle.bean.EnvInfoBean;
 import com.fairplay.examgradle.bean.LoginBean;
 import com.fairplay.examgradle.contract.MMKVContract;
+
+import com.fairplay.examgradle.mq.MqttManager;
+import com.fairplay.examgradle.mq.interfaces.OnMqttAndroidConnectListener;
+import com.fairplay.examgradle.utils.CommonUtils;
 import com.fairplay.examgradle.utils.ToastUtils;
 import com.fairplay.examgradle.viewmodel.LoginViewModel;
 import com.gwm.annotation.layout.Layout;
 import com.gwm.annotation.layout.OnClick;
 import com.gwm.base.BaseApplication;
 import com.gwm.mvvm.BaseMvvmActivity;
+import com.gwm.util.ContextUtil;
 import com.tencent.mmkv.MMKV;
 
 @Layout(R.layout.activity_login)
@@ -37,9 +43,9 @@ public class LoginActivity extends BaseMvvmActivity<EnvInfoBean, LoginViewModel,
     public void onClick(View view){
         switch (view.getId()){
             case R.id.btn_login:
-                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                startActivity(intent);
-//                login();
+//                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+//                startActivity(intent);
+                login();
                 break;
             case R.id.tv_server:
                 Intent intent1 = new Intent(getApplicationContext(),ServerActivity.class);
@@ -63,6 +69,8 @@ public class LoginActivity extends BaseMvvmActivity<EnvInfoBean, LoginViewModel,
             mmkv.putString(MMKVContract.USERNAME,username);
             mmkv.putString(MMKVContract.PASSWORD,password);
         }
+        username = username + "@" + CommonUtils.getDeviceId(ContextUtil.get());
+        showDialog("登录中...");
         viewModel.login(username,password);
     }
 
@@ -70,6 +78,39 @@ public class LoginActivity extends BaseMvvmActivity<EnvInfoBean, LoginViewModel,
     public void onChanged(EnvInfoBean o) {
         if (o != null){
             //TODO 启动mqtt
+            Log.e("TAG=====+++++++",o.toString());
+            startMqttService(o);
+            dismissDialog();
+            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    private void startMqttService(EnvInfoBean o) {
+//        MqttService.getInstance(getApplication()).start(o);
+        if(!MqttManager.getInstance().isConnected()){
+            MqttManager.getInstance().init(getApplication())
+                    .setServerIp(o.data.mq.ip)
+                    .setServerPort(Integer.parseInt(o.data.mq.port))
+                    .connect(this);
+            MqttManager.getInstance().regeisterServerMsg(new OnMqttAndroidConnectListener() {
+                @Override
+                public void connect() {
+                    super.connect();
+                    Log.e("TAG===>","connect");
+                }
+
+                @Override
+                public void disConnect() {
+                    super.disConnect();
+                    Log.e("TAG===>","disConnect");
+                }
+
+                @Override
+                public void onDataReceive(String message) {
+                    Log.e("TAG===>",message);
+                }
+            });
         }
     }
 }

@@ -9,5 +9,5 @@ public class ScoreBean {
 
     public boolean isLook = false;   //锁的状态
 
-    public static final String dataFormat = "mm:ss.SSS";
+    public static final String dataFormat = "mm:ss";
 }

@@ -32,6 +32,7 @@ public class Observable<T> {
 
         }
     };
+    private String secretKey;
 
     /**
      * 配置请求回调监听
@@ -71,6 +72,10 @@ public class Observable<T> {
         this.netListener = netListener;
         return this;
     }
+    public Observable subscriber(String secretKey){
+        this.secretKey = secretKey;
+        return this;
+    }
 
     public HttpObserver<T> getObserver(){
         return observer;
@@ -95,5 +100,9 @@ public class Observable<T> {
 
     public HttpParams<T> getParams() {
         return params;
+    }
+
+    public String secretKey() {
+        return secretKey;
     }
 }

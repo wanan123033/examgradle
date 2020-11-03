@@ -2,6 +2,7 @@ package com.gwm.http;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.gwm.annotation.http.HTTP;
 import com.gwm.base.BaseApplication;
@@ -27,12 +28,22 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 public class BaseOkHttp {
 
     public BaseOkHttp() {
         OkHttpClient okHttpClient = getOkHttpClient(ContextUtil.get());
-        OkHttpUtils.initClient(okHttpClient);
+        OkHttpClient.Builder builder = okHttpClient.newBuilder();
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
+            @Override
+            public void log(String message) {
+                Log.e("TAG===>",message);
+            }
+        });
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        builder.addInterceptor(loggingInterceptor);
+        OkHttpUtils.initClient(builder.build());
     }
 
     private OkHttpClient getOkHttpClient(Context context) {

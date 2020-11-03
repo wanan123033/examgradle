@@ -1,11 +1,15 @@
 package com.fairplay.examgradle.httppresenter;
 
 
+import com.fairplay.database.DBManager;
+import com.fairplay.database.entity.Item;
+import com.fairplay.database.entity.MultipleItem;
 import com.fairplay.examgradle.base.JsonDataPresenter;
 import com.fairplay.examgradle.bean.ItemInfoBean;
-import com.fairplay.examgradle.contract.MMKVContract;
+import com.geek.thread.GeekThreadPools;
+import com.gwm.base.BaseActivity;
+import com.gwm.mvvm.BaseViewModel;
 import com.gwm.retrofit.Observable;
-import com.tencent.mmkv.MMKV;
 
 public class DownItemInfoPresenter extends JsonDataPresenter<DownItemInfoPresenter.DownItemInfo,ItemInfoBean> {
     public DownItemInfoPresenter() {
@@ -14,11 +18,97 @@ public class DownItemInfoPresenter extends JsonDataPresenter<DownItemInfoPresent
 
     @Override
     protected void onNextResult(ItemInfoBean response, int id) {
-
-    }
-
-    @Override
-    protected void onErrorResult(Exception e, int id) {
+        GeekThreadPools.executeWithGeekThreadPool(new Runnable() {
+            @Override
+            public void run() {
+                if (response.data != null && !response.data.isEmpty()){
+                    for (int i = 0 ; i < response.data.size() ; i++){  //父项信息
+                        ItemInfoBean.ItemInfo info = response.data.get(i);
+                        Item item = new Item();
+                        item.setItemName(info.itemName);
+                        //父项信息 子项项目代码=父项项目代码
+                        item.setItemCode(info.examItemCode);
+                        item.setSubitemCode(info.examItemCode);
+                        item.setUnit(info.resultUnit);
+                        item.setItemType(info.itemType);
+                        item.setTestType(info.testType);
+                        item.setTestNum(info.resultTestNum);
+                        item.setRoundNum(info.itemRoundNum);
+                        item.setDigital(info.decimalDigits);
+                        item.setCarryMode(info.carryMode);
+                        item.setScoreCountMode(info.scoreCountMode);
+                        item.setScoreCountRule(info.scoreCountRule);
+                        item.setScoreCarryMode(info.scoreCarryMode);
+                        item.setScoreCarryByHundredth(info.scoreCarryByHundredth);
+                        item.setMinValue(info.minResult);
+                        item.setMaxValue(info.maxResult);
+                        item.setLastResultMode(info.lastResultMode);
+                        item.setMachineCode(info.machineCode);
+                        item.setItemProperty(info.itemProperty);
+                        item.setExmItemType(info.exmItemType);
+                        item.setLimitGender(info.limitGender);
+                        item.setMinScore(info.minScore);
+                        item.setRatio(info.ratio);
+                        item.setIsLowestPoint(info.isLowestPoint);
+                        DBManager.getInstance().insertItem(item);
+                        if (info.subitemList != null && !info.subitemList.isEmpty()){
+                            for (int j = 0 ; j < info.subitemList.size() ; j++){          //子项信息
+                                ItemInfoBean.SubItem subInfo = info.subitemList.get(j);
+                                Item subItem = new Item();
+                                subItem.setItemName(subInfo.subitemName);
+                                //子项信息 父项项目代码对应多个子项项目代码
+                                subItem.setItemCode(item.getItemCode());
+                                subItem.setSubitemCode(subInfo.subitemCode);
+                                subItem.setItemType(subInfo.subitemType);
+                                subItem.setTestType(subInfo.subitemTestType);
+                                subItem.setUnit(subInfo.subitemUnit);
+                                subItem.setTestNum(subInfo.subitemTestNum);
+                                subItem.setRoundNum(subInfo.subitemRoundNum);
+//                        subItem.setRatio(subInfo.scoreMultiple);
+                                subItem.setMarkScore(subInfo.markScore);
+                                if (subInfo.markScore == 0) {   //测量项目
+                                    subItem.setDigital(subInfo.decimalDigits);
+                                }else if (subInfo.markScore == 1){  //打分项目
+                                    subItem.setDigital(subInfo.scoreDecimalDigits);
+                                }
+                                subItem.setCarryMode(subInfo.carryMode);
+                                subItem.setScoreCountMode(subInfo.scoreCountMode);
+                                subItem.setScoreCountRule(subInfo.scoreCountRule);
+                                subItem.setScoreCarryMode(subInfo.scoreCarryMode);
+                                subItem.setScoreCarryByHundredth(subInfo.scoreCarryByHundredth);
+                                subItem.setScoreCount(subInfo.scoreCount);
+                                subItem.setCalScoreType(subInfo.calScoreType);
+                                subItem.setEnableTempGroup(subInfo.enableTempGroup);
+                                subItem.setEnableTempGroupRight(subInfo.enableTempGroupRight);
+                                subItem.setMinValue(subInfo.minResult);
+                                subItem.setMaxValue(subInfo.maxResult);
+                                subItem.setMachineCode(subInfo.machineCode);
+                                subItem.setMinScore(subInfo.minScore);
+                                subItem.setRatio(subInfo.ratio);
+                                subItem.setIsLowestPoint(subInfo.isLowestPoint);
+                                long subItemId = DBManager.getInstance().insertItem(subItem);
+                                if (subInfo.multipleValueSetting != null){
+                                    if (subInfo.multipleValueSetting.valueList != null && !subInfo.multipleValueSetting.valueList.isEmpty()){
+                                        for (int m = 0 ; m < subInfo.multipleValueSetting.valueList.size() ; m++){
+                                            ItemInfoBean.Value value = subInfo.multipleValueSetting.valueList.get(m);
+                                            MultipleItem multipleItem = new MultipleItem();
+                                            multipleItem.setItemId(subItemId);
+                                            multipleItem.setOrder(value.order);
+                                            multipleItem.setDesc(value.desc);
+                                            multipleItem.setGroup(value.group);
+                                            multipleItem.setScore(value.score);
+                                            multipleItem.setMachineScore(value.machineScore);
+                                            DBManager.getInstance().insertMultipItem(multipleItem);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                ((BaseViewModel)getViewModel()).sendLiveData(BaseActivity.DIMMSION_PROGREESS);
+            }
+        });
 
     }
 
@@ -26,7 +116,7 @@ public class DownItemInfoPresenter extends JsonDataPresenter<DownItemInfoPresent
      * 下载考点项目
      */
     public void downItem() {
-        String json = genJsonString(100020111,null);
+        String json = genJsonString(100020111,"");
         String token = getToken();
         Observable<ItemInfoBean> itemInfoBeanObservable = getHttpPresenter().downItemInfo(token, json);
         addHttpSubscriber(itemInfoBeanObservable,ItemInfoBean.class);

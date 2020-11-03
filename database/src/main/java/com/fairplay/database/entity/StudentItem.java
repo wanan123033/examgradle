@@ -13,8 +13,7 @@ public class StudentItem {
     @NotNull
     private String itemCode;//项目素质代码
     private String subitemCode; //项目专项代码
-    @NotNull
-    private int machineCode;
+    private String machineCode;
     private int studentType;//考生类型（0.正常，1.缓考，2.补考） 暂不使用
     @NotNull
     private int examType;//考试类型 0.正常，1.缓考，2.补考
@@ -25,9 +24,9 @@ public class StudentItem {
     private String remark1;
     private String remark2;
     private String remark3;
-    @Generated(hash = 613654219)
+    @Generated(hash = 1654975173)
     public StudentItem(Long id, @NotNull String studentCode,
-            @NotNull String itemCode, String subitemCode, int machineCode,
+            @NotNull String itemCode, String subitemCode, String machineCode,
             int studentType, int examType, String scheduleNo, String sortName,
             int groupNo, String remark1, String remark2, String remark3) {
         this.id = id;
@@ -71,10 +70,10 @@ public class StudentItem {
     public void setSubitemCode(String subitemCode) {
         this.subitemCode = subitemCode;
     }
-    public int getMachineCode() {
+    public String getMachineCode() {
         return this.machineCode;
     }
-    public void setMachineCode(int machineCode) {
+    public void setMachineCode(String machineCode) {
         this.machineCode = machineCode;
     }
     public int getStudentType() {
@@ -95,6 +94,18 @@ public class StudentItem {
     public void setScheduleNo(String scheduleNo) {
         this.scheduleNo = scheduleNo;
     }
+    public String getSortName() {
+        return this.sortName;
+    }
+    public void setSortName(String sortName) {
+        this.sortName = sortName;
+    }
+    public int getGroupNo() {
+        return this.groupNo;
+    }
+    public void setGroupNo(int groupNo) {
+        this.groupNo = groupNo;
+    }
     public String getRemark1() {
         return this.remark1;
     }
@@ -112,17 +123,5 @@ public class StudentItem {
     }
     public void setRemark3(String remark3) {
         this.remark3 = remark3;
-    }
-    public String getSortName() {
-        return this.sortName;
-    }
-    public void setSortName(String sortName) {
-        this.sortName = sortName;
-    }
-    public int getGroupNo() {
-        return this.groupNo;
-    }
-    public void setGroupNo(int groupNo) {
-        this.groupNo = groupNo;
     }
 }

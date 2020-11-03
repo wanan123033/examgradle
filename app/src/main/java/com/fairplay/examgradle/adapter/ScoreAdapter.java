@@ -4,13 +4,15 @@ import android.content.Context;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.layout.item_score;
 import com.fairplay.examgradle.R;
 import com.fairplay.examgradle.bean.ExamScoreBean;
+import com.fairplay.examgradle.contract.MBMContract;
 import com.gwm.annotation.layout.Layout;
 import com.gwm.base.BaseRecyclerViewAdapter;
+import com.gwm.messagesendreceive.MessageBus;
+import com.gwm.messagesendreceive.MessageBusMessage;
 
 import java.util.List;
 
@@ -24,15 +26,25 @@ public class ScoreAdapter extends BaseRecyclerViewAdapter<ScoreAdapter.ScoreView
     }
 
     @Override
-    protected void setData(ExamScoreBean.Score score, int position) {
+    protected void setData(final ExamScoreBean.Score score, int position) {
         mBinding.tv_desc.setText(score.desc);
         mBinding.tv_result.setText(score.result.toString());
-        mBinding.tv_unit.setText(score.unit);
+        mBinding.tv_unit.setText("once".equals(score.unit)?"次":score.unit);
         if (currentPos == position && show){
             mBinding.tv_result.setBackgroundColor(context.getResources().getColor(R.color.green));
         }else {
             mBinding.tv_result.setBackgroundResource(R.drawable.score_bg);
         }
+        if (score.isLock){
+            mBinding.iv_lock.setVisibility(View.VISIBLE);
+        }else {
+            mBinding.iv_lock.setVisibility(View.GONE);
+        }
+
+//        mBinding.tv_result.setOnClickListener(v -> {
+//            score.isLock = false;
+//            notifyDataSetChanged();
+//        });
     }
 
     @Override

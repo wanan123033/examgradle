@@ -3,23 +3,31 @@ package com.fairplay.examgradle.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import com.app.layout.activity_main;
 import com.fairplay.database.DBManager;
 import com.fairplay.database.entity.Item;
 import com.fairplay.examgradle.R;
+import com.fairplay.examgradle.mqtt.MqttManager;
+import com.fairplay.examgradle.mqtt.interfaces.OnMqttAndroidConnectListener;
 import com.gwm.annotation.layout.Layout;
 import com.gwm.annotation.layout.OnClick;
 import com.gwm.base.BaseTitleActivity;
 import com.gwm.view.titlebar.TitleBarBuilder;
+import com.king.zxing.CaptureActivity;
+import com.king.zxing.Intents;
 
 import java.util.List;
 
 @Layout(R.layout.activity_main)
 public class MainActivity extends BaseTitleActivity<activity_main> {
+    private static final int QR_CODE = 7598;
+
     @Override
     public TitleBarBuilder setTitleBarBuilder(TitleBarBuilder builder) {
         return null;
@@ -38,7 +46,8 @@ public class MainActivity extends BaseTitleActivity<activity_main> {
                 startActivity(intent1);
                 break;
             case R.id.card_re:
-
+                Intent intent2 = new Intent(getApplicationContext(), CaptureActivity.class);
+                startActivityForResult(intent2,QR_CODE);
                 break;
             case R.id.card_cannal:
                 Intent intent3 = new Intent(getApplicationContext(),ItemInitActivity.class);
@@ -51,6 +60,25 @@ public class MainActivity extends BaseTitleActivity<activity_main> {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addFirstToast();
+
+        MqttManager.getInstance().regeisterServerMsg(new OnMqttAndroidConnectListener() {
+            @Override
+            public void connect() {
+                super.connect();
+                Log.e("TAG===>","connect");
+            }
+
+            @Override
+            public void disConnect() {
+                super.disConnect();
+                Log.e("TAG===>","disConnect");
+            }
+
+            @Override
+            public void onDataReceive(String message) {
+                Log.e("TAG===>",message);
+            }
+        });
     }
     public void showItemDialog(final List<Item> items){
         String[] itemStr = new String[items.size()];
@@ -63,8 +91,18 @@ public class MainActivity extends BaseTitleActivity<activity_main> {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(getApplicationContext(),ExamActivity.class);
                         intent.putExtra("itemCode",items.get(which).getItemCode());
+                        intent.putExtra("subItemCode",items.get(which).getSubitemCode());
                         startActivity(intent);
                     }
                 }).show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == QR_CODE){
+            String result = data.getStringExtra(Intents.Scan.RESULT);
+            Log.e("TAG====>",result);
+        }
     }
 }

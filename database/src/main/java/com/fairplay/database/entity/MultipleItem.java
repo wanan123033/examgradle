@@ -14,25 +14,16 @@ public class MultipleItem {
     private String order;
     private String group;
     private String desc;
-    private String unit;
-    private String scoreMultiple;
-    private String result;
-    private String machineResult;
     private String score;
     private String machineScore;
-    @Generated(hash = 507024650)
+    @Generated(hash = 215637218)
     public MultipleItem(Long id, Long itemId, String order, String group,
-            String desc, String unit, String scoreMultiple, String result,
-            String machineResult, String score, String machineScore) {
+            String desc, String score, String machineScore) {
         this.id = id;
         this.itemId = itemId;
         this.order = order;
         this.group = group;
         this.desc = desc;
-        this.unit = unit;
-        this.scoreMultiple = scoreMultiple;
-        this.result = result;
-        this.machineResult = machineResult;
         this.score = score;
         this.machineScore = machineScore;
     }
@@ -68,30 +59,6 @@ public class MultipleItem {
     }
     public void setDesc(String desc) {
         this.desc = desc;
-    }
-    public String getUnit() {
-        return this.unit;
-    }
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-    public String getScoreMultiple() {
-        return this.scoreMultiple;
-    }
-    public void setScoreMultiple(String scoreMultiple) {
-        this.scoreMultiple = scoreMultiple;
-    }
-    public String getResult() {
-        return this.result;
-    }
-    public void setResult(String result) {
-        this.result = result;
-    }
-    public String getMachineResult() {
-        return this.machineResult;
-    }
-    public void setMachineResult(String machineResult) {
-        this.machineResult = machineResult;
     }
     public String getScore() {
         return this.score;

@@ -13,5 +13,20 @@ public class LoginBean extends BaseBean<LoginBean.Login> {
         public List<String> permission;
         public String token;
         public String equipmentStatus;
+
+        @Override
+        public String toString() {
+            return "Login{" +
+                    "examName='" + examName + '\'' +
+                    ", siteId='" + siteId + '\'' +
+                    ", typeValue='" + typeValue + '\'' +
+                    ", type='" + type + '\'' +
+                    ", channelCode='" + channelCode + '\'' +
+                    ", multiSchedule=" + multiSchedule +
+                    ", permission=" + permission +
+                    ", token='" + token + '\'' +
+                    ", equipmentStatus='" + equipmentStatus + '\'' +
+                    '}';
+        }
     }
 }

@@ -13,15 +13,14 @@ public class Schedule {
     @NotNull
     private String scheduleNo; //日程序号 （场次）
     @NotNull
-    private String beginTime;
-    private String endTime;
+    private long beginTime;
+    private long endTime;
     private String itemCode;  //项目素质代码
     private String subitemCode; //项目专项代码
     private String siteName;  //考点名称
-
-    @Generated(hash = 518253546)
-    public Schedule(Long id, @NotNull String scheduleNo, @NotNull String beginTime,
-            String endTime, String itemCode, String subitemCode, String siteName) {
+    @Generated(hash = 1189489864)
+    public Schedule(Long id, @NotNull String scheduleNo, long beginTime,
+            long endTime, String itemCode, String subitemCode, String siteName) {
         this.id = id;
         this.scheduleNo = scheduleNo;
         this.beginTime = beginTime;
@@ -45,16 +44,16 @@ public class Schedule {
     public void setScheduleNo(String scheduleNo) {
         this.scheduleNo = scheduleNo;
     }
-    public String getBeginTime() {
+    public long getBeginTime() {
         return this.beginTime;
     }
-    public void setBeginTime(String beginTime) {
+    public void setBeginTime(long beginTime) {
         this.beginTime = beginTime;
     }
-    public String getEndTime() {
+    public long getEndTime() {
         return this.endTime;
     }
-    public void setEndTime(String endTime) {
+    public void setEndTime(long endTime) {
         this.endTime = endTime;
     }
     public String getItemCode() {

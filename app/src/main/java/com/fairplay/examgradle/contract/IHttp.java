@@ -2,6 +2,7 @@ package com.fairplay.examgradle.contract;
 
 import com.fairplay.examgradle.bean.BaseBean;
 import com.fairplay.examgradle.bean.EnvInfoBean;
+import com.fairplay.examgradle.bean.GroupInfoBean;
 import com.fairplay.examgradle.bean.ItemGroupBean;
 import com.fairplay.examgradle.bean.ItemInfoBean;
 import com.fairplay.examgradle.bean.LoginBean;
@@ -22,7 +23,7 @@ public interface IHttp {
      * @return
      */
     @HTTP(url = "/auth/terminal/token")
-    Observable<LoginBean> login(@Query("username")String username,@Query("password")String password);
+    Observable<LoginBean> login(@HeaderString ("Authorization")String token,@Query("username")String username,@Query("password")String password);
 
     /**
      * 下载项目
@@ -74,4 +75,9 @@ public interface IHttp {
 
     @HTTP(url = "/run/downEnvInfo")
     Observable<EnvInfoBean> downEnvInfo(@HeaderString ("Authorization")String token,@JSON String json);
+
+    @HTTP(url = "/run/downSiteScheduleItemGroup")
+    Observable<GroupInfoBean> downGroup(@HeaderString ("Authorization")String token,@JSON String json);
+    @HTTP(url = "/run/downSiteScheduleItemGroup")
+    Observable<BaseBean> upload(@HeaderString ("Authorization")String token,@JSON String json);
 }

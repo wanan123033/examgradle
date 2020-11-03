@@ -16,11 +16,13 @@ public class Item {
     private String machineCode;  //机器码
     private String unit;     //单位   厘米  毫升  次
     private int testType;  //测量方式  计时 远度 计数 力量
-    private int testNum;   //测试次数
+    private int itemType;   // 体侧项目类型(0: 身高、体重, 1: 肺活量, 2: 耐力, 3: 柔韧, 4 : 速度, 5: 视力)  // 分项类型(1: 专项素质, 1: 专项技术, 2: 实战能力, 3: 跳跃技术, 4: 自然素质, 5: 成套动作)
+    private int testNum;   //考试次数
+    private int roundNum;  //单次考试轮次数量
     private int digital;   //小数位数
     private int carryMode; //进位方式 1.四舍五入 2.舍位 3.非零进取 0 不舍位
-    private int minValue;  //有效成绩最小值
-    private int maxValue;  //有效成绩最大值
+    private String minValue;  //有效成绩最小值
+    private String maxValue;  //有效成绩最大值
     private int lastResultMode; //最终成绩的选择模式 1.最后成绩，2.补考成绩，3.最好
     private int scoreCountMode; //算分模式 0:精确算分1:固定算分
     private int scoreCountRule; //得分规则 0:往低分靠1:往高分靠
@@ -29,7 +31,7 @@ public class Item {
     private int itemProperty;     //项目属性   1: 必考, 2: 选考
     private int exmItemType;      //考试项目类型 0:素质，1:专项
     private int limitGender;      //项目限制性别
-    private int minScore;         //项目最低分
+    private String minScore;         //项目最低分
     private double ratio;            //分值比例系数
     private int isLowestPoint;     //是否给最低分  0:否，1:是
     private int markScore;  // 打分类型  (0: 测量项目，1: 打分项目)
@@ -41,17 +43,12 @@ public class Item {
     private String remark1;
     private String remark2;
     private String remark3;
-    @Generated(hash = 1699013482)
-    public Item(Long id, String itemName, String itemCode, String subitemCode,
-            String machineCode, String unit, int testType, int testNum, int digital,
-            int carryMode, int minValue, int maxValue, int lastResultMode,
-            int scoreCountMode, int scoreCountRule, int scoreCarryMode,
-            int scoreCarryByHundredth, int itemProperty, int exmItemType,
-            int limitGender, int minScore, double ratio, int isLowestPoint,
-            int markScore, int scoreCount, int calScoreType,
-            String calScoreExpression, int enableTempGroup,
-            int enableTempGroupRight, String remark1, String remark2,
-            String remark3) {
+    @Generated(hash = 518486048)
+    public Item(Long id, String itemName, String itemCode, String subitemCode, String machineCode, String unit, int testType, int itemType, int testNum,
+            int roundNum, int digital, int carryMode, String minValue, String maxValue, int lastResultMode, int scoreCountMode, int scoreCountRule,
+            int scoreCarryMode, int scoreCarryByHundredth, int itemProperty, int exmItemType, int limitGender, String minScore, double ratio,
+            int isLowestPoint, int markScore, int scoreCount, int calScoreType, String calScoreExpression, int enableTempGroup, int enableTempGroupRight,
+            String remark1, String remark2, String remark3) {
         this.id = id;
         this.itemName = itemName;
         this.itemCode = itemCode;
@@ -59,7 +56,9 @@ public class Item {
         this.machineCode = machineCode;
         this.unit = unit;
         this.testType = testType;
+        this.itemType = itemType;
         this.testNum = testNum;
+        this.roundNum = roundNum;
         this.digital = digital;
         this.carryMode = carryMode;
         this.minValue = minValue;
@@ -130,11 +129,23 @@ public class Item {
     public void setTestType(int testType) {
         this.testType = testType;
     }
+    public int getItemType() {
+        return this.itemType;
+    }
+    public void setItemType(int itemType) {
+        this.itemType = itemType;
+    }
     public int getTestNum() {
         return this.testNum;
     }
     public void setTestNum(int testNum) {
         this.testNum = testNum;
+    }
+    public int getRoundNum() {
+        return this.roundNum;
+    }
+    public void setRoundNum(int roundNum) {
+        this.roundNum = roundNum;
     }
     public int getDigital() {
         return this.digital;
@@ -148,16 +159,16 @@ public class Item {
     public void setCarryMode(int carryMode) {
         this.carryMode = carryMode;
     }
-    public int getMinValue() {
+    public String getMinValue() {
         return this.minValue;
     }
-    public void setMinValue(int minValue) {
+    public void setMinValue(String minValue) {
         this.minValue = minValue;
     }
-    public int getMaxValue() {
+    public String getMaxValue() {
         return this.maxValue;
     }
-    public void setMaxValue(int maxValue) {
+    public void setMaxValue(String maxValue) {
         this.maxValue = maxValue;
     }
     public int getLastResultMode() {
@@ -208,10 +219,10 @@ public class Item {
     public void setLimitGender(int limitGender) {
         this.limitGender = limitGender;
     }
-    public int getMinScore() {
+    public String getMinScore() {
         return this.minScore;
     }
-    public void setMinScore(int minScore) {
+    public void setMinScore(String minScore) {
         this.minScore = minScore;
     }
     public double getRatio() {
@@ -280,5 +291,4 @@ public class Item {
     public void setRemark3(String remark3) {
         this.remark3 = remark3;
     }
-
 }

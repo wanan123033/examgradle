@@ -1,12 +1,15 @@
 package com.fairplay.examgradle.activity;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.app.layout.activity_data_mamager;
@@ -16,6 +19,7 @@ import com.fairplay.examgradle.DBDataCleaner;
 import com.fairplay.examgradle.R;
 import com.fairplay.examgradle.adapter.OperationAdapter;
 import com.fairplay.examgradle.bean.OperationBean;
+import com.fairplay.examgradle.contract.MMKVContract;
 import com.fairplay.examgradle.viewmodel.DataManagerViewModel;
 import com.feipulai.common.db.ClearDataProcess;
 import com.feipulai.common.db.DataBaseExecutor;
@@ -27,6 +31,7 @@ import com.feipulai.common.utils.ToastUtils;
 import com.feipulai.common.view.dialog.EditDialog;
 import com.github.mjdev.libaums.fs.UsbFile;
 import com.gwm.annotation.layout.Layout;
+import com.gwm.base.BaseApplication;
 import com.gwm.mvvm.BaseMvvmTitleActivity;
 import com.gwm.view.titlebar.TitleBarBuilder;
 import com.orhanobut.logger.Logger;
@@ -35,6 +40,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -61,7 +67,8 @@ public class DataManagerActivity extends BaseMvvmTitleActivity<Object, DataManag
         mBinding.rv_operation.setLayoutManager(new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL));
         List<OperationBean> operationBeans = new ArrayList<>();
         String[] typeName = getResources().getStringArray(R.array.data_admin);
-        int[] resIds = getResources().getIntArray(R.array.data_icon);
+        int[] resIds = {R.drawable.icon_data_import,R.drawable.icon_data_look,R.drawable.icon_data_backup,R.drawable.icon_data_restore,R.drawable.icon_data_clear,R.drawable.icon_data_import};
+        Log.e("TAG+++", Arrays.toString(resIds));
         for (int i = 0 ; i < typeName.length  ; i++){
             OperationBean bean = new OperationBean();
             bean.name = typeName[i];
@@ -114,7 +121,19 @@ public class DataManagerActivity extends BaseMvvmTitleActivity<Object, DataManag
     }
 
     private void rosterDownload() {
-        viewModel.rosterDownload();
+        new AlertDialog.Builder(this)
+                .setTitle("下载类型")
+                .setItems(new String[]{"正常", "缓考", "补考"}, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        BaseApplication.getInstance().getMmkv().putInt(MMKVContract.EXAMTYPE,which);
+                        dialog.dismiss();
+                        showDialog("数据下载中....");
+                        DBManager.getInstance().clear();
+                        viewModel.rosterDownload();
+                    }
+                }).setCancelable(false).create().show();
+
     }
     private void showBackupFileNameDialog() {
 
@@ -191,5 +210,18 @@ public class DataManagerActivity extends BaseMvvmTitleActivity<Object, DataManag
 
             }
         });
+    }
+
+    @Override
+    public void onChanged(Object o) {
+        super.onChanged(o);
+        try {
+            int i = Integer.parseInt(o.toString());
+            if (i == DIMMSION_PROGREESS){
+                dismissDialog();
+            }
+        }catch (NumberFormatException e){
+            e.printStackTrace();
+        }
     }
 }

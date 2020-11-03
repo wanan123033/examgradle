@@ -41,10 +41,10 @@ public class HttpInterceptorProcessor extends BaseProcessor {
                         .addCode("$T cookieJar = new $T(new $T(context));\n", CookieJarImpl, CookieJarImpl, PersistentCookieStore)
                         .addCode("OkHttpClient okHttpClient = new OkHttpClient.Builder()\n")
                         .addCode(".cookieJar(cookieJar)\n")
-                        .addCode(".connectTimeout(30L, $T.SECONDS)\n", TimeUnit)
+                        .addCode(".connectTimeout(60L*20, $T.SECONDS)\n", TimeUnit)
                         .addCode(".retryOnConnectionFailure(true)\n");
-                ClassName HttpInterceptor = ClassName.get("com.gwm.http", "HttpInterceptor");
-                builder.addCode("\t.addInterceptor(new $T())\n", HttpInterceptor);
+//                ClassName HttpInterceptor = ClassName.get("com.gwm.http", "HttpInterceptor");
+//                builder.addCode("\t.addInterceptor(new $T())\n", HttpInterceptor);
                 for (Element element : roundEnvironment.getElementsAnnotatedWith(HttpInterceptor.class)) {
                     if (element.getKind() == ElementKind.CLASS) {
                         String packageName = processingEnv.getElementUtils().getPackageOf(element).getQualifiedName() + "";

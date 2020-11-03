@@ -6,12 +6,14 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.layout.activity_data_select;
 import com.fairplay.database.DBManager;
+import com.fairplay.database.entity.Item;
 import com.fairplay.database.entity.MultipleResult;
 import com.fairplay.database.entity.RoundResult;
 import com.fairplay.database.entity.Student;
@@ -25,6 +27,7 @@ import com.feipulai.common.db.DataBaseExecutor;
 import com.feipulai.common.db.DataBaseRespon;
 import com.feipulai.common.db.DataBaseTask;
 import com.gwm.annotation.layout.Layout;
+import com.gwm.annotation.layout.OnItemSelected;
 import com.gwm.base.BaseApplication;
 import com.gwm.mvvm.BaseMvvmTitleActivity;
 import com.gwm.view.titlebar.TitleBarBuilder;
@@ -41,6 +44,10 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
     private StudentAdapter adapter;
     private int mPageNum;
     private List<DataRetrieveBean> mList;
+    private ArrayAdapter itemAdapter;
+    private String itemCode;
+    private String subItemCode;
+    private List<Item> itemList;
     @Override
     protected Class<DataSelectViewModel> getViewModelClass() {
         return DataSelectViewModel.class;
@@ -54,6 +61,8 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
         adapter = new StudentAdapter(this,mList);
         mBinding.rv_results.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL,false));
         mBinding.rv_results.setAdapter(adapter);
+        itemCode = mmkv.getString(MMKVContract.CURRENT_ITEM,"");
+        subItemCode = mmkv.getString(MMKVContract.CURRENT_SUB_ITEM,"");
         selectAll();
         adapter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -61,19 +70,36 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
                 Intent intent = new Intent(getApplicationContext(),DataDisplayActivity.class);
                 String studentCode = adapter.getData().get(position).getStudentCode();
                 intent.putExtra(DataDisplayActivity.StudentCode,studentCode);
+                intent.putExtra(DataDisplayActivity.ItemCode,itemCode);
+                intent.putExtra(DataDisplayActivity.SubItemCode,subItemCode);
                 startActivity(intent);
             }
         });
 
+        itemList = DBManager.getInstance().getItemList();
+        List<String> itemNames = new ArrayList<>();
+        for (Item item : itemList){
+            itemNames.add(item.getItemName());
+        }
+        itemAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item,android.R.id.text1,itemNames);
+        itemAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mBinding.sp_item.setAdapter(itemAdapter);
+    }
+
+    @OnItemSelected(R.id.sp_item)
+    public void onItemSelected(AdapterView adapterView,int position){
+        Item item = itemList.get(position);
+        itemCode = item.getItemCode();
+        subItemCode = item.getSubitemCode();
+        selectAll();
     }
 
     private void selectAll() {
-        final String itemCode = mmkv.getString(MMKVContract.CURRENT_ITEM,"");
 
         DataBaseExecutor.addTask(new DataBaseTask() {
             @Override
             public DataBaseRespon executeOper() {
-                List<Student> student = DBManager.getInstance().getStudentByItemCode(itemCode, 100, 100*mPageNum);
+                List<Student> student = DBManager.getInstance().getStudentByItemCode(itemCode,subItemCode, 100, 100*mPageNum);
                 return new DataBaseRespon(true,"",student);
             }
 
@@ -110,8 +136,8 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
                         StringBuffer resultbuffer = new StringBuffer();
                         StringBuffer scorebuffer = new StringBuffer();
                         for (MultipleResult results : multioleResult) {
-                            if (!TextUtils.isEmpty(results.getResult()))
-                                resultbuffer.append(results.getDesc() + ":" + results.getResult() + "/");
+                            if (!TextUtils.isEmpty(results.getScore()))
+                                resultbuffer.append(results.getDesc() + ":" + results.getScore() + "/");
                             if (!TextUtils.isEmpty(results.getScore()))
                                 scorebuffer.append(results.getDesc() + ":" + results.getScore() + "/");
                         }

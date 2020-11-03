@@ -4,14 +4,18 @@ import android.content.Context;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.layout.item_exam;
 import com.fairplay.examgradle.R;
 import com.fairplay.examgradle.bean.ExamScoreBean;
+import com.fairplay.examgradle.contract.MBMContract;
 import com.gwm.annotation.layout.Layout;
+import com.gwm.annotation.messagebus.Subscrition;
 import com.gwm.base.BaseRecyclerViewAdapter;
+import com.gwm.messagesendreceive.MessageBusMessage;
 
 import java.util.List;
 
@@ -35,12 +39,6 @@ public class ExamAdapter extends BaseRecyclerViewAdapter<ExamAdapter.ExamViewHol
             adapter.setShow(false);
         }
         mBinding.rv_score.setAdapter(adapter);
-
-        if (examScoreBean.isLock){
-            mBinding.iv_lock.setVisibility(View.VISIBLE);
-        }else {
-            mBinding.iv_lock.setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -61,4 +59,5 @@ public class ExamAdapter extends BaseRecyclerViewAdapter<ExamAdapter.ExamViewHol
             super(adapter, itemView);
         }
     }
+
 }

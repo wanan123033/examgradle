@@ -2,7 +2,7 @@ package com.fairplay.examgradle.bean;
 
 import java.util.List;
 
-public class ItemInfoBean extends BaseBean<ItemInfoBean.ItemInfo> {
+public class ItemInfoBean extends BaseBean<List<ItemInfoBean.ItemInfo>> {
 
     public static class ItemInfo{
         public String itemName;       // 项目名称
@@ -26,31 +26,94 @@ public class ItemInfoBean extends BaseBean<ItemInfoBean.ItemInfo> {
         public int itemProperty;  // 项目属性(1: 必考, 2: 选考)
         public int exmItemType;  // 考试项目类型(0:素质，1:专项)
         public int limitGender;  // 限报性别(0:男, 1:⼥, 2:男⼥混合)
-        public int minScore;    // 最低分
+        public String minScore;    // 最低分
         public int ratio;   // 分值比例系数
         public int isLowestPoint;  // 是否给最低分,0:否，1:是
         public int faceRecognitionMode;   // 检录模式(0: 按⼈检录, 1: 按组检录)
-        public List<String> placeName;    // 场地名称,数组
+        public String[] placeName;    // 场地名称,数组
         public List<ExtBody> extBody;
         public List<ItemTag> itemTag;     // 项目自定义标签
         public List<SubItem> subitemList;  // ⼦项列表
+
+        @Override
+        public String toString() {
+            return "ItemInfo{" +
+                    "itemName='" + itemName + '\'' +
+                    ", examItemCode='" + examItemCode + '\'' +
+                    ", resultUnit='" + resultUnit + '\'' +
+                    ", itemType=" + itemType +
+                    ", testType=" + testType +
+                    ", resultTestNum=" + resultTestNum +
+                    ", itemRoundNum=" + itemRoundNum +
+                    ", decimalDigits=" + decimalDigits +
+                    ", carryMode=" + carryMode +
+                    ", scoreCountMode=" + scoreCountMode +
+                    ", scoreCountRule=" + scoreCountRule +
+                    ", scoreCarryMode=" + scoreCarryMode +
+                    ", scoreDecimalDigits=" + scoreDecimalDigits +
+                    ", scoreCarryByHundredth=" + scoreCarryByHundredth +
+                    ", minResult=" + minResult +
+                    ", maxResult=" + maxResult +
+                    ", lastResultMode=" + lastResultMode +
+                    ", machineCode='" + machineCode + '\'' +
+                    ", itemProperty=" + itemProperty +
+                    ", exmItemType=" + exmItemType +
+                    ", limitGender=" + limitGender +
+                    ", minScore=" + minScore +
+                    ", ratio=" + ratio +
+                    ", isLowestPoint=" + isLowestPoint +
+                    ", faceRecognitionMode=" + faceRecognitionMode +
+                    ", placeName=" + placeName +
+                    ", extBody=" + extBody +
+                    ", itemTag=" + itemTag +
+                    ", subitemList=" + subitemList +
+                    '}';
+        }
     }
     public static class ExtBody{
         public String extName;
         public String belongType;   // 归属类型(1: 考试, 2: 体侧)
         public String extType;   // 扩展值类型(0:单个值 1:多个值)
         public List<String> extValue;  // 值列表
+
+        @Override
+        public String toString() {
+            return "ExtBody{" +
+                    "extName='" + extName + '\'' +
+                    ", belongType='" + belongType + '\'' +
+                    ", extType='" + extType + '\'' +
+                    ", extValue=" + extValue +
+                    '}';
+        }
     }
 
     public static class ItemTag{
         public String tagName;    // 标签名称
         public String tagAttrMajor; // 标签主要属性
         public List<TagAttr> tagAttrList;  // 标签属性列表
+
+        @Override
+        public String toString() {
+            return "ItemTag{" +
+                    "tagName='" + tagName + '\'' +
+                    ", tagAttrMajor='" + tagAttrMajor + '\'' +
+                    ", tagAttrList=" + tagAttrList +
+                    '}';
+        }
     }
     public static class TagAttr{
         public String name;
         public String desc;
         public String groupCount;
+
+        @Override
+        public String toString() {
+            return "TagAttr{" +
+                    "name='" + name + '\'' +
+                    ", desc='" + desc + '\'' +
+                    ", groupCount='" + groupCount + '\'' +
+                    '}';
+        }
     }
     public static class SubItem{
         public String subitemName;   // ⼦项目名称
@@ -82,27 +145,88 @@ public class ItemInfoBean extends BaseBean<ItemInfoBean.ItemInfo> {
         public String maxResult;   // 最⼤成绩
         public String machineCode;  // 机器码
         public String minScore;  // 最低分
-        public String ratio;   // 分值比例系数
+        public double ratio;   // 分值比例系数
         public int isLowestPoint;  // 是否给最低分(0: 否, 1: 是)
+
+        @Override
+        public String toString() {
+            return "SubItem{" +
+                    "subitemName='" + subitemName + '\'' +
+                    ", subitemCode='" + subitemCode + '\'' +
+                    ", subitemTag=" + subitemTag +
+                    ", extBody=" + extBody +
+                    ", multipleValueSetting=" + multipleValueSetting +
+                    ", subitemType=" + subitemType +
+                    ", subitemTestType=" + subitemTestType +
+                    ", subitemUnit='" + subitemUnit + '\'' +
+                    ", subitemTestNum=" + subitemTestNum +
+                    ", subitemRoundNum=" + subitemRoundNum +
+                    ", scoreMultiple=" + scoreMultiple +
+                    ", decimalDigits=" + decimalDigits +
+                    ", carryMode=" + carryMode +
+                    ", scoreCountMode=" + scoreCountMode +
+                    ", scoreCountRule=" + scoreCountRule +
+                    ", scoreCarryMode=" + scoreCarryMode +
+                    ", scoreDecimalDigits=" + scoreDecimalDigits +
+                    ", scoreCarryByHundredth=" + scoreCarryByHundredth +
+                    ", markScore=" + markScore +
+                    ", scoreCount=" + scoreCount +
+                    ", calScoreType=" + calScoreType +
+                    ", calScoreExpression=" + calScoreExpression +
+                    ", enableTempGroup=" + enableTempGroup +
+                    ", enableTempGroupRight=" + enableTempGroupRight +
+                    ", faceRecognitionMode=" + faceRecognitionMode +
+                    ", minResult=" + minResult +
+                    ", maxResult=" + maxResult +
+                    ", machineCode='" + machineCode + '\'' +
+                    ", minScore=" + minScore +
+                    ", ratio=" + ratio +
+                    ", isLowestPoint=" + isLowestPoint +
+                    '}';
+        }
     }
     public static class SubitemTag{
         public String tagName;
         public String tagAttrMajor;
         public TagAttr tagAttrValue;
+
+        @Override
+        public String toString() {
+            return "SubitemTag{" +
+                    "tagName='" + tagName + '\'' +
+                    ", tagAttrMajor='" + tagAttrMajor + '\'' +
+                    ", tagAttrValue=" + tagAttrValue +
+                    '}';
+        }
     }
     public static class MultipleValueSetting{
         public String calScoreType; // 算分方式-0.取最好，1.去掉最高，最低，中间取平均分 2: 取平均分, 3: 求和
         public List<Value> valueList;
+
+        @Override
+        public String toString() {
+            return "MultipleValueSetting{" +
+                    "calScoreType='" + calScoreType + '\'' +
+                    ", valueList=" + valueList +
+                    '}';
+        }
     }
     public static class Value{
         public String order;  // 值顺序
         public String group;   // 值分组，多个值可能归属⼀个组显示
         public String desc;  // 值描述  左  右
-        public String unit;   // 值单位
-        public String scoreMultiple;  // 分支倍数
-        public String result;  // 成绩
-        public String machineResult; // 机器成绩
         public String score;   // 得分
         public String machineScore;  // 机器得分
+
+        @Override
+        public String toString() {
+            return "Value{" +
+                    "order='" + order + '\'' +
+                    ", group='" + group + '\'' +
+                    ", desc='" + desc + '\'' +
+                    ", score='" + score + '\'' +
+                    ", machineScore='" + machineScore + '\'' +
+                    '}';
+        }
     }
 }

@@ -1,13 +1,17 @@
 package com.gwm.base;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.provider.Settings;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -27,9 +32,13 @@ import com.gwm.annotation.layout.Layout;
 import com.gwm.inter.IViewBind;
 import com.gwm.layout.LayoutEventUtil;
 import com.gwm.messagesendreceive.MessageBus;
+import com.gwm.view.CustomDialog;
 
 import java.lang.ref.SoftReference;
 import java.util.List;
+
+import static android.content.pm.PackageManager.PERMISSION_DENIED;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 /**
  * 该类加入以下功能：
@@ -43,6 +52,8 @@ import java.util.List;
  */
 public abstract class BaseActivity<V extends IViewBind> extends AppCompatActivity implements ViewClick{
 	private static final int PERMISSION_REQUEST_CODE = 666;
+	public static final int SHOW_PROGRESS = 444;
+	public static final int DIMMSION_PROGREESS = 555;
 	private long exitTime = 0;
     private InputMethodManager imm;
 
@@ -50,9 +61,10 @@ public abstract class BaseActivity<V extends IViewBind> extends AppCompatActivit
 	private View view;
 
 	protected V mBinding;
-	private int reqCode;
 
 	protected Handler handler;
+
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState){
@@ -67,31 +79,37 @@ public abstract class BaseActivity<V extends IViewBind> extends AppCompatActivit
 
 	private void initPermission() {
 		Permission permission = getClass().getAnnotation(Permission.class);
-		if (permission != null){
+		if (permission != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
 			ActivityCompat.requestPermissions(this,permission.value(), PERMISSION_REQUEST_CODE);
 		}
 	}
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-	@Override
-	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-		if (requestCode == PERMISSION_REQUEST_CODE){
-			if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] ==PackageManager.PERMISSION_GRANTED) {
-				// Permission Granted 授予权限
-				//处理授权之后逻辑
-				onRequestPermissionsGranted();
-			} else {
-				// Permission Denied 权限被拒绝
-				onRequestPermissionsDenied();
+        boolean isFlag = true;
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            for (int i = 0; i < permissions.length; i++) {
+                if (grantResults[i] == PERMISSION_GRANTED) {//选择了“始终允许”
+					isFlag = true;
+                } else {
+                	isFlag = false;
+                	break;
+                }
+            }
+            if (isFlag){
+				onPermissionGranted();
+			}else {
+            	onPermissionDenied();
 			}
-		}
+        }
+    }
+
+	public void onPermissionDenied() {
+
 	}
 
-	public void onRequestPermissionsDenied() {
-
-	}
-
-	public void onRequestPermissionsGranted() {
+	public void onPermissionGranted() {
 
 	}
 
@@ -264,6 +282,14 @@ public abstract class BaseActivity<V extends IViewBind> extends AppCompatActivit
 		super.onDestroy();
 	}
 
+	@Override
+	protected void onPause() {
+		super.onPause();
+		if (dialog != null && dialog.isShowing()){
+			dialog.dismiss();
+		}
+	}
+
 	/**
 	 * 退出当前应用程序
 	 */
@@ -276,8 +302,33 @@ public abstract class BaseActivity<V extends IViewBind> extends AppCompatActivit
 		return BaseApplication.getInstance().getLayoutUtil().getViewBind(resId);
 	}
 
+	CustomDialog dialog;
 	public void handlerMessage(Message message){
+		if (message.what == SHOW_PROGRESS){
+			if (dialog == null){
+				dialog = new CustomDialog(this);
+			}
+			dialog.setContentText(message.obj.toString());
+			if (!isFinishing() && !dialog.isShowing()){
+				dialog.show();
+			}
+		}else if (message.what == DIMMSION_PROGREESS){
+			if (dialog != null && dialog.isShowing()){
+				dialog.dismiss();
+			}
+		}
+	}
 
+	protected void showDialog(String content){
+		Message msg = Message.obtain();
+		msg.what = SHOW_PROGRESS;
+		msg.obj = content;
+		handler.sendMessage(msg);
+	}
+	protected void dismissDialog(){
+		Message msg = Message.obtain();
+		msg.what = DIMMSION_PROGREESS;
+		handler.sendMessage(msg);
 	}
 
 	protected static final class MyHandler extends Handler{

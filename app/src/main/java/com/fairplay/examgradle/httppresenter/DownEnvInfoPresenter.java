@@ -1,5 +1,7 @@
 package com.fairplay.examgradle.httppresenter;
 
+import android.util.Log;
+
 import com.fairplay.examgradle.base.JsonDataPresenter;
 import com.fairplay.examgradle.bean.EnvInfoBean;
 import com.gwm.mvvm.BaseViewModel;
@@ -14,22 +16,19 @@ public class DownEnvInfoPresenter extends JsonDataPresenter<DownEnvInfoPresenter
      * 加载MQTT配置信息
      */
     public void downEnv(){
-        String jsonString = genJsonString(100020110, null);
+        String jsonString = genJsonString(100020110, "");
         Observable<EnvInfoBean> downEnvInfo = getHttpPresenter().downEnvInfo(getToken(), jsonString);
         addHttpSubscriber(downEnvInfo,EnvInfoBean.class);
     }
 
     @Override
     protected void onNextResult(EnvInfoBean response, int id) {
+        Log.e("TAG=====",response.toString());
         if (getViewModel() instanceof BaseViewModel){
             ((BaseViewModel) getViewModel()).sendLiveData(response);
         }
     }
 
-    @Override
-    protected void onErrorResult(Exception e, int id) {
-
-    }
 
     public interface DownEnvInfo extends JsonDataPresenter.HttpBaseBean{
 

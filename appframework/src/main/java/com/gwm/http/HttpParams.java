@@ -28,6 +28,7 @@ public class HttpParams<Result> extends NetWorkParams<Result>{
     public String json;
     public boolean isJson;
     public HashMap<String,String> headers;
+    public String secretKey;
 
     public interface HttpNetListener{
         /**

@@ -7,4 +7,16 @@ public class BaseBean<T> {
     public String sign;
     public int encrypt;
     public long responseTime;
+
+    @Override
+    public String toString() {
+        return "BaseBean{" +
+                "code=" + code +
+                ", msg='" + msg + '\'' +
+                ", data=" + data +
+                ", sign='" + sign + '\'' +
+                ", encrypt=" + encrypt +
+                ", responseTime=" + responseTime +
+                '}';
+    }
 }

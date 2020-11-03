@@ -7,12 +7,18 @@ import com.fairplay.database.entity.DaoSession;
 import com.fairplay.database.entity.GroupDao;
 import com.fairplay.database.entity.Item;
 import com.fairplay.database.entity.ItemDao;
+import com.fairplay.database.entity.MultipleItem;
+import com.fairplay.database.entity.MultipleItemDao;
 import com.fairplay.database.entity.MultipleResult;
 import com.fairplay.database.entity.MultipleResultDao;
 import com.fairplay.database.entity.RoundResult;
 import com.fairplay.database.entity.RoundResultDao;
+import com.fairplay.database.entity.Schedule;
+import com.fairplay.database.entity.ScheduleDao;
 import com.fairplay.database.entity.Student;
 import com.fairplay.database.entity.StudentDao;
+import com.fairplay.database.entity.StudentGroupItem;
+import com.fairplay.database.entity.StudentGroupItemDao;
 import com.fairplay.database.entity.StudentItem;
 import com.fairplay.database.entity.StudentItemDao;
 import com.gwm.util.ContextUtil;
@@ -37,6 +43,9 @@ public class DBManager {
     private StudentItemDao studentItemDao;
     private RoundResultDao roundResultDao;
     private MultipleResultDao multipleResultDao;
+    private ScheduleDao scheduleDao;
+    private MultipleItemDao multipleItemDao;
+    private StudentGroupItemDao studentGroupItemDao;
 
     public static synchronized DBManager getInstance() {
         if (mInstance == null) {
@@ -57,7 +66,9 @@ public class DBManager {
         roundResultDao = daoSession.getRoundResultDao();
         studentItemDao = daoSession.getStudentItemDao();
         multipleResultDao = daoSession.getMultipleResultDao();
-        moData();
+        scheduleDao = daoSession.getScheduleDao();
+        multipleItemDao = daoSession.getMultipleItemDao();
+        studentGroupItemDao = daoSession.getStudentGroupItemDao();
     }
 
     public List<Student> queryStudentFeatures() {
@@ -98,15 +109,16 @@ public class DBManager {
         return roundResultDao.insertOrReplace(result);
     }
 
-    public List<Student> getStudentByItemCode(String itemCode, int limit, int offset) {
+    public List<Student> getStudentByItemCode(String itemCode,String subItemCode, int limit, int offset) {
         StringBuffer sqlBuf = new StringBuffer("SELECT S.* FROM " + StudentDao.TABLENAME + " S");
         sqlBuf.append(" WHERE S." + StudentDao.Properties.StudentCode.columnName + " IN ( ");
         sqlBuf.append(" SELECT  " + StudentItemDao.Properties.StudentCode.columnName);
         sqlBuf.append(" FROM " + StudentItemDao.TABLENAME);
-        sqlBuf.append(" WHERE  " + StudentItemDao.Properties.ItemCode.columnName + " = ?)");
+        sqlBuf.append(" WHERE  " + StudentItemDao.Properties.ItemCode.columnName + " = ? ");
+        sqlBuf.append(" AND  " + StudentItemDao.Properties.SubitemCode.columnName + " = ?) ");
         if (limit != -1)
             sqlBuf.append(" limit " + offset + "," + limit);
-        Cursor c = daoSession.getDatabase().rawQuery(sqlBuf.toString(), new String[]{itemCode});
+        Cursor c = daoSession.getDatabase().rawQuery(sqlBuf.toString(), new String[]{itemCode,subItemCode});
         List<Student> students = new ArrayList<>();
         while (c.moveToNext()) {
             Student student = studentDao.readEntity(c, 0);
@@ -116,8 +128,8 @@ public class DBManager {
         return students;
     }
 
-    public void insertItem(Item item) {
-        itemDao.insertOrReplaceInTx(item);
+    public long insertItem(Item item) {
+        return itemDao.insertOrReplace(item);
     }
 
     public void insertStudentItem(StudentItem studentItem) {
@@ -129,7 +141,14 @@ public class DBManager {
     }
 
     public void clear() {
-
+        roundResultDao.deleteAll();
+        studentItemDao.deleteAll();
+        studentDao.deleteAll();
+        scheduleDao.deleteAll();
+        itemDao.deleteAll();
+        multipleResultDao.deleteAll();
+        multipleItemDao.deleteAll();
+        studentGroupItemDao.deleteAll();
     }
 
     public Map<String,Object> getItemStudenCount(String itemCode){
@@ -183,8 +202,49 @@ public class DBManager {
     public Item getItemByItemCode(String itemCode) {
         return itemDao.queryBuilder().where(ItemDao.Properties.ItemCode.eq(itemCode)).limit(1).unique();
     }
+    public Item getItemByItemCode(String itemCode,String subitemCode) {
+        return itemDao.queryBuilder().where(ItemDao.Properties.ItemCode.eq(itemCode),ItemDao.Properties.SubitemCode.eq(subitemCode)).limit(1).unique();
+    }
 
     public List<Item> getItemList() {
         return itemDao.loadAll();
+    }
+
+    public void insertSchedule(Schedule schedule) {
+        scheduleDao.insert(schedule);
+    }
+
+    public void insertMultipItem(MultipleItem multipleItem) {
+        multipleItemDao.insert(multipleItem);
+    }
+
+    public List<MultipleItem> getMultipleItemList(Long itemId) {
+        return multipleItemDao.queryBuilder().where(MultipleItemDao.Properties.ItemId.eq(itemId)).list();
+    }
+
+    public List<RoundResult> getRoundResultByStuItem(String studentCode, String itemCode, String subItemCode) {
+        return roundResultDao.queryBuilder().where(RoundResultDao.Properties.StudentCode.eq(studentCode),
+                RoundResultDao.Properties.ItemCode.eq(itemCode),
+                RoundResultDao.Properties.SubitemCode.eq(subItemCode)).list();
+    }
+
+    public void insertGroup(StudentGroupItem studentGroupItem) {
+        studentGroupItemDao.insertInTx(studentGroupItem);
+    }
+
+    public Item getItemByItemId(long itemId) {
+        return itemDao.queryBuilder().where(ItemDao.Properties.Id.eq(itemId)).limit(1).unique();
+    }
+
+    public StudentGroupItem getGroupById(long groupId) {
+        return studentGroupItemDao.queryBuilder().where(StudentGroupItemDao.Properties.Id.eq(groupId)).limit(1).unique();
+    }
+
+    public RoundResult getRoundResultById(long roundId) {
+        return roundResultDao.queryBuilder().where(RoundResultDao.Properties.Id.eq(roundId)).limit(1).unique();
+    }
+
+    public Schedule getScheduleById(long scheduleId) {
+        return scheduleDao.queryBuilder().where(ScheduleDao.Properties.Id.eq(scheduleId)).limit(1).unique();
     }
 }

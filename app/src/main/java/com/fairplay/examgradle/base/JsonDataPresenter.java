@@ -4,27 +4,25 @@ import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.telephony.TelephonyManager;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.fairplay.examgradle.contract.MMKVContract;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.gwm.annotation.json.JSON;
 import com.gwm.annotation.json.Param;
+import com.gwm.base.BaseActivity;
 import com.gwm.base.BaseApplication;
+import com.gwm.mvvm.BaseViewModel;
 import com.gwm.util.ContextUtil;
+import com.gwm.util.EncryptUtil;
 import com.orhanobut.logger.Logger;
 import com.tencent.mmkv.MMKV;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.List;
 import java.util.Random;
@@ -62,66 +60,13 @@ public abstract class JsonDataPresenter<J extends JsonDataPresenter.HttpBaseBean
         }
         return array;
     }
-
-    /**
-     * 加密data
-     * @param data
-     * @return
-     */
-    protected String aesEncodeString(String data){
-        if (data == null){
-            return "";
-        }
-        // 加密
-        SecretKey secretKey = new SecretKeySpec(AES_KEY.getBytes(), "AES");
-        try {
-            Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-            byte[] encoderStr = cipher.doFinal(data.getBytes("UTF-8"));
-            String hexE = new String(Hex.encodeHex(encoderStr));
-            return hexE;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static String getSignData(String signData) {
-        if (signData == null) {
-            return "";
-        }
-        String sign = new String(Hex.encodeHex(DigestUtils.sha1(signData)));
-        Logger.i("getSignData===>" + sign);
-        String randomS = randomString(BASESTRING, 10);
-        AES_KEY = CHECK_CODE + randomS;
-        String startString = sign.substring(0, 8);
-        String endString = sign.substring(8, sign.length());
-        return startString + randomS + endString;
-
-    }
-
-    public static String randomString(String baseString, int length) {
-        final StringBuilder sb = new StringBuilder();
-
-        if (length < 1) {
-            length = 1;
-        }
-        int baseLength = baseString.length();
-        Random random = new Random();
-        for (int i = 0; i < length; i++) {
-//            int number = getRandom().nextInt(baseLength);
-            int number = random.nextInt(baseLength);
-            sb.append(baseString.charAt(number));
-        }
-        return sb.toString();
-    }
     protected String genJsonString(long bizType,String data){
-        String lastUpdateTime = mmkv.getString(MMKVContract.LASTUPDATETIME,"0");
+        String lastUpdateTime = mmkv.getString(MMKVContract.LASTUPDATETIME,null);
         String msEquipment = getDeviceInfo();
-        String signData = getSignData(data);
+        String signData = EncryptUtil.getInstance().getSignData(data);
         String token = mmkv.getString(MMKVContract.TOKEN,"");
         return getJsonCreator().sign(bizType,
-                aesEncodeString(data),
+                EncryptUtil.getInstance().setEncryptData(data),
                 lastUpdateTime,
                 msEquipment,
                 System.currentTimeMillis()+"",

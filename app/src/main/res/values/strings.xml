@@ -16,11 +16,11 @@
         <item>成绩上传</item>
     </string-array>
     <integer-array name="data_icon">
-        <item>@mipmap/icon_data_import</item>
-        <item>@mipmap/icon_data_import</item>
-        <item>@mipmap/icon_data_import</item>
-        <item>@mipmap/icon_data_import</item>
-        <item>@mipmap/icon_data_import</item>
-        <item>@mipmap/icon_data_import</item>
+        <item>@drawable/icon_data_import</item>
+        <item>@drawable/icon_data_look</item>
+        <item>@drawable/icon_data_backup</item>
+        <item>@drawable/icon_data_restore</item>
+        <item>@drawable/icon_data_clear</item>
+        <item>@drawable/icon_data_import</item>
     </integer-array>
 </resources>

@@ -8,4 +8,10 @@ public interface MMKVContract {
     String LASTUPDATETIME = "LASTUPDATETIME";      //更新时间
     String CURRENT_ITEM = "CURRENT_ITEM";          //当前素质项目
     String CURRENT_SUB_ITEM = "CURRENT_SUB_ITEM";  //当前专项项目
+    String EXAMTYPE = "EXAM_TYPE";                 //当前考试类型
+    String EXAMPLACENAME = "EXAMPLACENAME";
+    String GROUPNO = "GROUPNO";
+    String GROUPTYPE = "GROUPTYPE";
+    String SORTNAME = "SORTNAME";
+    String TRACKNO = "TRACKNO";
 }
