@@ -14,4 +14,5 @@ public interface MMKVContract {
     String GROUPTYPE = "GROUPTYPE";
     String SORTNAME = "SORTNAME";
     String TRACKNO = "TRACKNO";
+    String MQTT_ID = "MQTT_ID";
 }

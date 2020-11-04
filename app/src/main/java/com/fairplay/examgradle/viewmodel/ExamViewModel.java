@@ -107,7 +107,7 @@ public class ExamViewModel extends BaseViewModel<Object> {
         return Long.parseLong(split[0])*60L + Long.parseLong(split[1]);
     }
 
-    public boolean saveScore(String studentCode, ExamScoreBean examScoreBean, Item item) {
+    public boolean saveScore(String studentCode, ExamScoreBean examScoreBean, Item item, int roundNo) {
         if (examScoreBean.isLock){
             ToastUtils.showShort("请先解锁!");
             return false;
@@ -121,6 +121,7 @@ public class ExamViewModel extends BaseViewModel<Object> {
         roundResult.setItemCode(item.getItemCode());
         roundResult.setSubitemCode(item.getSubitemCode());
         roundResult.setStudentCode(studentCode);
+        roundResult.setRoundNo(roundNo);
         roundResult.setResultState(1);
         if (item.getMachineCode() != null)
             roundResult.setMachineCode(Integer.parseInt(item.getMachineCode()));

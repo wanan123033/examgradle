@@ -81,8 +81,7 @@ public class LoginActivity extends BaseMvvmActivity<EnvInfoBean, LoginViewModel,
             Log.e("TAG=====+++++++",o.toString());
             startMqttService(o);
             dismissDialog();
-            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-            startActivity(intent);
+
         }
     }
 
@@ -98,6 +97,8 @@ public class LoginActivity extends BaseMvvmActivity<EnvInfoBean, LoginViewModel,
                 public void connect() {
                     super.connect();
                     Log.e("TAG===>","connect");
+                    Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                    startActivity(intent);
                 }
 
                 @Override

@@ -7,6 +7,8 @@ import com.fairplay.database.entity.DaoSession;
 import com.fairplay.database.entity.GroupDao;
 import com.fairplay.database.entity.Item;
 import com.fairplay.database.entity.ItemDao;
+import com.fairplay.database.entity.MqttBean;
+import com.fairplay.database.entity.MqttBeanDao;
 import com.fairplay.database.entity.MultipleItem;
 import com.fairplay.database.entity.MultipleItemDao;
 import com.fairplay.database.entity.MultipleResult;
@@ -46,6 +48,7 @@ public class DBManager {
     private ScheduleDao scheduleDao;
     private MultipleItemDao multipleItemDao;
     private StudentGroupItemDao studentGroupItemDao;
+    private MqttBeanDao mqttBeanDao;
 
     public static synchronized DBManager getInstance() {
         if (mInstance == null) {
@@ -69,6 +72,7 @@ public class DBManager {
         scheduleDao = daoSession.getScheduleDao();
         multipleItemDao = daoSession.getMultipleItemDao();
         studentGroupItemDao = daoSession.getStudentGroupItemDao();
+        mqttBeanDao = daoSession.getMqttBeanDao();
     }
 
     public List<Student> queryStudentFeatures() {
@@ -141,14 +145,14 @@ public class DBManager {
     }
 
     public void clear() {
-        roundResultDao.deleteAll();
-        studentItemDao.deleteAll();
-        studentDao.deleteAll();
+//        roundResultDao.deleteAll();
+//        studentItemDao.deleteAll();
+//        studentDao.deleteAll();
         scheduleDao.deleteAll();
         itemDao.deleteAll();
-        multipleResultDao.deleteAll();
+//        multipleResultDao.deleteAll();
         multipleItemDao.deleteAll();
-        studentGroupItemDao.deleteAll();
+//        studentGroupItemDao.deleteAll();
     }
 
     public Map<String,Object> getItemStudenCount(String itemCode){
@@ -246,5 +250,13 @@ public class DBManager {
 
     public Schedule getScheduleById(long scheduleId) {
         return scheduleDao.queryBuilder().where(ScheduleDao.Properties.Id.eq(scheduleId)).limit(1).unique();
+    }
+
+    public long insertMqttBean(MqttBean mqttBean) {
+        return mqttBeanDao.insert(mqttBean);
+    }
+
+    public MqttBean getMQTTBean(long mqttId) {
+        return mqttBeanDao.queryBuilder().where(MqttBeanDao.Properties.Id.eq(mqttId)).unique();
     }
 }

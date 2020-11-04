@@ -1,6 +1,7 @@
 package com.fairplay.examgradle.httppresenter;
 
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.fairplay.database.DBManager;
 import com.fairplay.database.entity.Item;
 import com.fairplay.database.entity.MultipleItem;
@@ -107,6 +108,7 @@ public class DownItemInfoPresenter extends JsonDataPresenter<DownItemInfoPresent
                     }
                 }
                 ((BaseViewModel)getViewModel()).sendLiveData(BaseActivity.DIMMSION_PROGREESS);
+                ToastUtils.showShort("数据下载成功");
             }
         });
 

@@ -100,6 +100,8 @@ public class ScoreUploadPresenter extends JsonDataPresenter<ScoreUploadPresenter
     }
 
     public void scoreUpload(String trackNo,RoundResult result,StudentGroupItem groupItem) throws JSONException {
+        String userInfo = BaseApplication.getInstance().getMmkv().getString(MMKVContract.USERNAME,"");
+        int examType = BaseApplication.getInstance().getMmkv().getInt(MMKVContract.EXAMTYPE,0);
         JSONObject jsonObject = new JSONObject();
         JSONArray roundJsonArr = new JSONArray();
         if (result.getIsMultioleResult() == 1){
@@ -120,25 +122,26 @@ public class ScoreUploadPresenter extends JsonDataPresenter<ScoreUploadPresenter
             roundJson.put("multipleValue",multipJsonArr);
             roundJson.put("trackNo",trackNo);
             roundJson.put("isFoul",1);
-            roundJson.put("roundNo","1");
+            roundJson.put("roundNo",result.getRoundNo()+"");
             roundJson.put("resultStatus",result.getResultState());
             roundJson.put("testTime",result.getTestTime());
-            int examType = BaseApplication.getInstance().getMmkv().getInt(MMKVContract.EXAMTYPE,0);
+
+
             roundJson.put("examState",examType);
             roundJson.put("printTime",result.getTestTime());
             roundJson.put("resultType",1);
             roundJson.put("msEquipment",getDeviceInfo());
             roundJson.put("uploadTime",System.currentTimeMillis()+"");
+            roundJson.put("userInfo",userInfo);
             roundJsonArr.put(roundJson);
         }else {
             //TODO 没有多个成绩时
             JSONObject roundJson = new JSONObject();
             roundJson.put("trackNo",trackNo);
-            roundJson.put("roundNo","1");
+            roundJson.put("roundNo",result.getRoundNo()+"");
             roundJson.put("isFoul",1);
             roundJson.put("resultStatus",result.getResultState());
             roundJson.put("testTime",result.getTestTime());
-            int examType = BaseApplication.getInstance().getMmkv().getInt(MMKVContract.EXAMTYPE,0);
             roundJson.put("examState",examType);
             roundJson.put("printTime",result.getTestTime());
             roundJson.put("uploadTime",System.currentTimeMillis()+"");
@@ -147,6 +150,7 @@ public class ScoreUploadPresenter extends JsonDataPresenter<ScoreUploadPresenter
             roundJson.put("score",result.getScore());
             roundJson.put("machineScore",result.getMachineScore());
             roundJson.put("msEquipment",getDeviceInfo());
+            roundJson.put("userInfo",userInfo);
             Log.e("result",""+result.getScore());
             roundJsonArr.put(roundJson);
         }
@@ -178,7 +182,7 @@ public class ScoreUploadPresenter extends JsonDataPresenter<ScoreUploadPresenter
     @Override
     protected void onNextResult(BaseBean response, int id) {
         if (response.code == 0){
-            ToastUtils.showLong(response.msg);
+            ToastUtils.showLong("上传成绩成功");
         }
     }
 

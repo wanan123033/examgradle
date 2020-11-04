@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.fairplay.database.DBManager;
 import com.fairplay.database.entity.Item;
+import com.fairplay.database.entity.MqttBean;
 import com.fairplay.database.entity.RoundResult;
 import com.fairplay.database.entity.Schedule;
 import com.fairplay.database.entity.StudentGroupItem;
@@ -23,9 +24,6 @@ public class ScoreUploadServie extends IntentService {
     public static final String ROUNDID = "ROUNDID";        //成绩表ID
     public static final String STUDENTCODE = "STUDENTCODE";        //准考证号
 
-    private long scheduleId;
-    private long itemId;
-    private long groupId;
     private long roundId;
     public ScoreUploadServie() {
         super("");
@@ -33,29 +31,20 @@ public class ScoreUploadServie extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        scheduleId = intent.getLongExtra(SCHEDULEID,0);
-        itemId = intent.getLongExtra(ITEMID,0);
-        groupId = intent.getLongExtra(GROUPID,0);
         roundId = intent.getLongExtra(ROUNDID,0);
 
-        Item item = DBManager.getInstance().getItemByItemId(itemId);
-        StudentGroupItem group = DBManager.getInstance().getGroupById(groupId);
         RoundResult roundResult = DBManager.getInstance().getRoundResultById(roundId);
-        Schedule schedule = DBManager.getInstance().getScheduleById(scheduleId);
         MMKV mmkv = BaseApplication.getInstance().getMmkv();
-        String examPlaceName = mmkv.getString(MMKVContract.EXAMPLACENAME,"广西民族大学西校区相思湖学院篮球馆");
-        String groupNo = mmkv.getString(MMKVContract.GROUPNO,"17");
-        String sortName = mmkv.getString(MMKVContract.SORTNAME,"组");
-        int groupType = mmkv.getInt(MMKVContract.GROUPTYPE,0);
-        String trackNo = mmkv.getString(MMKVContract.TRACKNO,"1");
-        group = new StudentGroupItem();
-        group.setExamPlaceName(examPlaceName);
-        group.setGroupNo(groupNo);
-        group.setSortName(sortName);
-        group.setGroupType(groupType);
+        long mqttId = mmkv.getLong(MMKVContract.MQTT_ID, 0);
+        MqttBean mqttBean = DBManager.getInstance().getMQTTBean(mqttId);
+        StudentGroupItem group = new StudentGroupItem();
+        group.setExamPlaceName(mqttBean.getExamPlaceName());
+        group.setGroupNo(mqttBean.getGroupNo());
+        group.setSortName(mqttBean.getSortName());
+        group.setGroupType(Integer.parseInt(mqttBean.getGroupType()));
         ScoreUploadPresenter presenter = new ScoreUploadPresenter();
         try {
-            presenter.scoreUpload(trackNo,roundResult,group);
+            presenter.scoreUpload(mqttBean.getTrackNo(),roundResult,group);
         } catch (JSONException e) {
             e.printStackTrace();
         }

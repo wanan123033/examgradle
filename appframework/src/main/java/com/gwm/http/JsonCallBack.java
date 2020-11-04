@@ -50,7 +50,6 @@ public abstract class JsonCallBack<T> implements Callback {
             onResponseNext(call,t);
         }catch (Exception e){
             e.printStackTrace();
-            ToastUtils.showShort("服务器异常");
         }
 
     }

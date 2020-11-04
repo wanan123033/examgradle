@@ -50,7 +50,7 @@ public abstract class BaseDataPresenter<D> extends com.gwm.base.BaseDataPresente
 
     @Override
     protected void onErrorResult(Exception e, int id) {
-        ToastUtils.showShort(e.getMessage());
+//        ToastUtils.showShort(e.getMessage());
         e.printStackTrace();
         if(getViewModel() != null);
             ((BaseViewModel)getViewModel()).sendLiveData(BaseActivity.DIMMSION_PROGREESS);

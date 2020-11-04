@@ -31,7 +31,7 @@ public class ScoreAdapter extends BaseRecyclerViewAdapter<ScoreAdapter.ScoreView
         mBinding.tv_result.setText(score.result.toString());
         mBinding.tv_unit.setText("once".equals(score.unit)?"次":score.unit);
         if (currentPos == position && show){
-            mBinding.tv_result.setBackgroundColor(context.getResources().getColor(R.color.green));
+            mBinding.tv_result.setBackgroundResource(R.drawable.score_blue_bg);
         }else {
             mBinding.tv_result.setBackgroundResource(R.drawable.score_bg);
         }
@@ -41,10 +41,11 @@ public class ScoreAdapter extends BaseRecyclerViewAdapter<ScoreAdapter.ScoreView
             mBinding.iv_lock.setVisibility(View.GONE);
         }
 
-//        mBinding.tv_result.setOnClickListener(v -> {
-//            score.isLock = false;
-//            notifyDataSetChanged();
-//        });
+        mBinding.tv_result.setOnClickListener(v -> {
+            if (score.isLock){
+                MessageBus.getBus().post(new MessageBusMessage(position,MBMContract.UN_LOCK));
+            }
+        });
     }
 
     @Override

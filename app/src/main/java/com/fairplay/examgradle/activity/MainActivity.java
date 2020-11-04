@@ -13,8 +13,8 @@ import com.app.layout.activity_main;
 import com.fairplay.database.DBManager;
 import com.fairplay.database.entity.Item;
 import com.fairplay.examgradle.R;
-import com.fairplay.examgradle.mqtt.MqttManager;
-import com.fairplay.examgradle.mqtt.interfaces.OnMqttAndroidConnectListener;
+import com.fairplay.examgradle.mq.MqttManager;
+import com.fairplay.examgradle.mq.interfaces.OnMqttAndroidConnectListener;
 import com.gwm.annotation.layout.Layout;
 import com.gwm.annotation.layout.OnClick;
 import com.gwm.base.BaseTitleActivity;
@@ -36,10 +36,10 @@ public class MainActivity extends BaseTitleActivity<activity_main> {
     public void onClick(View view){
         switch (view.getId()){
             case R.id.card_test:
-                List<Item> items = DBManager.getInstance().getItemList();
-                showItemDialog(items);
-//                Intent intent = new Intent(getApplicationContext(),ExamScoreActivity.class);
-//                startActivity(intent);
+//                List<Item> items = DBManager.getInstance().getItemList();
+//                showItemDialog(items);
+                Intent intent = new Intent(getApplicationContext(),ExamActivity.class);
+                startActivity(intent);
                 break;
             case R.id.card_select:
                 Intent intent1 = new Intent(getApplicationContext(),DataManagerActivity.class);
@@ -50,6 +50,7 @@ public class MainActivity extends BaseTitleActivity<activity_main> {
                 startActivityForResult(intent2,QR_CODE);
                 break;
             case R.id.card_cannal:
+                MqttManager.getInstance().disConnect();
                 Intent intent3 = new Intent(getApplicationContext(),ItemInitActivity.class);
                 startActivity(intent3);
                 break;
@@ -60,25 +61,6 @@ public class MainActivity extends BaseTitleActivity<activity_main> {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addFirstToast();
-
-        MqttManager.getInstance().regeisterServerMsg(new OnMqttAndroidConnectListener() {
-            @Override
-            public void connect() {
-                super.connect();
-                Log.e("TAG===>","connect");
-            }
-
-            @Override
-            public void disConnect() {
-                super.disConnect();
-                Log.e("TAG===>","disConnect");
-            }
-
-            @Override
-            public void onDataReceive(String message) {
-                Log.e("TAG===>",message);
-            }
-        });
     }
     public void showItemDialog(final List<Item> items){
         String[] itemStr = new String[items.size()];

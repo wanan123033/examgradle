@@ -37,8 +37,8 @@ public class SplashActivity extends BaseMvvmActivity<Object, SplashViewModel,act
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DownGroupInfoPresenter presenter = new DownGroupInfoPresenter();
-        presenter.downGroup(2,0);
+//        DownGroupInfoPresenter presenter = new DownGroupInfoPresenter();
+//        presenter.downGroup(2,0);
     }
 
     @Override

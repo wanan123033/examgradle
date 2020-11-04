@@ -1,18 +1,19 @@
 package com.fairplay.examgradle.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.layout.activity_exam_score;
+import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.fairplay.database.DBManager;
 import com.fairplay.database.entity.Item;
@@ -23,6 +24,8 @@ import com.fairplay.database.entity.StudentItem;
 import com.fairplay.examgradle.R;
 import com.fairplay.examgradle.adapter.ExamAdapter;
 import com.fairplay.examgradle.bean.ExamScoreBean;
+import com.fairplay.database.entity.MqttBean;
+import com.fairplay.examgradle.contract.MBMContract;
 import com.fairplay.examgradle.contract.MMKVContract;
 import com.fairplay.examgradle.mq.MqttManager;
 import com.fairplay.examgradle.mq.interfaces.OnMqttAndroidConnectListener;
@@ -30,12 +33,13 @@ import com.fairplay.examgradle.service.ScoreUploadServie;
 import com.fairplay.examgradle.viewmodel.ExamViewModel;
 import com.gwm.annotation.layout.Layout;
 import com.gwm.annotation.layout.OnClick;
+import com.gwm.annotation.messagebus.Subscrition;
 import com.gwm.base.BaseApplication;
+import com.gwm.messagesendreceive.MessageBusMessage;
 import com.gwm.mvvm.BaseMvvmTitleActivity;
 import com.gwm.view.titlebar.TitleBarBuilder;
 import com.tencent.mmkv.MMKV;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -49,8 +53,10 @@ public class ExamActivity extends BaseMvvmTitleActivity<Object, ExamViewModel, a
     private ExamScoreBean examScoreBean;
     private List<ExamScoreBean> examScoreBeanList;
 
-    private String itemCode;
-    private String subItemCode;
+//    private String itemCode;
+//    private String subitemCode;
+    MqttBean mqttBean;
+    private int roundNo;
 
     public static final String ACTION = "com.fariplay.examgradle.add_stu";
     @Override
@@ -61,16 +67,8 @@ public class ExamActivity extends BaseMvvmTitleActivity<Object, ExamViewModel, a
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        itemCode = getIntent().getStringExtra("itemCode");
-        subItemCode = getIntent().getStringExtra("subItemCode");
-
-//        item = DBManager.getInstance().getItemByItemCode(itemCode,subItemCode);
-//        titleBar.setTitleBulder(setTitleBarBuilder(new TitleBarBuilder()));
-//        mBinding.stu_info.rv_score_data.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL,false));
-////        initItemScore();
-//        initItemScore2();
-
+        examScoreBeanList = new ArrayList<>();
+        mBinding.stu_info.rv_score_data.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         MqttManager.getInstance().regeisterServerMsg(new OnMqttAndroidConnectListener() {
             @Override
             public void connect() {
@@ -98,42 +96,31 @@ public class ExamActivity extends BaseMvvmTitleActivity<Object, ExamViewModel, a
     private void packMsg(String message) {
         Log.e("TAG====>",message);
         try {
-            JSONObject jsonObject = new JSONObject(message);
-            String itemCode = jsonObject.getJSONObject("data").getString("itemCode");
-            String subitemCode = jsonObject.getJSONObject("data").getString("subitemCode");
-            String examplaceName = jsonObject.getJSONObject("data").getString("examPlaceName");
-            int examStatus = jsonObject.getJSONObject("data").getInt("examStatus");
-            String groupNo = jsonObject.getJSONObject("data").getString("groupNo");
-            String groupType = jsonObject.getJSONObject("data").getString("groupType");
-            String sortName = jsonObject.getJSONObject("data").getString("sortName");
-            String trackNo = jsonObject.getJSONObject("data").getString("trackNo");
-            String studentCode = jsonObject.getJSONObject("data").getString("studentCode");
-            item = DBManager.getInstance().getItemByItemCode(itemCode,subitemCode);
-            titleBar.setTitleBulder(setTitleBarBuilder(new TitleBarBuilder()));
-            mBinding.stu_info.rv_score_data.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL,false));
-            initItemScore2();
-            MMKV mmkv = BaseApplication.getInstance().getMmkv();
-            mmkv.putString(MMKVContract.CURRENT_ITEM,itemCode);
-            mmkv.putString(MMKVContract.CURRENT_SUB_ITEM,subitemCode);
-            mmkv.putString(MMKVContract.EXAMPLACENAME,examplaceName);
-            mmkv.putInt(MMKVContract.EXAMTYPE,examStatus);
-            mmkv.putString(MMKVContract.GROUPNO,groupNo);
-            mmkv.putInt(MMKVContract.GROUPTYPE,Integer.parseInt(groupType));
-            mmkv.putString(MMKVContract.SORTNAME,sortName);
-            mmkv.putString(MMKVContract.TRACKNO,trackNo);
-            mBinding.stu_info.tv_studentCode.setText(studentCode);
-        } catch (JSONException e) {
+            if (examScoreBean == null && examScoreBeanList.isEmpty()) {
+                JSONObject jsonObject = new JSONObject(message);
+                int messageType = jsonObject.getInt("messageType");
+                if (messageType == 1) {
+                    examScoreBeanList = new ArrayList<>();
+                    examScoreBeanList.clear();
+                    mqttBean = GsonUtils.fromJson(jsonObject.getJSONObject("data").toString(), MqttBean.class);
+                    long mqtt_id = DBManager.getInstance().insertMqttBean(mqttBean);
+                    item = DBManager.getInstance().getItemByItemCode(mqttBean.getItemCode(), mqttBean.getSubitemCode());
+                    titleBar.setTitleBulder(setTitleBarBuilder(new TitleBarBuilder()));
+                    roundNo = 1;
+                    initItemScore2();
+                    MMKV mmkv = BaseApplication.getInstance().getMmkv();
+                    mmkv.putLong(MMKVContract.MQTT_ID, mqtt_id);
+                    mBinding.stu_info.tv_studentCode.setText(mqttBean.getStudentCode());
+                    initStudent();
+                }
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-        //        initItemScore();
-
     }
 
     private void initItemScore2(){
         List<MultipleItem> multipleItemList = DBManager.getInstance().getMultipleItemList(item.getId());
-        examScoreBeanList = new ArrayList<>();
         ExamScoreBean scoreBean = new ExamScoreBean();
         scoreBean.item = item;
         scoreBean.resultList = new ArrayList<>();
@@ -220,6 +207,7 @@ public class ExamActivity extends BaseMvvmTitleActivity<Object, ExamViewModel, a
             case R.id.tvj:
                 break;
             case R.id.tv_enter1:
+                quitCommit();
                 break;
             case R.id.tv_enter2:
                 viewModel.removeScore(examScoreBean);
@@ -234,13 +222,30 @@ public class ExamActivity extends BaseMvvmTitleActivity<Object, ExamViewModel, a
         }
     }
 
+    private void quitCommit() {
+        examScoreBeanList = new ArrayList<>();
+        examScoreBean = null;
+        mBinding.stu_info.tv_studentCode.setText("");
+        adapter = new ExamAdapter(this,examScoreBeanList);
+        adapter.clearData();
+        mBinding.stu_info.rv_score_data.setAdapter(adapter);
+    }
+
     private void quitScore() {
         String studentCode = mBinding.stu_info.tv_studentCode.getText().toString();
         boolean isLast = examScoreBean.currentPosition == (examScoreBean.resultList.size() - 1);
         if (isLast){
-            boolean isSave = viewModel.saveScore(studentCode, examScoreBean, item);
+            boolean isSave = viewModel.saveScore(studentCode, examScoreBean, item,roundNo);
             if (isSave){
                 ToastUtils.showShort("数据保存成功");
+                if (item.getRoundNum() > roundNo){
+                    roundNo++;
+//                    mBinding.stu_info.rv_score_data.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+                    initItemScore2();
+                }else {
+//                    quitCommit();
+                    roundNo = 0;
+                }
             }else {
                 ToastUtils.showShort("数据保存失败");
             }
@@ -258,15 +263,15 @@ public class ExamActivity extends BaseMvvmTitleActivity<Object, ExamViewModel, a
         //2.添加学生
         Student student = new Student();
         student.setStudentCode(mBinding.et_studentCode.getText().toString());
-        student.setStudentName("学生n");
-        student.setSex(0);
-        student.setSchoolName("sss");
+//        student.setStudentName("学生n");
+//        student.setSex(0);
+//        student.setSchoolName("sss");
         DBManager.getInstance().insertStudent(student);
         //3.添加报名
         StudentItem studentItem = new StudentItem();
-        studentItem.setSubitemCode(itemCode);
-        studentItem.setItemCode(subItemCode);
-        studentItem.setMachineCode("22");
+        studentItem.setSubitemCode(mqttBean.getItemCode());
+        studentItem.setItemCode(mqttBean.getSubitemCode());
+        studentItem.setMachineCode(item.getMachineCode());
         studentItem.setStudentCode(mBinding.et_studentCode.getText().toString());
         DBManager.getInstance().insertStudentItem(studentItem);
     }
@@ -291,5 +296,35 @@ public class ExamActivity extends BaseMvvmTitleActivity<Object, ExamViewModel, a
             builder.setTitle(item1.getItemName()+" - "+item.getItemName());
         }
         return super.setTitleBarBuilder(builder);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
+            new AlertDialog.Builder(this)
+                    .setTitle("提示信息")
+                    .setMessage("确认返回吗?")
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            finish();
+                        }
+                    }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            }).show();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Subscrition(action = MBMContract.UN_LOCK)
+    public void onEventMessage(MessageBusMessage mbmessage){
+        int postion = (int) mbmessage.getData();
+        examScoreBean.currentPosition = postion;
+        mBinding.stu_info.rv_score_data.setAdapter(adapter);
     }
 }
