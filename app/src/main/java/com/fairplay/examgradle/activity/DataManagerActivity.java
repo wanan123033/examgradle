@@ -13,6 +13,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.app.layout.activity_data_mamager;
+import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.fairplay.database.DBManager;
 import com.fairplay.examgradle.DBDataCleaner;
@@ -27,7 +28,6 @@ import com.feipulai.common.db.DataBaseRespon;
 import com.feipulai.common.db.DataBaseTask;
 import com.feipulai.common.dbutils.BackupManager;
 import com.feipulai.common.dbutils.FileSelectActivity;
-import com.feipulai.common.utils.ToastUtils;
 import com.feipulai.common.view.dialog.EditDialog;
 import com.github.mjdev.libaums.fs.UsbFile;
 import com.gwm.annotation.layout.Layout;
@@ -101,6 +101,7 @@ public class DataManagerActivity extends BaseMvvmTitleActivity<Object, DataManag
                         new DBDataCleaner(DataManagerActivity.this, ClearDataProcess.CLEAR_DATABASE, DataManagerActivity.this).process();
                         break;
                     case 5:   //成绩上传
+
                         break;
                 }
             }

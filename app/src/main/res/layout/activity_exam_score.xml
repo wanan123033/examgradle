@@ -16,7 +16,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="invisible">
+            android:visibility="visible">
             <EditText
                 android:id="@+id/et_studentCode"
                 android:layout_width="200dp"
@@ -215,6 +215,14 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginBottom="5dp"
                 android:text="时间格式:  mm:ss"/>
+            <TextView
+                android:id="@+id/tv_current_user"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginRight="10dp"/>
         </RelativeLayout>
     </LinearLayout>
 

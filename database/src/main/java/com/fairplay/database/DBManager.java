@@ -1,10 +1,11 @@
 package com.fairplay.database;
 
 import android.database.Cursor;
+import android.util.Log;
 
 import com.fairplay.database.entity.DaoMaster;
 import com.fairplay.database.entity.DaoSession;
-import com.fairplay.database.entity.GroupDao;
+import com.fairplay.database.entity.DataRtiveBean;
 import com.fairplay.database.entity.Item;
 import com.fairplay.database.entity.ItemDao;
 import com.fairplay.database.entity.MqttBean;
@@ -17,12 +18,8 @@ import com.fairplay.database.entity.RoundResult;
 import com.fairplay.database.entity.RoundResultDao;
 import com.fairplay.database.entity.Schedule;
 import com.fairplay.database.entity.ScheduleDao;
-import com.fairplay.database.entity.Student;
-import com.fairplay.database.entity.StudentDao;
 import com.fairplay.database.entity.StudentGroupItem;
 import com.fairplay.database.entity.StudentGroupItemDao;
-import com.fairplay.database.entity.StudentItem;
-import com.fairplay.database.entity.StudentItemDao;
 import com.gwm.util.ContextUtil;
 
 import org.greenrobot.greendao.database.Database;
@@ -34,7 +31,6 @@ import java.util.Map;
 
 public class DBManager {
     private static DBManager mInstance;
-    private StudentDao studentDao;
     public static final String DB_NAME = "examgradle";
     private DBOpenHelper helper;
     private Database db;
@@ -42,7 +38,6 @@ public class DBManager {
     private DaoMaster daoMaster;
     private static final String DB_PASSWORD = "fplwwj";
     private ItemDao itemDao;
-    private StudentItemDao studentItemDao;
     private RoundResultDao roundResultDao;
     private MultipleResultDao multipleResultDao;
     private ScheduleDao scheduleDao;
@@ -64,10 +59,8 @@ public class DBManager {
         db = BuildConfig.DEBUG ? helper.getWritableDb() : helper.getEncryptedReadableDb(DB_PASSWORD);
         daoMaster = new DaoMaster(db);
         daoSession = daoMaster.newSession();
-        studentDao = daoSession.getStudentDao();
         itemDao = daoSession.getItemDao();
         roundResultDao = daoSession.getRoundResultDao();
-        studentItemDao = daoSession.getStudentItemDao();
         multipleResultDao = daoSession.getMultipleResultDao();
         scheduleDao = daoSession.getScheduleDao();
         multipleItemDao = daoSession.getMultipleItemDao();
@@ -75,106 +68,36 @@ public class DBManager {
         mqttBeanDao = daoSession.getMqttBeanDao();
     }
 
-    public List<Student> queryStudentFeatures() {
-        return studentDao.queryBuilder()
-                .where(StudentDao.Properties.FaceFeature.isNotNull())
-                .where(StudentDao.Properties.FaceFeature.notEq(""))
-                .list();
-    }
-
-    public Student queryStudentByIDCode(String code) {
-        return null;
-    }
-
-    public Student queryStudentByStuCode(String code) {
-        return studentDao.queryBuilder().where(StudentDao.Properties.StudentCode.eq(code)).unique();
-    }
-
-    public StudentItem queryStuItemByStuCode(String studentCode) {
-        return null;
-    }
-
-    public void insertStudent(Student student) {
-        studentDao.insertOrReplaceInTx(student);
-    }
-
-    public void moData(){
-//        for(int i = 0 ; i < 10 ; i++){
-//            Student student = new Student();
-//            student.setSex(0);
-//            student.setSchoolName("五华中学");
-//            student.setStudentCode("202010130000"+i);
-//            student.setStudentName("六六六"+i);
-//            student.setDownloadTime("1234567");
-//        }
-    }
-
     public Long insertRoundResult(RoundResult result) {
         return roundResultDao.insertOrReplace(result);
-    }
-
-    public List<Student> getStudentByItemCode(String itemCode,String subItemCode, int limit, int offset) {
-        StringBuffer sqlBuf = new StringBuffer("SELECT S.* FROM " + StudentDao.TABLENAME + " S");
-        sqlBuf.append(" WHERE S." + StudentDao.Properties.StudentCode.columnName + " IN ( ");
-        sqlBuf.append(" SELECT  " + StudentItemDao.Properties.StudentCode.columnName);
-        sqlBuf.append(" FROM " + StudentItemDao.TABLENAME);
-        sqlBuf.append(" WHERE  " + StudentItemDao.Properties.ItemCode.columnName + " = ? ");
-        sqlBuf.append(" AND  " + StudentItemDao.Properties.SubitemCode.columnName + " = ?) ");
-        if (limit != -1)
-            sqlBuf.append(" limit " + offset + "," + limit);
-        Cursor c = daoSession.getDatabase().rawQuery(sqlBuf.toString(), new String[]{itemCode,subItemCode});
-        List<Student> students = new ArrayList<>();
-        while (c.moveToNext()) {
-            Student student = studentDao.readEntity(c, 0);
-            students.add(student);
-        }
-        c.close();
-        return students;
     }
 
     public long insertItem(Item item) {
         return itemDao.insertOrReplace(item);
     }
 
-    public void insertStudentItem(StudentItem studentItem) {
-        studentItemDao.insert(studentItem);
-    }
 
     public int getUnUploadNum() {
         return 0;
     }
 
     public void clear() {
-//        roundResultDao.deleteAll();
-//        studentItemDao.deleteAll();
-//        studentDao.deleteAll();
         scheduleDao.deleteAll();
         itemDao.deleteAll();
-//        multipleResultDao.deleteAll();
         multipleItemDao.deleteAll();
-//        studentGroupItemDao.deleteAll();
     }
 
-    public Map<String,Object> getItemStudenCount(String itemCode){
+    public Map<String,Object> getItemStudenCount(String itemCode,String subItemCode){
         StringBuffer sqlBuf = new StringBuffer();
-        sqlBuf.append("select count(*) as stu_count,");
-        sqlBuf.append("count(case when s." + StudentDao.Properties.Sex.columnName + "=0 then " + StudentDao.Properties.Sex.columnName + " end) as man_count,");
-        sqlBuf.append("count(case when s." + StudentDao.Properties.Sex.columnName + "=1 then " + StudentDao.Properties.Sex.columnName + " end) as woman_count");
-        sqlBuf.append("  from " + StudentDao.TABLENAME + " s ");
-        sqlBuf.append("where s."+StudentDao.Properties.StudentCode.columnName+" in (");
-        sqlBuf.append("select "+StudentItemDao.Properties.StudentCode.columnName+" from "+StudentItemDao.TABLENAME+"  ");
-        sqlBuf.append("where "+StudentItemDao.Properties.ItemCode.columnName+"= ? )");
-        Cursor c = daoSession.getDatabase().rawQuery(sqlBuf.toString(), new String[]{itemCode});
+        sqlBuf.append("select count(distinct "+MqttBeanDao.Properties.StudentCode.columnName+") as stu_count from "+MqttBeanDao.TABLENAME);
+        sqlBuf.append(" where "+MqttBeanDao.Properties.ItemCode.columnName + "=? ");
+        sqlBuf.append(" and "+MqttBeanDao.Properties.SubitemCode.columnName + "=? ");
+        Cursor c = daoSession.getDatabase().rawQuery(sqlBuf.toString(), new String[]{itemCode,subItemCode});
         Map<String, Object> countMap = new HashMap<>();
 
         if (c.moveToNext()) {
             int count = c.getInt(0);
-            int man_count = c.getInt(1);
-            int women_count = c.getInt(2);
-
             countMap.put("count", count);
-            countMap.put("man_count", man_count);
-            countMap.put("women_count", women_count);
         }
         c.close();
 
@@ -258,5 +181,43 @@ public class DBManager {
 
     public MqttBean getMQTTBean(long mqttId) {
         return mqttBeanDao.queryBuilder().where(MqttBeanDao.Properties.Id.eq(mqttId)).unique();
+    }
+
+    public List<DataRtiveBean> getAllData(int limit, int offset) {
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append("select R.*,I.*,M.* from "+RoundResultDao.TABLENAME+" R,"+ItemDao.TABLENAME+" I,"+MqttBeanDao.TABLENAME+" M");
+        stringBuffer.append(" where R."+RoundResultDao.Properties.StudentCode.columnName +"=M."+MqttBeanDao.Properties.StudentCode.columnName);
+        stringBuffer.append(" and R."+RoundResultDao.Properties.ItemCode.columnName +"=M."+MqttBeanDao.Properties.ItemCode.columnName);
+        stringBuffer.append(" and R."+RoundResultDao.Properties.SubitemCode.columnName +"=M."+MqttBeanDao.Properties.SubitemCode.columnName);
+        stringBuffer.append(" and R."+RoundResultDao.Properties.ItemCode.columnName +"=I."+ItemDao.Properties.ItemCode.columnName);
+        stringBuffer.append(" and R."+RoundResultDao.Properties.SubitemCode.columnName +"=I."+ItemDao.Properties.SubitemCode.columnName);
+        stringBuffer.append(" and R."+RoundResultDao.Properties.ExamType.columnName +"=M."+MqttBeanDao.Properties.ExamStatus.columnName);
+        if (limit != -1)
+            stringBuffer.append(" limit " + offset + "," + limit);
+        Cursor cursor = daoSession.getDatabase().rawQuery(stringBuffer.toString(), null);
+        List<DataRtiveBean> dataRtiveBeans = new ArrayList<>();
+        while (cursor.moveToNext()){
+            Log.e("TAG====>","-------------");
+            DataRtiveBean bean = new DataRtiveBean();
+            bean.studentCode = cursor.getString(cursor.getColumnIndex(RoundResultDao.Properties.StudentCode.columnName));
+            bean.examPlaceName = cursor.getString(cursor.getColumnIndex(MqttBeanDao.Properties.ExamPlaceName.columnName));
+            bean.itemName = cursor.getString(cursor.getColumnIndex(ItemDao.Properties.ItemName.columnName));
+            dataRtiveBeans.add(bean);
+        }
+        return dataRtiveBeans;
+    }
+
+    public List<RoundResult> getStuRoundResult(String studentCode, String itemCode, String subItemCode) {
+        return roundResultDao.queryBuilder().where(RoundResultDao.Properties.StudentCode.eq(studentCode),
+                RoundResultDao.Properties.ItemCode.eq(itemCode),
+                RoundResultDao.Properties.SubitemCode.eq(subItemCode)).list();
+    }
+
+    public List<MqttBean> getMQTTBean(String itemCode, String subItemCode,int limit,int offset) {
+        return mqttBeanDao.queryBuilder().where(MqttBeanDao.Properties.ItemCode.eq(itemCode),
+                MqttBeanDao.Properties.SubitemCode.eq(subItemCode))
+                .limit(limit)
+                .offset(offset)
+                .list();
     }
 }

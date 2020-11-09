@@ -2,8 +2,6 @@ package com.fairplay.examgradle.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,37 +11,28 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.layout.activity_data_select;
 import com.fairplay.database.DBManager;
+import com.fairplay.database.entity.DataRtiveBean;
 import com.fairplay.database.entity.Item;
-import com.fairplay.database.entity.MultipleResult;
-import com.fairplay.database.entity.RoundResult;
-import com.fairplay.database.entity.Student;
 import com.fairplay.examgradle.R;
 import com.fairplay.examgradle.adapter.StudentAdapter;
-import com.fairplay.examgradle.bean.DataRetrieveBean;
 import com.fairplay.examgradle.contract.MMKVContract;
-import com.fairplay.examgradle.utils.ToastUtils;
 import com.fairplay.examgradle.viewmodel.DataSelectViewModel;
-import com.feipulai.common.db.DataBaseExecutor;
-import com.feipulai.common.db.DataBaseRespon;
-import com.feipulai.common.db.DataBaseTask;
 import com.gwm.annotation.layout.Layout;
+import com.gwm.annotation.layout.OnClick;
 import com.gwm.annotation.layout.OnItemSelected;
 import com.gwm.base.BaseApplication;
 import com.gwm.mvvm.BaseMvvmTitleActivity;
-import com.gwm.view.titlebar.TitleBarBuilder;
-import com.orhanobut.logger.Logger;
 import com.tencent.mmkv.MMKV;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Layout(R.layout.activity_data_select)
 public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelectViewModel, activity_data_select> {
     private MMKV mmkv;
     private StudentAdapter adapter;
     private int mPageNum;
-    private List<DataRetrieveBean> mList;
+    private List<DataRtiveBean> mList;
     private ArrayAdapter itemAdapter;
     private String itemCode;
     private String subItemCode;
@@ -63,12 +52,11 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
         mBinding.rv_results.setAdapter(adapter);
         itemCode = mmkv.getString(MMKVContract.CURRENT_ITEM,"");
         subItemCode = mmkv.getString(MMKVContract.CURRENT_SUB_ITEM,"");
-        selectAll();
         adapter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getApplicationContext(),DataDisplayActivity.class);
-                String studentCode = adapter.getData().get(position).getStudentCode();
+                String studentCode = adapter.getData().get(position).studentCode;
                 intent.putExtra(DataDisplayActivity.StudentCode,studentCode);
                 intent.putExtra(DataDisplayActivity.ItemCode,itemCode);
                 intent.putExtra(DataDisplayActivity.SubItemCode,subItemCode);
@@ -91,89 +79,17 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
         Item item = itemList.get(position);
         itemCode = item.getItemCode();
         subItemCode = item.getSubitemCode();
-        selectAll();
     }
-
-    private void selectAll() {
-
-        DataBaseExecutor.addTask(new DataBaseTask() {
-            @Override
-            public DataBaseRespon executeOper() {
-                List<Student> student = DBManager.getInstance().getStudentByItemCode(itemCode,subItemCode, 100, 100*mPageNum);
-                return new DataBaseRespon(true,"",student);
-            }
-
-            @Override
-            public void onExecuteSuccess(DataBaseRespon respon) {
-                List<Student> studentList = (List<Student>) respon.getObject();
-                if (mPageNum == 0) {
-                    mList.clear();
-                    Map<String, Object> countMap = DBManager.getInstance().getItemStudenCount(getItemCode());
-                    setStuCount(countMap.get("count"), countMap.get("women_count"), countMap.get("man_count"));
-                    Logger.i("zzs===>" + countMap.toString());
-                }
-                if (studentList == null || studentList.size() == 0) {
-                    ToastUtils.showShort("没有更多数据了");
-                    mBinding.refreshview.finishRefreshAndLoad();
-                    mBinding.refreshview.setLoadmoreFinished(true);
-                    adapter.notifyDataSetChanged();
-                    return;
-                }
-                //这个必须在获取到数据后再自增
-                mPageNum++;
-                for (int i = 0; i < studentList.size(); i++) {
-                    //获取学生信息
-                    Student student = studentList.get(i);
-                    RoundResult result = displaStuResult(student.getStudentCode());
-                    DataRetrieveBean bean = new DataRetrieveBean();
-                    bean.setSex(student.getSex());
-                    bean.setStudentName(student.getStudentName());
-                    bean.setStudentCode(student.getStudentCode());
-                    bean.setFaition(result.getResult());
-                    bean.setScore(result.getScore());
-                    if (result.getIsMultioleResult() == 1) {
-                        List<MultipleResult> multioleResult = DBManager.getInstance().getMultioleResult(result.getId());
-                        StringBuffer resultbuffer = new StringBuffer();
-                        StringBuffer scorebuffer = new StringBuffer();
-                        for (MultipleResult results : multioleResult) {
-                            if (!TextUtils.isEmpty(results.getScore()))
-                                resultbuffer.append(results.getDesc() + ":" + results.getScore() + "/");
-                            if (!TextUtils.isEmpty(results.getScore()))
-                                scorebuffer.append(results.getDesc() + ":" + results.getScore() + "/");
-                        }
-                        if (resultbuffer.length() > 1)
-                            resultbuffer.deleteCharAt(resultbuffer.length() - 1);
-                        if (scorebuffer.length() > 1)
-                            scorebuffer.deleteCharAt(scorebuffer.length() - 1);
-                        bean.setFaition(resultbuffer.toString().replaceAll("null","0"));
-                        bean.setScore(scorebuffer.toString().replaceAll("null","0"));
-                    }
-                    Log.e("TAG",bean.toString());
-                    mList.add(bean);
-                }
-                mBinding.refreshview.finishRefreshAndLoad();
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onExecuteFail(DataBaseRespon respon) {
-
-            }
-        });
-
-    }
-
-    private RoundResult displaStuResult(String studentCode) {
-        return DBManager.getInstance().getLastRoundResult(studentCode);
-    }
-
-    private String getItemCode() {
-        return mmkv.getString(MMKVContract.CURRENT_ITEM,"");
-    }
-
-    @Override
-    public TitleBarBuilder setTitleBarBuilder(TitleBarBuilder builder) {
-        return super.setTitleBarBuilder(builder.setTitle("数据查看"));
+    @OnClick({R.id.btn_upload,R.id.btn_query})
+    public void onClick(View v){
+        switch (v.getId()){
+            case R.id.btn_upload:
+                break;
+            case R.id.btn_query:
+                String input = mBinding.et_input_text.getText().toString().trim();
+                mPageNum = 0;
+                break;
+        }
     }
     private void setStuCount(Object sumCount, Object womenCount, Object mamCount) {
         mBinding.txt_stu_sumNumber.setText(sumCount + "");

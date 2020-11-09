@@ -18,11 +18,8 @@ import org.json.JSONException;
 
 public class ScoreUploadServie extends IntentService {
     /****************************key值定义***************************************************/
-    public static final String SCHEDULEID = "SCHEDULEID";     //日程ID
-    public static final String ITEMID = "ITEMID";        //项目表ID
-    public static final String GROUPID = "GROUPID";        //分组表ID
     public static final String ROUNDID = "ROUNDID";        //成绩表ID
-    public static final String STUDENTCODE = "STUDENTCODE";        //准考证号
+
 
     private long roundId;
     public ScoreUploadServie() {
@@ -34,6 +31,7 @@ public class ScoreUploadServie extends IntentService {
         roundId = intent.getLongExtra(ROUNDID,0);
 
         RoundResult roundResult = DBManager.getInstance().getRoundResultById(roundId);
+        Item item = DBManager.getInstance().getItemByItemCode(roundResult.getItemCode(),roundResult.getSubitemCode());
         MMKV mmkv = BaseApplication.getInstance().getMmkv();
         long mqttId = mmkv.getLong(MMKVContract.MQTT_ID, 0);
         MqttBean mqttBean = DBManager.getInstance().getMQTTBean(mqttId);
@@ -44,7 +42,7 @@ public class ScoreUploadServie extends IntentService {
         group.setGroupType(Integer.parseInt(mqttBean.getGroupType()));
         ScoreUploadPresenter presenter = new ScoreUploadPresenter();
         try {
-            presenter.scoreUpload(mqttBean.getTrackNo(),roundResult,group);
+            presenter.scoreUpload(mqttBean.getTrackNo(),roundResult,group,item);
         } catch (JSONException e) {
             e.printStackTrace();
         }

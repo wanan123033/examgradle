@@ -7,7 +7,6 @@ import com.fairplay.database.DBManager;
 import com.fairplay.database.entity.Item;
 import com.fairplay.database.entity.MultipleResult;
 import com.fairplay.database.entity.RoundResult;
-import com.fairplay.examgradle.adapter.ExamAdapter;
 import com.fairplay.examgradle.bean.ExamScoreBean;
 import com.fairplay.examgradle.bean.ScoreBean;
 import com.gwm.mvvm.BaseViewModel;
@@ -16,14 +15,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ExamViewModel extends BaseViewModel<Object> {
-    public void onScore(ExamScoreBean examScoreBean, Item item, String score, ExamAdapter adapter) {
-//        if (examScoreBean.isLock && examScoreBean.resultList.size() == 1){
-//            ToastUtils.showShort("当前成绩已锁定,请解锁");
-//            return;
-//        }
-        int currentPosition = examScoreBean.currentPosition;  //当前内层Recy的坐标值  当前选中的成绩
-        ExamScoreBean.Score currentScore = examScoreBean.resultList.get(currentPosition);  //当前成绩
+public class ExamResultModel extends BaseViewModel<Object> {
+    public void onScore(ExamScoreBean currentScoreBean, String score, Item item) {
+        int currentPosition = currentScoreBean.currentPosition;  //当前内层Recy的坐标值  当前选中的成绩
+        ExamScoreBean.Score currentScore = currentScoreBean.resultList.get(currentPosition);  //当前成绩
         if (currentScore.isLock){
             ToastUtils.showShort("当前成绩已锁定,请解锁");
             return;
@@ -33,6 +28,13 @@ public class ExamViewModel extends BaseViewModel<Object> {
         currentScore.result.append(score);
     }
 
+    /**
+     * 检查输入的准确性
+     * @param item  项目
+     * @param score  输入的值
+     * @param currentScore  当前成绩
+     * @return
+     */
     public boolean scoreCheck(Item item, String score, ExamScoreBean.Score currentScore) {
         if ("score".equals(item.getUnit()) && item.getMarkScore() == 0){  //测量的得分项目不做处理  输多少就是多少
             return false;
@@ -41,7 +43,7 @@ public class ExamViewModel extends BaseViewModel<Object> {
             //小数位数判断
             int digital = item.getDigital();
             if (currentScore.result.toString().contains(".")) {
-                String s = currentScore.result.substring(currentScore.result.indexOf("."));
+                String s = currentScore.result.substring(currentScore.result.indexOf(".") + 1);
                 if (s.length() + 1 > digital) {
                     ToastUtils.showShort("小数位数超过指定位数");
                     return true;
@@ -64,7 +66,7 @@ public class ExamViewModel extends BaseViewModel<Object> {
                         ToastUtils.showShort("当前项目最大成绩为:" + item.getMaxValue());
                         return true;
                     }
-                else
+                    else
                     if (Double.parseDouble(currentScore.result.toString() + score) > Double.parseDouble("9999")) {
                         ToastUtils.showShort("当前项目最大成绩为:9999");
                         return true;
@@ -92,36 +94,22 @@ public class ExamViewModel extends BaseViewModel<Object> {
         return false;
     }
 
-
-    private static boolean isLegalDate(String sDate) {
-        DateFormat formatter = new SimpleDateFormat(ScoreBean.dataFormat);
-        try {
-            Date date = formatter.parse(sDate);
-            return sDate.equals(formatter.format(date));
-        } catch (Exception e) {
-            return false;
-        }
-    }
-    private static long getScoend(String sDate) {
-        String[] split = sDate.split(":");
-        return Long.parseLong(split[0])*60L + Long.parseLong(split[1]);
-    }
-
-    public RoundResult saveScore(String studentCode, ExamScoreBean examScoreBean, Item item) throws NumberFormatException {
-//        if (examScoreBean.isLock){
-//            ToastUtils.showShort("请先解锁!");
-//            return null;
-//        }
-        //检查最后一条成绩数据格式是否错误
-        if (scoreCheck(item, "", examScoreBean.resultList.get(examScoreBean.resultList.size() - 1))) return null;
+    /**
+     * 保存成绩并发送成绩
+     * @param currentScoreBean  成绩bean
+     * @param item  项目
+     * @param currentRoundNo  当前轮次
+     */
+    public RoundResult saveResult(ExamScoreBean currentScoreBean, Item item, int currentRoundNo) {
+//        if (scoreCheck(item, "", currentScoreBean.resultList.get(currentScoreBean.resultList.size() - 1))) return null;
         RoundResult roundResult = new RoundResult();
         roundResult.setScheduleNo("1");
         roundResult.setItemName(item.getItemName());
         roundResult.setTestNo(item.getRoundNum());
         roundResult.setItemCode(item.getItemCode());
         roundResult.setSubitemCode(item.getSubitemCode());
-        roundResult.setStudentCode(studentCode);
-        roundResult.setRoundNo(examScoreBean.roundNo);
+        roundResult.setStudentCode(currentScoreBean.studentCode);
+        roundResult.setRoundNo(currentRoundNo + 1);
         roundResult.setResultState(1);
         if (item.getMachineCode() != null)
             roundResult.setMachineCode(Integer.parseInt(item.getMachineCode()));
@@ -129,7 +117,7 @@ public class ExamViewModel extends BaseViewModel<Object> {
         roundResult.setTestNo(item.getTestNum());
         roundResult.setTestTime(System.currentTimeMillis()+"");
         //根据界面上的打分个数判断是否需要启用多值属性
-        if (examScoreBean.resultList.size() == 1){
+        if (currentScoreBean.resultList.size() == 1){
             roundResult.setIsMultioleResult(0);
         }else {
             roundResult.setIsMultioleResult(1);
@@ -137,7 +125,7 @@ public class ExamViewModel extends BaseViewModel<Object> {
         if (item.getMarkScore() == 0){  //测量项目
             if (item.getTestType() == 1){  //计时类项目
                 if (roundResult.getIsMultioleResult() == 0) {     //单值类
-                    ExamScoreBean.Score score = examScoreBean.resultList.get(0);
+                    ExamScoreBean.Score score = currentScoreBean.resultList.get(0);
                     if (isLegalDate(score.result.toString())) {
 
                         roundResult.setResult(getScoend(score.result.toString())+"");
@@ -153,49 +141,49 @@ public class ExamViewModel extends BaseViewModel<Object> {
                 }else {      //多值类
                     Long roundResultId = DBManager.getInstance().insertRoundResult(roundResult);
                     roundResult.setId(roundResultId);
-                    for (int i = 0 ; i < examScoreBean.resultList.size() ; i++){
+                    for (int i = 0 ; i < currentScoreBean.resultList.size() ; i++){
                         MultipleResult result = new MultipleResult();
                         result.setRoundId(roundResultId);
-                        if (isLegalDate(examScoreBean.resultList.get(i).result.toString())) {
+                        if (isLegalDate(currentScoreBean.resultList.get(i).result.toString())) {
 
                         } else {
                             ToastUtils.showShort("时间格式错误");
                             return null;
                         }
-                        result.setDesc(examScoreBean.resultList.get(i).desc);
-                        result.setOrder(examScoreBean.resultList.get(i).order);
+                        result.setDesc(currentScoreBean.resultList.get(i).desc);
+                        result.setOrder(currentScoreBean.resultList.get(i).order);
                         result.setUnit(item.getUnit());
-                        result.setMachineScore(getScoend(examScoreBean.resultList.get(i).result.toString())+"");
-                        result.setScore(getScoend(examScoreBean.resultList.get(i).result.toString())+"");
+                        result.setMachineScore(getScoend(currentScoreBean.resultList.get(i).result.toString())+"");
+                        result.setScore(getScoend(currentScoreBean.resultList.get(i).result.toString())+"");
                         DBManager.getInstance().insertMultipResult(result);
                     }
                 }
             }else {     //测量项目非计时类
                 if (roundResult.getIsMultioleResult() == 0) {   //单值类项目
-                    ExamScoreBean.Score score = examScoreBean.resultList.get(0);
+                    ExamScoreBean.Score score = currentScoreBean.resultList.get(0);
                     roundResult.setMachineResult(score.result.toString());
                     //乘以比例系数
                     if (item.getRatio() != 0.0)
-                        roundResult.setResult(String.valueOf(Integer.parseInt(score.result.toString()) * item.getRatio()));
+                        roundResult.setResult(String.valueOf(Double.parseDouble(score.result.toString()) * item.getRatio()));
                     else
-                        roundResult.setResult(String.valueOf(Integer.parseInt(score.result.toString())));
+                        roundResult.setResult(String.valueOf(Double.parseDouble(score.result.toString())));
                     Long aLong = DBManager.getInstance().insertRoundResult(roundResult);
                     roundResult.setId(aLong);
                 }else {//多值类项目
                     Long roundResultId = DBManager.getInstance().insertRoundResult(roundResult);
                     roundResult.setId(roundResultId);
-                    for (int i = 0 ; i < examScoreBean.resultList.size() ; i++){
+                    for (int i = 0 ; i < currentScoreBean.resultList.size() ; i++){
                         MultipleResult result = new MultipleResult();
                         result.setRoundId(roundResultId);
-                        result.setDesc(examScoreBean.resultList.get(i).desc);
-                        result.setOrder(examScoreBean.resultList.get(i).order);
+                        result.setDesc(currentScoreBean.resultList.get(i).desc);
+                        result.setOrder(currentScoreBean.resultList.get(i).order);
                         result.setUnit(item.getUnit());
-                        result.setMachineScore(examScoreBean.resultList.get(i).result.toString());
+                        result.setMachineScore(currentScoreBean.resultList.get(i).result.toString());
                         //乘以比例系数
                         if (item.getRatio() != 0.0)
-                            result.setScore(String.valueOf(Integer.parseInt(examScoreBean.resultList.get(i).result.toString()) * item.getRatio()));
+                            result.setScore(String.valueOf(Double.parseDouble(currentScoreBean.resultList.get(i).result.toString()) * item.getRatio()));
                         else
-                            result.setScore(String.valueOf(Integer.parseInt(examScoreBean.resultList.get(i).result.toString())));
+                            result.setScore(String.valueOf(Double.parseDouble(currentScoreBean.resultList.get(i).result.toString())));
                         DBManager.getInstance().insertMultipResult(result);
                     }
                 }
@@ -205,7 +193,7 @@ public class ExamViewModel extends BaseViewModel<Object> {
         }else if (item.getMarkScore() == 1){  //打分项目
             if (item.getTestType() == 1){  //计时类项目
                 if (roundResult.getIsMultioleResult() == 0) { //单值类项目
-                    ExamScoreBean.Score score = examScoreBean.resultList.get(0);
+                    ExamScoreBean.Score score = currentScoreBean.resultList.get(0);
                     if (isLegalDate(score.result.toString())) {
                         roundResult.setScore(getScoend(score.result.toString())+"");
                         roundResult.setMachineScore(getScoend(score.result.toString())+"");
@@ -218,29 +206,29 @@ public class ExamViewModel extends BaseViewModel<Object> {
                 }else {        //多值类项目
                     Long roundResultId = DBManager.getInstance().insertRoundResult(roundResult);
                     roundResult.setId(roundResultId);
-                    for (int i = 0 ; i < examScoreBean.resultList.size() ; i++){
+                    for (int i = 0 ; i < currentScoreBean.resultList.size() ; i++){
                         MultipleResult result = new MultipleResult();
                         result.setRoundId(roundResultId);
-                        if (isLegalDate(examScoreBean.resultList.get(i).result.toString())) {
+                        if (isLegalDate(currentScoreBean.resultList.get(i).result.toString())) {
 
                         } else {
                             ToastUtils.showShort("时间格式错误");
                             return null;
                         }
-                        result.setDesc(examScoreBean.resultList.get(i).desc);
+                        result.setDesc(currentScoreBean.resultList.get(i).desc);
                         result.setOrder(i+"");
-                        result.setMachineScore(getScoend(examScoreBean.resultList.get(i).result.toString())+"");
-                        result.setScore(getScoend(examScoreBean.resultList.get(i).result.toString())+"");
+                        result.setMachineScore(getScoend(currentScoreBean.resultList.get(i).result.toString())+"");
+                        result.setScore(getScoend(currentScoreBean.resultList.get(i).result.toString())+"");
                         DBManager.getInstance().insertMultipResult(result);
                     }
                 }
             }else {       //非计时类项目
                 if (roundResult.getIsMultioleResult() == 0) {      //单值类
-                    ExamScoreBean.Score score = examScoreBean.resultList.get(0);
+                    ExamScoreBean.Score score = currentScoreBean.resultList.get(0);
                     roundResult.setMachineScore(score.result.toString());
                     //乘以比例系数
                     if (item.getRatio() != 0.0)
-                        roundResult.setScore(String.valueOf(Integer.parseInt(score.result.toString()) * item.getRatio()));
+                        roundResult.setScore(String.valueOf(Double.parseDouble(score.result.toString()) * item.getRatio()));
                     else
                         roundResult.setScore(score.result.toString());
                     Long roundResultId = DBManager.getInstance().insertRoundResult(roundResult);
@@ -248,17 +236,17 @@ public class ExamViewModel extends BaseViewModel<Object> {
                 }else {   //多值类
                     Long roundResultId = DBManager.getInstance().insertRoundResult(roundResult);
                     roundResult.setId(roundResultId);
-                    for (int i = 0 ; i < examScoreBean.resultList.size() ; i++){
+                    for (int i = 0 ; i < currentScoreBean.resultList.size() ; i++){
                         MultipleResult result = new MultipleResult();
                         result.setRoundId(roundResultId);
-                        result.setDesc(examScoreBean.resultList.get(i).desc);
+                        result.setDesc(currentScoreBean.resultList.get(i).desc);
                         result.setOrder(i+"");
-                        result.setMachineScore(examScoreBean.resultList.get(i).result.toString());
+                        result.setMachineScore(currentScoreBean.resultList.get(i).result.toString());
                         //乘以比例系数
                         if (item.getRatio() != 0.0)
-                            result.setScore(String.valueOf(Integer.parseInt(examScoreBean.resultList.get(i).result.toString()) * item.getRatio()));
+                            result.setScore(String.valueOf(Double.parseDouble(currentScoreBean.resultList.get(i).result.toString()) * item.getRatio()));
                         else
-                            result.setScore(examScoreBean.resultList.get(i).result.toString());
+                            result.setScore(currentScoreBean.resultList.get(i).result.toString());
                         DBManager.getInstance().insertMultipResult(result);
                     }
                 }
@@ -268,11 +256,24 @@ public class ExamViewModel extends BaseViewModel<Object> {
         getLiveData().postValue(roundResult);
         return roundResult;
     }
-
     public void removeScore(ExamScoreBean examScoreBean) {
         int currentPosition = examScoreBean.currentPosition;  //当前内层Recy的坐标值  当前选中的成绩
         ExamScoreBean.Score currentScore = examScoreBean.resultList.get(currentPosition);  //当前成绩
         if(currentScore.result.length() >= 1)
             currentScore.result.deleteCharAt(currentScore.result.length() - 1);
     }
+    private static boolean isLegalDate(String sDate) {
+        DateFormat formatter = new SimpleDateFormat(ScoreBean.dataFormat);
+        try {
+            Date date = formatter.parse(sDate);
+            return sDate.equals(formatter.format(date));
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    private static long getScoend(String sDate) {
+        String[] split = sDate.split(":");
+        return Long.parseLong(split[0])*60L + Long.parseLong(split[1]);
+    }
+
 }

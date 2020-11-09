@@ -65,4 +65,12 @@
         android:gravity="center"
         android:textSize="18sp"
         android:textColor="@color/black"/>
+    <CheckBox
+        android:id="@+id/cb_select"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:button="@null"
+        android:paddingLeft="30dp"
+        android:drawableLeft="@drawable/checkbox_selected"
+        android:gravity="center" />
 </LinearLayout>

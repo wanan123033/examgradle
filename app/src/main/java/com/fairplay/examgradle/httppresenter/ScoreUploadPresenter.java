@@ -1,7 +1,9 @@
 package com.fairplay.examgradle.httppresenter;
 
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.fairplay.database.DBManager;
 import com.fairplay.database.entity.Item;
 import com.fairplay.database.entity.MultipleResult;
@@ -12,7 +14,6 @@ import com.fairplay.database.entity.StudentItem;
 import com.fairplay.examgradle.base.JsonDataPresenter;
 import com.fairplay.examgradle.bean.BaseBean;
 import com.fairplay.examgradle.contract.MMKVContract;
-import com.fairplay.examgradle.utils.ToastUtils;
 import com.google.gson.JsonArray;
 import com.gwm.annotation.json.JSON;
 import com.gwm.annotation.json.Param;
@@ -99,7 +100,7 @@ public class ScoreUploadPresenter extends JsonDataPresenter<ScoreUploadPresenter
 
     }
 
-    public void scoreUpload(String trackNo,RoundResult result,StudentGroupItem groupItem) throws JSONException {
+    public void scoreUpload(String trackNo, RoundResult result, StudentGroupItem groupItem, Item item) throws JSONException {
         String userInfo = BaseApplication.getInstance().getMmkv().getString(MMKVContract.USERNAME,"");
         int examType = BaseApplication.getInstance().getMmkv().getInt(MMKVContract.EXAMTYPE,0);
         JSONObject jsonObject = new JSONObject();
@@ -110,12 +111,24 @@ public class ScoreUploadPresenter extends JsonDataPresenter<ScoreUploadPresenter
             JSONArray multipJsonArr = new JSONArray();
             for (int i = 0 ; i < multipleResults.size() ; i++){
                 JSONObject multiple = new JSONObject();
+                if (item.getMarkScore() == 0 && "m".equals(item.getUnit().trim())){
+                    multiple.put("unit","cm");
+                    if (!TextUtils.isEmpty(multipleResults.get(i).getScore())) {
+                        Double d = Double.parseDouble(multipleResults.get(i).getScore()) * 100.0;
+                        multiple.put("score", d);
+                    }
+                    if (!TextUtils.isEmpty(multipleResults.get(i).getMachineScore())) {
+                        Double dd = Double.parseDouble(multipleResults.get(i).getMachineScore()) * 100.0;
+                        multiple.put("machineScore", dd);
+                    }
+                }else {
+                    multiple.put("score",multipleResults.get(i).getScore());
+                    multiple.put("machineScore",multipleResults.get(i).getMachineScore());
+                    multiple.put("unit",multipleResults.get(i).getUnit());
+                }
                 multiple.put("order",multipleResults.get(i).getOrder());
                 multiple.put("desc",multipleResults.get(i).getDesc());
-                multiple.put("score",multipleResults.get(i).getScore());
-                multiple.put("unit",multipleResults.get(i).getUnit());
                 multiple.put("scoreMultiple",multipleResults.get(i).getScoreMultiple());
-                multiple.put("machineScore",multipleResults.get(i).getMachineScore());
                 multipJsonArr.put(multiple);
             }
             JSONObject roundJson = new JSONObject();
@@ -145,10 +158,25 @@ public class ScoreUploadPresenter extends JsonDataPresenter<ScoreUploadPresenter
             roundJson.put("examState",examType);
             roundJson.put("printTime",result.getTestTime());
             roundJson.put("uploadTime",System.currentTimeMillis()+"");
-            roundJson.put("result",result.getResult());
-            roundJson.put("machineResult",result.getMachineResult());
-            roundJson.put("score",result.getScore());
-            roundJson.put("machineScore",result.getMachineScore());
+            if (item.getMarkScore() == 0 && "m".equals(item.getUnit().trim())){
+                if (!TextUtils.isEmpty(result.getResult()))
+                    roundJson.put("result",(Double.parseDouble(result.getResult())*100.0)+"");
+                if (!TextUtils.isEmpty(result.getMachineResult()))
+                    roundJson.put("machineResult",(Double.parseDouble(result.getMachineResult())*100.0)+"");
+                if (!TextUtils.isEmpty(result.getScore()))
+                    roundJson.put("score",(Double.parseDouble(result.getScore())*100.0)+"");
+                if (!TextUtils.isEmpty(result.getMachineScore()))
+                    roundJson.put("machineScore",(Double.parseDouble(result.getMachineScore())*100.0)+"");
+            }else {
+                if (!TextUtils.isEmpty(result.getResult()))
+                    roundJson.put("result",result.getResult());
+                if (!TextUtils.isEmpty(result.getMachineResult()))
+                    roundJson.put("machineResult",result.getMachineResult());
+                if (!TextUtils.isEmpty(result.getScore()))
+                    roundJson.put("score",result.getScore());
+                if (!TextUtils.isEmpty(result.getMachineScore()))
+                    roundJson.put("machineScore",result.getMachineScore());
+            }
             roundJson.put("msEquipment",getDeviceInfo());
             roundJson.put("userInfo",userInfo);
             Log.e("result",""+result.getScore());
@@ -183,6 +211,8 @@ public class ScoreUploadPresenter extends JsonDataPresenter<ScoreUploadPresenter
     protected void onNextResult(BaseBean response, int id) {
         if (response.code == 0){
             ToastUtils.showLong("上传成绩成功");
+        }else {
+            ToastUtils.showLong("上传成绩失败");
         }
     }
 

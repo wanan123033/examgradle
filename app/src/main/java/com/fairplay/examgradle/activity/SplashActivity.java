@@ -13,6 +13,9 @@ import androidx.core.app.ActivityCompat;
 
 import com.app.layout.activity_splash;
 import com.blankj.utilcode.constant.PermissionConstants;
+import com.fairplay.database.DBManager;
+import com.fairplay.database.entity.Item;
+import com.fairplay.database.entity.MultipleItem;
 import com.fairplay.examgradle.R;
 import com.fairplay.examgradle.contract.MMKVContract;
 import com.fairplay.examgradle.httppresenter.DownGroupInfoPresenter;
@@ -39,6 +42,30 @@ public class SplashActivity extends BaseMvvmActivity<Object, SplashViewModel,act
         super.onCreate(savedInstanceState);
 //        DownGroupInfoPresenter presenter = new DownGroupInfoPresenter();
 //        presenter.downGroup(2,0);
+//        initItem();
+    }
+
+    private void initItem() {
+        Item item = new Item();
+        item.setItemName("测试多轮多值");
+        item.setItemCode("10052");
+        item.setSubitemCode("100521");
+        item.setDigital(2);
+        item.setTestType(1);
+        item.setRoundNum(3);
+        item.setMinValue("1");
+        item.setMaxValue("10");
+        long id = DBManager.getInstance().insertItem(item);
+        MultipleItem multipleItem = new MultipleItem();
+        multipleItem.setItemId(id);
+        multipleItem.setDesc("左");
+        multipleItem.setOrder("1");
+        DBManager.getInstance().insertMultipItem(multipleItem);
+        MultipleItem multipleItem1 = new MultipleItem();
+        multipleItem1.setItemId(id);
+        multipleItem1.setDesc("右");
+        multipleItem1.setOrder("2");
+        DBManager.getInstance().insertMultipItem(multipleItem1);
     }
 
     @Override

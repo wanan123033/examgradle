@@ -129,6 +129,20 @@
             android:gravity="center_vertical"
             android:paddingLeft="5dp"
             android:textColor="#909399" />
+        <Button
+            android:id="@+id/btn_upload"
+            android:layout_width="121dp"
+            android:layout_height="35dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="21dp"
+            android:layout_marginRight="37dp"
+            android:background="@color/colorAccent"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="上传成绩"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -159,7 +173,7 @@
             android:background="#AAD3FF"
             android:gravity="center"
 
-            android:text="姓名" />
+            android:text="项目名称" />
 
         <TextView
             style="@style/style_txt_white_title"
@@ -169,7 +183,7 @@
             android:layout_weight="1"
             android:background="#AAD3FF"
             android:gravity="center"
-            android:text="性别" />
+            android:text="场地" />
 
 
 
@@ -201,7 +215,14 @@
             android:gravity="center"
             android:visibility="gone"
             android:text="体重" />
-
+        <TextView
+            style="@style/style_txt_white_title"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="1dp"
+            android:background="#AAD3FF"
+            android:gravity="center"
+            android:text="全选" />
     </LinearLayout>
 
     <com.feipulai.common.view.PullToRefreshView

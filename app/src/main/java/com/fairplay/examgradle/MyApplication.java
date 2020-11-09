@@ -1,6 +1,7 @@
 package com.fairplay.examgradle;
 
 import com.app.layout.LayoutInflaterUtils;
+import com.fairplay.examgradle.utils.LogToFile;
 import com.gwm.annotation.layout.Application;
 import com.gwm.base.BaseApplication;
 import com.gwm.http.HttpClients;
@@ -17,5 +18,6 @@ public class MyApplication extends BaseApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+//        LogToFile.init();
     }
 }

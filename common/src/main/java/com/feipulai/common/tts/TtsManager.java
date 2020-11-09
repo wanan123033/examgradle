@@ -9,8 +9,8 @@ import com.baidu.tts.auth.AuthInfo;
 import com.baidu.tts.client.SpeechSynthesizeBag;
 import com.baidu.tts.client.SpeechSynthesizer;
 import com.baidu.tts.client.TtsMode;
+import com.blankj.utilcode.util.ToastUtils;
 import com.feipulai.common.utils.FileUtil;
-import com.feipulai.common.utils.ToastUtils;
 import com.orhanobut.logger.Logger;
 
 import java.io.IOException;

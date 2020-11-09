@@ -56,6 +56,8 @@
         <activity android:name=".activity.ItemInitActivity" android:screenOrientation="landscape"/>
         <activity android:name=".activity.ExamActivity" android:screenOrientation="landscape"/>
         <activity android:name="com.king.zxing.CaptureActivity" android:screenOrientation="landscape" android:exported="true"/>
+        <activity android:name=".activity.ExamResultActivity" />
+        <activity android:name=".activity.DataCatActivity" />
 
         <service android:name=".service.ScoreUploadServie" />
         <service android:name="org.eclipse.paho.android.service.MqttService" />

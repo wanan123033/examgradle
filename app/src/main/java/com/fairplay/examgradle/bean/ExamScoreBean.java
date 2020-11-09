@@ -5,11 +5,12 @@ import com.fairplay.database.entity.Item;
 import java.util.List;
 
 public class ExamScoreBean {
-    public boolean isLock;
     public List<Score> resultList;
-    public int currentPosition;        //内层Recy item坐标值
+    public int currentPosition;        //当前成绩坐标
     public Item item;
-    public int currentScorePosition;   //当前轮次号
+    public int roundNo;
+    public boolean isSelected = false;   //当前成绩是否是选中状态
+    public String studentCode;
 
     public static class Score{
         public boolean isLock;

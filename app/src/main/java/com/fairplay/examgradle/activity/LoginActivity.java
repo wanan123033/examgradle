@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.app.layout.activity_login;
+import com.blankj.utilcode.util.ToastUtils;
 import com.fairplay.examgradle.R;
 import com.fairplay.examgradle.bean.EnvInfoBean;
 import com.fairplay.examgradle.bean.LoginBean;
@@ -15,7 +16,6 @@ import com.fairplay.examgradle.contract.MMKVContract;
 import com.fairplay.examgradle.mq.MqttManager;
 import com.fairplay.examgradle.mq.interfaces.OnMqttAndroidConnectListener;
 import com.fairplay.examgradle.utils.CommonUtils;
-import com.fairplay.examgradle.utils.ToastUtils;
 import com.fairplay.examgradle.viewmodel.LoginViewModel;
 import com.gwm.annotation.layout.Layout;
 import com.gwm.annotation.layout.OnClick;

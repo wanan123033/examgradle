@@ -38,7 +38,7 @@ public class MainActivity extends BaseTitleActivity<activity_main> {
             case R.id.card_test:
 //                List<Item> items = DBManager.getInstance().getItemList();
 //                showItemDialog(items);
-                Intent intent = new Intent(getApplicationContext(),ExamActivity.class);
+                Intent intent = new Intent(getApplicationContext(),ExamResultActivity.class);
                 startActivity(intent);
                 break;
             case R.id.card_select:
@@ -82,7 +82,7 @@ public class MainActivity extends BaseTitleActivity<activity_main> {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == QR_CODE){
+        if (requestCode == QR_CODE && data != null){
             String result = data.getStringExtra(Intents.Scan.RESULT);
             Log.e("TAG====>",result);
         }

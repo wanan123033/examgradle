@@ -56,7 +56,7 @@ public class ExamActivity extends BaseMvvmTitleActivity<Object, ExamViewModel, a
 //    private String itemCode;
 //    private String subitemCode;
     MqttBean mqttBean;
-    private int roundNo;
+    private RoundResult ressss;
 
     public static final String ACTION = "com.fariplay.examgradle.add_stu";
     @Override
@@ -87,6 +87,12 @@ public class ExamActivity extends BaseMvvmTitleActivity<Object, ExamViewModel, a
                 packMsg(message);
             }
         });
+
+        String itemCode = "0300";
+        String subItemCode = "03003";
+        item = DBManager.getInstance().getItemByItemCode(itemCode,subItemCode);
+//        initItemScore3();
+
     }
 
     /**
@@ -106,8 +112,7 @@ public class ExamActivity extends BaseMvvmTitleActivity<Object, ExamViewModel, a
                     long mqtt_id = DBManager.getInstance().insertMqttBean(mqttBean);
                     item = DBManager.getInstance().getItemByItemCode(mqttBean.getItemCode(), mqttBean.getSubitemCode());
                     titleBar.setTitleBulder(setTitleBarBuilder(new TitleBarBuilder()));
-                    roundNo = 1;
-                    initItemScore2();
+                    initItemScore3();
                     MMKV mmkv = BaseApplication.getInstance().getMmkv();
                     mmkv.putLong(MMKVContract.MQTT_ID, mqtt_id);
                     mBinding.stu_info.tv_studentCode.setText(mqttBean.getStudentCode());
@@ -145,6 +150,42 @@ public class ExamActivity extends BaseMvvmTitleActivity<Object, ExamViewModel, a
         adapter.setSelectPosition(0);
         examScoreBean = examScoreBeanList.get(0);
         mBinding.stu_info.rv_score_data.setAdapter(adapter);
+    }
+
+    private void initItemScore3(){
+        if (item.getRoundNum() != 0){
+            List<MultipleItem> multipleItemList = DBManager.getInstance().getMultipleItemList(item.getId());
+            for (int i = 0 ; i < item.getRoundNum() ; i++){
+                ExamScoreBean scoreBean = new ExamScoreBean();
+                scoreBean.roundNo = i+1;
+                scoreBean.item = item;
+                scoreBean.resultList = new ArrayList<>();
+                if (i == 0){
+                    scoreBean.isSelected = true;
+                }else {
+                    scoreBean.isSelected = false;
+                }
+                if (multipleItemList == null || multipleItemList.isEmpty()){
+                    ExamScoreBean.Score score = new ExamScoreBean.Score();
+                    score.desc = "成绩";
+                    score.result = new StringBuffer();
+                    score.unit = item.getUnit();
+                    scoreBean.resultList.add(score);
+                }else{
+                    for (MultipleItem multipleItem : multipleItemList){
+                        ExamScoreBean.Score score = new ExamScoreBean.Score();
+                        score.desc = multipleItem.getDesc();
+                        score.result = new StringBuffer();
+                        score.unit = item.getUnit();
+                        scoreBean.resultList.add(score);
+                        score.order = multipleItem.getOrder();
+                    }
+                }
+                examScoreBeanList.add(scoreBean);
+            }
+            adapter = new ExamAdapter(this,examScoreBeanList);
+            mBinding.stu_info.rv_score_data.setAdapter(adapter);
+        }
     }
 
     @OnClick({R.id.tv_0,R.id.tv_1,R.id.tv_2,R.id.tv_3,R.id.tv_4,R.id.tv_5,R.id.tv_6,R.id.tv_7,R.id.tv_8,R.id.tv_9,
@@ -217,7 +258,9 @@ public class ExamActivity extends BaseMvvmTitleActivity<Object, ExamViewModel, a
                 quitScore();
                 break;
             case R.id.btn_score1:
+//                onChanged(ressss);
                 mBinding.stu_info.tv_studentCode.setText(mBinding.et_studentCode.getText().toString());
+                initItemScore3();
                 break;
         }
     }
@@ -235,19 +278,15 @@ public class ExamActivity extends BaseMvvmTitleActivity<Object, ExamViewModel, a
         String studentCode = mBinding.stu_info.tv_studentCode.getText().toString();
         boolean isLast = examScoreBean.currentPosition == (examScoreBean.resultList.size() - 1);
         if (isLast){
-            boolean isSave = viewModel.saveScore(studentCode, examScoreBean, item,roundNo);
-            if (isSave){
-                ToastUtils.showShort("数据保存成功");
-                if (item.getRoundNum() > roundNo){
-                    roundNo++;
-//                    mBinding.stu_info.rv_score_data.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-                    initItemScore2();
-                }else {
-//                    quitCommit();
-                    roundNo = 0;
+            try {
+                RoundResult result = viewModel.saveScore(studentCode, examScoreBean, item);
+                if (result != null){
+                    ToastUtils.showShort("数据保存成功");
+//                    examScoreBean.isLock = true;
                 }
-            }else {
-                ToastUtils.showShort("数据保存失败");
+
+            }catch (Exception e){
+                e.printStackTrace();
             }
         }else {
             if (!viewModel.scoreCheck(item,"",examScoreBean.resultList.get(examScoreBean.currentPosition))) {
@@ -278,15 +317,11 @@ public class ExamActivity extends BaseMvvmTitleActivity<Object, ExamViewModel, a
 
     @Override
     public void onChanged(Object o) {
-        if (o instanceof RoundResult){ //上传成绩
-            Intent intent = new Intent(getApplicationContext(), ScoreUploadServie.class);
-            intent.putExtra(ScoreUploadServie.SCHEDULEID,4L);
-            intent.putExtra(ScoreUploadServie.ITEMID,item.getId().longValue());
-            intent.putExtra(ScoreUploadServie.GROUPID,1L);
-            intent.putExtra(ScoreUploadServie.ROUNDID,((RoundResult) o).getId().longValue());
-            intent.putExtra(ScoreUploadServie.STUDENTCODE,((RoundResult) o).getStudentCode());
-            startService(intent);
-        }
+//        if (o instanceof RoundResult){ //上传成绩
+//            Intent intent = new Intent(getApplicationContext(), ScoreUploadServie.class);
+//            intent.putExtra(ScoreUploadServie.ROUNDID,((RoundResult) o).getId().longValue());
+//            startService(intent);
+//        }
     }
 
     @Override

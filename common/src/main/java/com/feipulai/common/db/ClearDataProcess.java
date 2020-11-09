@@ -8,8 +8,8 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.feipulai.common.R;
-import com.feipulai.common.utils.ToastUtils;
 import com.feipulai.common.view.dialog.DialogUtils;
 import com.feipulai.common.view.dialog.EditDialog;
 import com.orhanobut.logger.Logger;
