@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <EditText
+            android:id="@+id/ed_ExamPlaceName"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:hint="ExamPlaceName"
+            android:text="广西民族大学西校区相思湖学院篮球馆"/>
+        <EditText
+            android:id="@+id/et_GroupNo"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:hint="GroupNo"
+            android:text="1"/>
+        <EditText
+            android:id="@+id/et_GroupType"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:hint="GroupType"
+            android:text="1"/>
+        <EditText
+            android:id="@+id/et_SortName"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:hint="SortName"
+            android:text="组"/>
+        <EditText
+            android:id="@+id/et_trackNo"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:hint="trackNo"
+            android:text="1"/>
+        <Button
+            android:id="@+id/btn_insert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="添加"/>
+    </LinearLayout>
+
+</ScrollView>

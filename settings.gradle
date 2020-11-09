@@ -1,0 +1,1 @@
+include ':app', ':annotation', ':Compiler', ':appframework', ':logger', ':database', ':common'

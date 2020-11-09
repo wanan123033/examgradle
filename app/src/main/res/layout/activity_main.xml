@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/icon_main_bg">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true">
+
+        <ImageView
+            android:id="@+id/img_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:scaleType="fitXY"
+            android:src="@mipmap/icon_logo" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_test"
+            android:layout_width="157dp"
+            android:layout_height="321dp"
+            android:layout_below="@+id/img_logo"
+            android:layout_marginTop="22dp"
+            android:foreground="?android:attr/selectableItemBackground"
+            custom:cardBackgroundColor="#A3E000"
+            custom:cardCornerRadius="3dp"
+            custom:cardElevation="0dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@mipmap/icon_test" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="14dp"
+                android:text="打分"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_select"
+            android:layout_width="157dp"
+            android:layout_height="321dp"
+            android:layout_alignTop="@+id/card_test"
+            android:layout_marginLeft="13dp"
+            android:layout_toRightOf="@+id/card_test"
+            android:foreground="?android:attr/selectableItemBackground"
+            custom:cardBackgroundColor="#00E8CB"
+            custom:cardCornerRadius="5dp"
+            custom:cardElevation="0dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@mipmap/icon_test" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="14dp"
+                android:text="数据管理"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_re"
+            android:layout_width="157dp"
+            android:layout_height="321dp"
+            android:layout_alignTop="@+id/card_select"
+            android:layout_marginLeft="13dp"
+            android:layout_toRightOf="@+id/card_select"
+            android:foreground="?android:attr/selectableItemBackground"
+            custom:cardBackgroundColor="#00E8CB"
+            custom:cardCornerRadius="5dp"
+            custom:cardElevation="0dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@mipmap/icon_test" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="14dp"
+                android:text="扫一扫"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_cannal"
+            android:layout_width="157dp"
+            android:layout_height="321dp"
+            android:layout_alignTop="@+id/card_re"
+            android:layout_marginLeft="13dp"
+            android:layout_toRightOf="@+id/card_re"
+            android:foreground="?android:attr/selectableItemBackground"
+            custom:cardBackgroundColor="#00E8CB"
+            custom:cardCornerRadius="5dp"
+            custom:cardElevation="0dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@mipmap/icon_test" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="14dp"
+                android:text="退出"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+
+        </androidx.cardview.widget.CardView>
+
+
+
+
+
+    </RelativeLayout>
+
+
+    <ImageView
+        android:id="@+id/img_code"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="6dp"
+        android:layout_marginLeft="12dp"
+        android:src="@mipmap/icon_code" />
+
+    <TextView
+        android:id="@+id/txt_main_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="6dp"
+        android:layout_marginLeft="23dp"
+        android:layout_toRightOf="@+id/img_code"
+        android:text="打分终端"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/txt_deviceid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="6dp"
+        android:layout_marginRight="10dp"
+        android:text="打分终端（安卓版）"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
+</RelativeLayout>

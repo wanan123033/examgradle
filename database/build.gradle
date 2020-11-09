@@ -1,0 +1,31 @@
+apply plugin: 'com.android.library'
+apply plugin: 'org.greenrobot.greendao'
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        minSdkVersion 20
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    greendao {
+        schemaVersion 5
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    api 'org.greenrobot:greendao:3.2.2'
+    api 'net.zetetic:android-database-sqlcipher:3.5.6'
+    implementation project(':appframework')
+    implementation project(':common')
+}

@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">common</string>
+    <string name="confirm"> 确定 </string>
+    <string name="cancel"> 取消 </string>
+    <string name="loading_hint">正在处理，请等待...</string>
+
+    <string name="clear_dialog_title">操作警告</string>
+    <string name="clear_dialog_content">本地有未上传数据,是否确定清空本地数据?</string>
+    <string name="clear_dialog_content2">该操作会清空本地考生信息和成绩信息,是否确定清空这些信息?</string>
+
+    <string name="clear_data_title">清空本地数据</string>
+    <string name="clear_data_content">请输入验证码:%1$s</string>
+    <string name="edit_hint">请输入验证码</string>
+    <string name="btn_automatic_backup">自动备份文件夹</string>
+    <string name="device_group_name">手柄分组:</string>
+    <string name="normal">正常</string>
+    <string name="interrupt">中断</string>
+    <string name="low_power">电量低</string>
+    <string name="temporarily_closed">暂停使用</string>
+    <string name="conflict">冲突</string>
+    <string name="auth_code">请输入授权码</string>
+    <string-array name="print_table_hand">
+        <item>序号</item>
+        <item>考号</item>
+        <item>姓名</item>
+        <item>学校</item>
+        <item>成绩</item>
+        <item>得分</item>
+        <item>名次</item>
+        <item>签名</item>
+    </string-array>
+    <string-array name="print_table_bottom">
+        <item>计时裁判：</item>
+        <item>计录员：</item>
+        <item>主考官：</item>
+        <item>纪检员：</item>
+    </string-array>
+</resources>

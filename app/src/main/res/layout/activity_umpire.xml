@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <include
+        android:id="@+id/stu_info"
+        layout="@layout/layout_stu_info" />
+    <View
+        android:layout_width="3dp"
+        android:layout_height="match_parent"
+        android:background="@color/grey_A8"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp">
+            <Button
+                android:id="@+id/btn_push"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:background="@drawable/btn_click_bg_selected"
+                android:text="推送"
+                android:layout_toLeftOf="@+id/btn_commit"
+                android:layout_marginRight="30dp"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+            <Button
+                android:id="@id/btn_commit"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/btn_click_bg_selected"
+                android:text="完成"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>

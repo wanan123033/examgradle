@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">睿力恒打分终端</string>
+    <string name="student_nonentity">该考生不存在</string>
+    <string name="no_project">无此项目</string>
+    <string name="addStu_dialog_title">新增提示</string>
+    <string name="addStu_dialog_content">无考生信息，是否新增</string>
+    <string name="qr_length_error">条码与当前设置位数不一致,请重扫条码</string>
+    <string name="read_iccard_failed">读卡失败</string>
+
+    <string-array name="data_admin">
+        <item>名单下载</item>
+        <item>数据查看</item>
+        <item>数据备份</item>
+        <item>数据还原</item>
+        <item>数据清空</item>
+        <item>成绩上传</item>
+    </string-array>
+    <integer-array name="data_icon">
+        <item>@drawable/icon_data_import</item>
+        <item>@drawable/icon_data_look</item>
+        <item>@drawable/icon_data_backup</item>
+        <item>@drawable/icon_data_restore</item>
+        <item>@drawable/icon_data_clear</item>
+        <item>@drawable/icon_data_import</item>
+    </integer-array>
+</resources>
