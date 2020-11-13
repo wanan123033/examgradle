@@ -71,13 +71,15 @@ public class MqttManager implements Imanager {
 
     @Override
     public void connect(final Context context) {
-        if (mMqttAndroidConnect.isAlive()) {
-            Logger.e("MqttManager connect thread has alive");
-            return;
-        }
-        if (mMqttAndroidConnect.isConnected()) {
-            Logger.e("MqttManager has connected");
-            return;
+        if (mMqttAndroidConnect != null) {
+            if (mMqttAndroidConnect.isAlive()) {
+                Logger.e("MqttManager connect thread has alive");
+                return;
+            }
+            if (mMqttAndroidConnect.isConnected()) {
+                Logger.e("MqttManager has connected");
+                return;
+            }
         }
         mMqttAndroidConnect = new MqttAndroidConnect();
         mMqttAndroidConnect.start();
@@ -91,6 +93,11 @@ public class MqttManager implements Imanager {
         }
         mMqttAndroidConnect.disConnect();
         mMqttAndroidConnect = null;
+    }
+
+    public void subscribe(String topic){
+        if (mMqttAndroidConnect != null)
+            mMqttAndroidConnect.subscribe(topic);
     }
 
     /**

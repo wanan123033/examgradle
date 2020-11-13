@@ -15,4 +15,5 @@ public interface MMKVContract {
     String SORTNAME = "SORTNAME";
     String TRACKNO = "TRACKNO";
     String MQTT_ID = "MQTT_ID";
+    String CHANNEL_CODE = "CHANNEL_CODE";
 }

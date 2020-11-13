@@ -17,6 +17,7 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.fairplay.database.DBManager;
 import com.fairplay.examgradle.DBDataCleaner;
+import com.fairplay.examgradle.MyApplication;
 import com.fairplay.examgradle.R;
 import com.fairplay.examgradle.adapter.OperationAdapter;
 import com.fairplay.examgradle.bean.OperationBean;
@@ -28,6 +29,7 @@ import com.feipulai.common.db.DataBaseRespon;
 import com.feipulai.common.db.DataBaseTask;
 import com.feipulai.common.dbutils.BackupManager;
 import com.feipulai.common.dbutils.FileSelectActivity;
+import com.feipulai.common.utils.SharedPrefsUtil;
 import com.feipulai.common.view.dialog.EditDialog;
 import com.github.mjdev.libaums.fs.UsbFile;
 import com.gwm.annotation.layout.Layout;
@@ -101,7 +103,7 @@ public class DataManagerActivity extends BaseMvvmTitleActivity<Object, DataManag
                         new DBDataCleaner(DataManagerActivity.this, ClearDataProcess.CLEAR_DATABASE, DataManagerActivity.this).process();
                         break;
                     case 5:   //成绩上传
-
+                        viewModel.uploadScore();
                         break;
                 }
             }
@@ -117,6 +119,14 @@ public class DataManagerActivity extends BaseMvvmTitleActivity<Object, DataManag
         switch (requestCode) {
             case REQUEST_CODE_BACKUP:
                 showBackupFileNameDialog();
+                break;
+            case REQUEST_CODE_RESTORE:
+                DBManager.getInstance().close();
+                boolean restoreSuccess = backupManager.restore(FileSelectActivity.sSelectedFile);
+                ToastUtils.showShort(restoreSuccess ? "数据库恢复成功" : "数据库恢复失败,请检查文件格式");
+                Logger.i(restoreSuccess ? ("数据库恢复成功,文件路径:" + FileSelectActivity.sSelectedFile.getName())
+                        : "数据库恢复失败");
+                DBManager.getInstance().initDB();
                 break;
         }
     }
@@ -216,13 +226,5 @@ public class DataManagerActivity extends BaseMvvmTitleActivity<Object, DataManag
     @Override
     public void onChanged(Object o) {
         super.onChanged(o);
-        try {
-            int i = Integer.parseInt(o.toString());
-            if (i == DIMMSION_PROGREESS){
-                dismissDialog();
-            }
-        }catch (NumberFormatException e){
-            e.printStackTrace();
-        }
     }
 }

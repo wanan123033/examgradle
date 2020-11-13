@@ -1,5 +1,7 @@
 package com.fairplay.examgradle.httppresenter;
 
+import android.content.Intent;
+
 import com.fairplay.examgradle.base.BaseDataPresenter;
 import com.fairplay.examgradle.bean.LoginBean;
 import com.fairplay.examgradle.contract.MMKVContract;
@@ -23,9 +25,13 @@ public class LoginDataPresenter extends BaseDataPresenter<LoginBean> {
     @Override
     protected void onNextResult(LoginBean response, int id) {
         System.out.println(response+"----25");
-        BaseApplication.getInstance().getMmkv().putString(MMKVContract.TOKEN,response.data.token);
-        DownEnvInfoPresenter envInfoPresenter = new DownEnvInfoPresenter();
-        envInfoPresenter.setViewModel(getViewModel());
-        envInfoPresenter.downEnv();
+        if (response.code == 0) {
+            BaseApplication.getInstance().getMmkv().putString(MMKVContract.TOKEN, response.data.token);
+            DownEnvInfoPresenter envInfoPresenter = new DownEnvInfoPresenter();
+            envInfoPresenter.setViewModel(getViewModel());
+            envInfoPresenter.downEnv();
+        }else {
+            ((BaseViewModel) getViewModel()).sendLiveData(response);
+        }
     }
 }

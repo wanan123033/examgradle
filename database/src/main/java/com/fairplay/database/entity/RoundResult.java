@@ -50,15 +50,15 @@ public class RoundResult {
     private String remark3;
     private int trackNo;
     private String itemName;
-
-    @Generated(hash = 1716245500)
+    private String unit;
+    @Generated(hash = 546418504)
     public RoundResult(Long id, @NotNull String studentCode, @NotNull String itemCode,
             String subitemCode, int machineCode, int roundNo, int testNo, String machineResult,
             int penaltyNum, String result, String result2, String score, String machineScore,
             int resultState, int isLastResult, int examType, @NotNull String testTime, String printTime,
             String endTime, int stumbleCount, int updateState, byte[] cycleResult, String scheduleNo,
             String mtEquipment, int isMultioleResult, String remark1, String remark2, String remark3,
-            int trackNo, String itemName) {
+            int trackNo, String itemName, String unit) {
         this.id = id;
         this.studentCode = studentCode;
         this.itemCode = itemCode;
@@ -89,6 +89,7 @@ public class RoundResult {
         this.remark3 = remark3;
         this.trackNo = trackNo;
         this.itemName = itemName;
+        this.unit = unit;
     }
     @Generated(hash = 1393632943)
     public RoundResult() {
@@ -261,20 +262,22 @@ public class RoundResult {
     public void setRemark3(String remark3) {
         this.remark3 = remark3;
     }
-
     public int getTrackNo() {
-        return trackNo;
+        return this.trackNo;
     }
-
     public void setTrackNo(int trackNo) {
         this.trackNo = trackNo;
     }
-
     public String getItemName() {
-        return itemName;
+        return this.itemName;
     }
-
     public void setItemName(String itemName) {
         this.itemName = itemName;
+    }
+    public String getUnit() {
+        return this.unit;
+    }
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 }

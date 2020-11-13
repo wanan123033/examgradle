@@ -3,13 +3,15 @@ package com.fairplay.database.entity;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.Unique;
 
-@Entity
+@Entity(indexes = {
+        @Index(value = "itemCode ASC,subitemCode ASC", unique = true)
+})
 public class Item {
     @Id(autoincrement = true)
     private Long id;//
-    @Unique
     private String itemName;  //项目名称
     private String itemCode;  //项目素质代码
     private String subitemCode;  //项目专项代码
@@ -40,7 +42,7 @@ public class Item {
     private String calScoreExpression;  //算分表达式
     private int enableTempGroup;   //启用临时分组  (0: 不启用, 1: 启用)
     private int enableTempGroupRight;  // 启用临时分组后设置测量用户给临时分组的打分权限(0: 不启用, 1: 启用)
-    private String remark1;
+    private String remark1;   //数据格式
     private String remark2;
     private String remark3;
     @Generated(hash = 518486048)
@@ -290,5 +292,14 @@ public class Item {
     }
     public void setRemark3(String remark3) {
         this.remark3 = remark3;
+    }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "itemName='" + itemName + '\'' +
+                ", itemCode='" + itemCode + '\'' +
+                ", subitemCode='" + subitemCode + '\'' +
+                '}';
     }
 }

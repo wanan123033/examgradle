@@ -8,11 +8,14 @@ import com.fairplay.examgradle.bean.ItemInfoBean;
 import com.fairplay.examgradle.bean.LoginBean;
 import com.fairplay.examgradle.bean.ScheduleInfoBean;
 import com.fairplay.examgradle.bean.SiteStudentBean;
+import com.fairplay.examgradle.bean.TopicBean;
 import com.gwm.annotation.http.HTTP;
 import com.gwm.annotation.http.HeaderString;
 import com.gwm.annotation.http.Query;
 import com.gwm.annotation.json.JSON;
 import com.gwm.retrofit.Observable;
+
+import java.net.URI;
 
 public interface IHttp {
 
@@ -80,4 +83,9 @@ public interface IHttp {
     Observable<GroupInfoBean> downGroup(@HeaderString ("Authorization")String token,@JSON String json);
     @HTTP(url = "/run/downSiteScheduleItemGroup")
     Observable<BaseBean> upload(@HeaderString ("Authorization")String token,@JSON String json);
+    @HTTP(url = "/run/scanQrResp")
+    Observable<TopicBean> scanQrResp(@HeaderString ("Authorization")String token, @JSON String json);
+
+    @HTTP(url = "/run/unlockStudentResult")
+    Observable<BaseBean> unlockStudentResult(@HeaderString ("Authorization")String token, @JSON String json);
 }

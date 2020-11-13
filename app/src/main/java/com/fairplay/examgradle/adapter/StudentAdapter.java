@@ -3,16 +3,13 @@ package com.fairplay.examgradle.adapter;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.layout.item_data_retieve;
 import com.fairplay.database.entity.DataRtiveBean;
-import com.fairplay.database.entity.Student;
 import com.fairplay.examgradle.R;
-import com.fairplay.examgradle.activity.DataSelectActivity;
-import com.fairplay.examgradle.bean.DataRetrieveBean;
 import com.gwm.annotation.layout.Layout;
 import com.gwm.base.BaseRecyclerViewAdapter;
 
@@ -26,12 +23,15 @@ public class StudentAdapter extends BaseRecyclerViewAdapter<StudentAdapter.ViewH
 
     @Override
     protected void setData(DataRtiveBean student, int position) {
-        Log.e("TAG=====>",student.toString());
         mBinding.tv_stuCode.setText(student.studentCode);
         mBinding.tv_stuName.setText(student.itemName);
         mBinding.tv_sex.setText(student.examPlaceName);
         mBinding.tv_score.setText(student.result);
         mBinding.tv_fraction.setText(student.score);
+
+        mBinding.cb_select.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            student.isSelected = isChecked;
+        });
 
     }
 

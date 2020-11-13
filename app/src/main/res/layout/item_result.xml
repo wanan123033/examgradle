@@ -17,24 +17,27 @@
             android:layout_marginLeft="10dp"
             android:layout_weight="0.4"
             android:gravity="center"
+            android:textColor="@color/black"
             android:text="轮次"
             android:textSize="18sp" />
 
         <TextView
-            android:id="@+id/tv_result"
+            android:id="@+id/tv_score"
             android:layout_width="0dp"
+            android:textColor="@color/black"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:text="得分"
             android:textSize="18sp" />
         <TextView
-            android:id="@+id/tv_score"
+            android:id="@+id/tv_result"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:text="成绩"
+            android:textColor="@color/black"
             android:textSize="18sp" />
 
         <TextView
@@ -42,6 +45,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:textColor="@color/black"
             android:gravity="center"
             android:text="开始时间"
             android:textSize="18sp" />
@@ -53,6 +57,7 @@
             android:layout_marginRight="10dp"
             android:layout_weight="0.4"
             android:gravity="center"
+            android:textColor="@color/black"
             android:text="正常考"
             android:textSize="18sp" />
     </LinearLayout>

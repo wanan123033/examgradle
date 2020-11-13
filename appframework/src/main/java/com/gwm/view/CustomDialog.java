@@ -8,8 +8,7 @@ import android.widget.TextView;
 
 import com.gwm.R;
 
-public class CustomDialog extends ProgressDialog
-{
+public class CustomDialog extends ProgressDialog {
     TextView tv_load_dialog;
     String contentText;
     public CustomDialog(Context context)

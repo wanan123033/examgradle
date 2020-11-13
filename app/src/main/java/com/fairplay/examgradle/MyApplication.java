@@ -2,13 +2,21 @@ package com.fairplay.examgradle;
 
 import com.app.layout.LayoutInflaterUtils;
 import com.fairplay.examgradle.utils.LogToFile;
+import com.fairplay.examgradle.viewmodel.ExamResultModel;
+import com.feipulai.common.CrashHandler;
 import com.gwm.annotation.layout.Application;
 import com.gwm.base.BaseApplication;
 import com.gwm.http.HttpClients;
 import com.gwm.util.LayoutInflaterUtil;
+import com.orhanobut.logger.utils.DecryptLogUtils;
+import com.orhanobut.logger.utils.LogUtils;
+
+import java.text.SimpleDateFormat;
 
 @Application("app")
 public class MyApplication extends BaseApplication {
+    public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd HH:mm");
+    public static final SimpleDateFormat scoreDateFormat = new SimpleDateFormat();
 
     @Override
     protected synchronized LayoutInflaterUtil getLayoutUtil() {
@@ -18,6 +26,9 @@ public class MyApplication extends BaseApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        LogUtils.initLogger(true,true,"examgradle");
+        CrashHandler.getInstance().init(this);
 //        LogToFile.init();
     }
+
 }

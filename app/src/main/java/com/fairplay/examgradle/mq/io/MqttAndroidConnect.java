@@ -2,6 +2,7 @@ package com.fairplay.examgradle.mq.io;
 
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.fairplay.examgradle.mq.BuildRandomNumber;
 import com.fairplay.examgradle.mq.MqApi;
 import com.fairplay.examgradle.mq.MqttManager;
@@ -130,7 +131,7 @@ public class MqttAndroidConnect extends BaseConnect {
         if (mqttAndroidClient != null) {
             try {
                 mqttAndroidClient.disconnect();
-                mqttAndroidClient.close();
+//                mqttAndroidClient.close();
                 disConnectCallBack();
             } catch (MqttException e) {
                 e.printStackTrace();
@@ -145,4 +146,13 @@ public class MqttAndroidConnect extends BaseConnect {
         mqttAndroidClient.publish(topic, mqttMsg);
     }
 
+    public void subscribe(String topic){
+        try {
+            if (mqttAndroidClient != null)
+                mqttAndroidClient.subscribe(topic,1);
+        } catch (MqttException e) {
+            e.printStackTrace();
+            ToastUtils.showShort("添加通道组失败!");
+        }
+    }
 }

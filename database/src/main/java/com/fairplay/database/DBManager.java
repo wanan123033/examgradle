@@ -85,6 +85,9 @@ public class DBManager {
         scheduleDao.deleteAll();
         itemDao.deleteAll();
         multipleItemDao.deleteAll();
+        roundResultDao.deleteAll();
+        multipleResultDao.deleteAll();
+        mqttBeanDao.deleteAll();
     }
 
     public Map<String,Object> getItemStudenCount(String itemCode,String subItemCode){
@@ -176,6 +179,11 @@ public class DBManager {
     }
 
     public long insertMqttBean(MqttBean mqttBean) {
+        MqttBean bean = mqttBeanDao.queryBuilder().where(MqttBeanDao.Properties.ItemCode.eq(mqttBean.getItemCode()),
+                MqttBeanDao.Properties.SubitemCode.eq(mqttBean.getSubitemCode()), MqttBeanDao.Properties.StudentCode.eq(mqttBean.getStudentCode())).limit(1).unique();
+        if (bean != null){
+            return bean.getId();
+        }
         return mqttBeanDao.insert(mqttBean);
     }
 
@@ -213,11 +221,55 @@ public class DBManager {
                 RoundResultDao.Properties.SubitemCode.eq(subItemCode)).list();
     }
 
-    public List<MqttBean> getMQTTBean(String itemCode, String subItemCode,int limit,int offset) {
+    public List<MqttBean> getMQTTBean(String itemCode, String subItemCode) {
+
         return mqttBeanDao.queryBuilder().where(MqttBeanDao.Properties.ItemCode.eq(itemCode),
                 MqttBeanDao.Properties.SubitemCode.eq(subItemCode))
-                .limit(limit)
-                .offset(offset)
                 .list();
+    }
+
+    public List<Item> getBigItems() {
+        String sql = "select * from "+ItemDao.TABLENAME+" where "+ItemDao.Properties.ItemCode.columnName +"="+ItemDao.Properties.SubitemCode.columnName;
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, null);
+        List<Item> items = new ArrayList<>();
+        while (cursor.moveToNext()){
+            Item item = itemDao.readEntity(cursor, 0);
+            items.add(item);
+        }
+        return items;
+    }
+
+    public List<Item> getSmoatItems(String itemCode) {
+        String sql = "select * from "+ItemDao.TABLENAME+
+                " where "+ItemDao.Properties.ItemCode.columnName+"=?"+
+                " and "+ItemDao.Properties.ItemCode.columnName+"!="+ItemDao.Properties.SubitemCode.columnName;
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql,new String[]{itemCode});
+        List<Item> itemList = new ArrayList<>();
+        while (cursor.moveToNext()){
+            Item item = itemDao.readEntity(cursor, 0);
+            itemList.add(item);
+        }
+        return itemList;
+    }
+
+    public List<MqttBean> getMQTTBean(String stuCode) {
+        return mqttBeanDao.queryBuilder().where(MqttBeanDao.Properties.StudentCode.eq(stuCode)).list();
+    }
+
+    public void updateResultStateUnload(RoundResult result) {
+        result.setUpdateState(1);
+        roundResultDao.update(result);
+    }
+
+    public MqttBean getMQTTBean(String itemCode, String subItemCode, String studentCode) {
+        return mqttBeanDao.queryBuilder().where(MqttBeanDao.Properties.ItemCode.eq(itemCode),MqttBeanDao.Properties.SubitemCode.eq(subItemCode),MqttBeanDao.Properties.StudentCode.eq(studentCode)).unique();
+    }
+
+    public List<RoundResult> getRoundResultUploadState() {
+        return roundResultDao.queryBuilder().where(RoundResultDao.Properties.UpdateState.eq(0)).list();
+    }
+
+    public void close() {
+        db.close();
     }
 }

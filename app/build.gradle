@@ -47,7 +47,7 @@ dependencies {
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
     implementation 'com.geek.thread:thread-pool:1.0.1'
     annotationProcessor project(':Compiler')
-    implementation 'com.king.zxing:zxing-lite:1.1.9'
+    implementation 'com.king.zxing:zxing-lite:1.1.9-androidx'
     implementation 'com.google.zxing:core:3.3.3'
     implementation 'me.jessyan:autosize:0.9.5'
 }

@@ -27,7 +27,7 @@ public class LogUtils {
     /**
      * 应用根目录
      */
-    public static final String PATH_BASE = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Registration/";
+    public static final String PATH_BASE = Environment.getExternalStorageDirectory().getAbsolutePath() + "/examgradle/";
 
     //初始化日志工具
     public static void initLogger(final boolean logToConsole, boolean logToRaw, String pathName) {
@@ -49,10 +49,10 @@ public class LogUtils {
         String encryptLogFilePath = PATH_BASE + "/fair/play/" + logFileName;
         Logger.addLogAdapter(new EncryptDiskLogAdapter(encryptLogFilePath, LOG_ENCRYPT_KEY));
         // 保存操作日志
-        String exam_operation = Environment.getExternalStorageDirectory() + pathName + "/terminalogger/" + "termina_operation_" + logFileName;
+        String exam_operation = Environment.getExternalStorageDirectory() + pathName + "/" + "exam_operation_" + logFileName;
         Logger.addLogAdapter(new DiskLogAdapter(new OperaLogAdapter(exam_operation)));
 
-        String exam_crash = Environment.getExternalStorageDirectory() + pathName + "/terminalogger/" + "termina_crash_" + logFileName;
+        String exam_crash = Environment.getExternalStorageDirectory() + pathName + "/" + "exam_crash_" + logFileName;
         Logger.addLogAdapter(new DiskLogAdapter(new CrashLogAdapter(exam_crash)));
     }
 

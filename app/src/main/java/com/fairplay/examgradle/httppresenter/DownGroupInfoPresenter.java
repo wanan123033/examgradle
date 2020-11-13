@@ -34,7 +34,7 @@ public class DownGroupInfoPresenter extends JsonDataPresenter<DownGroupInfoPrese
                             studentGroupItem.setRollCallPlaceName(group.rollCallPlaceName);
                             studentGroupItem.setGroupType(group.groupType);
                             studentGroupItem.setSortName(group.sortName);
-                            DBManager.getInstance().insertGroup(studentGroupItem);
+//                            DBManager.getInstance().insertGroup(studentGroupItem);
                         }
                         if (response.data.batch != response.data.batchTotal && response.data.batch != 0){
                             downGroup(response.data.batch + 1,examType);

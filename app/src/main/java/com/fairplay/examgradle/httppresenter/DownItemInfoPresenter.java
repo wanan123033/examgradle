@@ -1,12 +1,16 @@
 package com.fairplay.examgradle.httppresenter;
 
 
+import android.text.TextUtils;
+import android.util.Log;
+
 import com.blankj.utilcode.util.ToastUtils;
 import com.fairplay.database.DBManager;
 import com.fairplay.database.entity.Item;
 import com.fairplay.database.entity.MultipleItem;
 import com.fairplay.examgradle.base.JsonDataPresenter;
 import com.fairplay.examgradle.bean.ItemInfoBean;
+import com.fairplay.examgradle.contract.Unit;
 import com.geek.thread.GeekThreadPools;
 import com.gwm.base.BaseActivity;
 import com.gwm.mvvm.BaseViewModel;
@@ -24,6 +28,7 @@ public class DownItemInfoPresenter extends JsonDataPresenter<DownItemInfoPresent
             public void run() {
                 if (response.data != null && !response.data.isEmpty()){
                     for (int i = 0 ; i < response.data.size() ; i++){  //父项信息
+
                         ItemInfoBean.ItemInfo info = response.data.get(i);
                         Item item = new Item();
                         item.setItemName(info.itemName);
@@ -51,6 +56,17 @@ public class DownItemInfoPresenter extends JsonDataPresenter<DownItemInfoPresent
                         item.setMinScore(info.minScore);
                         item.setRatio(info.ratio);
                         item.setIsLowestPoint(info.isLowestPoint);
+                        if (item.getUnit() != null)
+                            item.setRemark1(Unit.getUnit(item.getUnit().trim()).getDescription());
+                        if (TextUtils.isEmpty(item.getRemark1())){
+                            if (item.getDigital() == 0){
+                                item.setRemark1("整数值");
+                            }else if (item.getDigital() == 1){
+                                item.setRemark1("0.0");
+                            }else if (item.getDigital() == 2){
+                                item.setRemark1("0.00");
+                            }
+                        }
                         DBManager.getInstance().insertItem(item);
                         if (info.subitemList != null && !info.subitemList.isEmpty()){
                             for (int j = 0 ; j < info.subitemList.size() ; j++){          //子项信息
@@ -87,6 +103,18 @@ public class DownItemInfoPresenter extends JsonDataPresenter<DownItemInfoPresent
                                 subItem.setMinScore(subInfo.minScore);
                                 subItem.setRatio(subInfo.ratio);
                                 subItem.setIsLowestPoint(subInfo.isLowestPoint);
+                                if (subItem.getUnit() != null)
+                                    subItem.setRemark1(Unit.getUnit(subItem.getUnit().trim()).getDescription());
+                                if (TextUtils.isEmpty(subItem.getRemark1())){
+                                    if (subItem.getDigital() == 0){
+                                        subItem.setRemark1("整数值");
+                                    }else if (subItem.getDigital() == 1){
+                                        subItem.setRemark1("0.0");
+                                    }else if (subItem.getDigital() == 2){
+                                        subItem.setRemark1("0.00");
+                                    }
+                                }
+                                Log.e("TAG===>",subItem.toString());
                                 long subItemId = DBManager.getInstance().insertItem(subItem);
                                 if (subInfo.multipleValueSetting != null){
                                     if (subInfo.multipleValueSetting.valueList != null && !subInfo.multipleValueSetting.valueList.isEmpty()){
@@ -106,9 +134,11 @@ public class DownItemInfoPresenter extends JsonDataPresenter<DownItemInfoPresent
                             }
                         }
                     }
+                    ToastUtils.showShort("数据下载成功");
+                }else {
+                    ToastUtils.showShort("数据下载失败");
                 }
                 ((BaseViewModel)getViewModel()).sendLiveData(BaseActivity.DIMMSION_PROGREESS);
-                ToastUtils.showShort("数据下载成功");
             }
         });
 

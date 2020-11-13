@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
@@ -17,9 +18,12 @@ import com.fairplay.database.DBManager;
 import com.fairplay.database.entity.Item;
 import com.fairplay.database.entity.MultipleItem;
 import com.fairplay.examgradle.R;
+import com.fairplay.examgradle.bean.EnvInfoBean;
 import com.fairplay.examgradle.contract.MMKVContract;
 import com.fairplay.examgradle.httppresenter.DownGroupInfoPresenter;
 import com.fairplay.examgradle.httppresenter.DownGroupPresenter;
+import com.fairplay.examgradle.mq.MqttManager;
+import com.fairplay.examgradle.mq.interfaces.OnMqttAndroidConnectListener;
 import com.fairplay.examgradle.viewmodel.SplashViewModel;
 import com.gwm.android.Handler;
 import com.gwm.annotation.Permission;
@@ -37,8 +41,10 @@ import com.tencent.mmkv.MMKV;
 public class SplashActivity extends BaseMvvmActivity<Object, SplashViewModel,activity_splash> {
     private static final int NOT_NOTICE = 2;//如果勾选了不再询问
     private AlertDialog mDialog;
+    private MMKV mmkv;
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        mmkv = BaseApplication.getInstance().getMmkv();
         super.onCreate(savedInstanceState);
 //        DownGroupInfoPresenter presenter = new DownGroupInfoPresenter();
 //        presenter.downGroup(2,0);
@@ -75,8 +81,9 @@ public class SplashActivity extends BaseMvvmActivity<Object, SplashViewModel,act
             Handler.getHandler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    String token = BaseApplication.getInstance().getMmkv().getString(MMKVContract.TOKEN, "");
-                    if (TextUtils.isEmpty(token)) {
+                    String username = mmkv.getString(MMKVContract.USERNAME,"");
+                    String passsword = mmkv.getString(MMKVContract.PASSWORD,"");
+                    if (TextUtils.isEmpty(username) || TextUtils.isEmpty(passsword)){
                         Intent intent = new Intent();
                         intent.setClass(getApplicationContext(), LoginActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -84,15 +91,57 @@ public class SplashActivity extends BaseMvvmActivity<Object, SplashViewModel,act
                         startActivity(intent);
                         finish();
                     }else {
-                        Intent intent = new Intent();
-                        intent.setClass(getApplicationContext(), LoginActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                        finish();
+                        viewModel.login(username,passsword);
                     }
                 }
             },1000);
+        }
+    }
+
+    @Override
+    public void onChanged(Object o) {
+        if (o != null && o instanceof EnvInfoBean){
+            //TODO 启动mqtt
+            Log.e("TAG=====+++++++",o.toString());
+            startMqttService((EnvInfoBean) o);
+            dismissDialog();
+
+        }else {
+            Intent intent = new Intent();
+            intent.setClass(getApplicationContext(), LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        }
+    }
+    private void startMqttService(EnvInfoBean o) {
+//        MqttService.getInstance(getApplication()).start(o);
+        if(!MqttManager.getInstance().isConnected()){
+            MqttManager.getInstance().init(getApplication())
+                    .setServerIp(o.data.mq.ip)
+                    .setServerPort(Integer.parseInt(o.data.mq.port))
+                    .connect(this);
+            MqttManager.getInstance().regeisterServerMsg(new OnMqttAndroidConnectListener() {
+                @Override
+                public void connect() {
+                    super.connect();
+                    Log.e("TAG===>","connect");
+                    Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                    startActivity(intent);
+                }
+
+                @Override
+                public void disConnect() {
+                    super.disConnect();
+                    Log.e("TAG===>","disConnect");
+                }
+
+                @Override
+                public void onDataReceive(String message) {
+                    Log.e("TAG===>",message);
+                }
+            });
         }
     }
 
@@ -102,8 +151,9 @@ public class SplashActivity extends BaseMvvmActivity<Object, SplashViewModel,act
         Handler.getHandler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                String token = BaseApplication.getInstance().getMmkv().getString(MMKVContract.TOKEN, "");
-                if (TextUtils.isEmpty(token)) {
+                String username = mmkv.getString(MMKVContract.USERNAME,"");
+                String passsword = mmkv.getString(MMKVContract.PASSWORD,"");
+                if (TextUtils.isEmpty(username) || TextUtils.isEmpty(passsword)){
                     Intent intent = new Intent();
                     intent.setClass(getApplicationContext(), LoginActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -111,12 +161,7 @@ public class SplashActivity extends BaseMvvmActivity<Object, SplashViewModel,act
                     startActivity(intent);
                     finish();
                 }else {
-                    Intent intent = new Intent();
-                    intent.setClass(getApplicationContext(), LoginActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
+                    viewModel.login(username,passsword);
                 }
             }
         },1000);

@@ -98,6 +98,11 @@ public abstract class BaseRecyclerViewAdapter<VH extends BaseRecyclerViewAdapter
         return data;
     }
 
+    public void setData(List<D> datas) {
+        this.data = datas;
+        notifyDataSetChanged();
+    }
+
     public static abstract class ViewHolder<V extends IViewBind,D> extends RecyclerView.ViewHolder{
         protected BaseRecyclerViewAdapter adapter;
         public V mBinding;
