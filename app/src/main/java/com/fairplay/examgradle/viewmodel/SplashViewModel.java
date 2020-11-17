@@ -11,15 +11,14 @@ import com.orhanobut.logger.utils.LogUtils;
 
 
 public class SplashViewModel extends BaseViewModel<Object> {
-    public static final String LOG_PATH_NAME = "examgradle";
+
     @Override
     protected void onResume(LifecycleOwner owner) {
         super.onResume(owner);
         init();
-        Log.e("TAG","SplashViewModel onResume");
     }
     private void init(){
-        LogUtils.initLogger(BuildConfig.DEBUG, BuildConfig.DEBUG, LOG_PATH_NAME);
+
     }
 
     public void login(String username, String passsword) {

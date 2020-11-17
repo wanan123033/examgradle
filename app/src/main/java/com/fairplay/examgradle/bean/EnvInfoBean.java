@@ -1,6 +1,10 @@
 package com.fairplay.examgradle.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 public class EnvInfoBean extends BaseBean<EnvInfoBean.EnvInfo>{
+
     public static class EnvInfo{
         public MqttEnv mq;
 

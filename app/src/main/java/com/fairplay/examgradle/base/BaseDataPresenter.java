@@ -15,7 +15,7 @@ public abstract class BaseDataPresenter<D> extends com.gwm.base.BaseDataPresente
     private ViewModel viewModel;
     public BaseDataPresenter() {
         super(IHttp.class);
-        String baseUrl = BaseApplication.getInstance().getMmkv().getString(MMKVContract.BASE_URL,"");
+        String baseUrl = BaseApplication.getInstance().getMmkv().getString(MMKVContract.BASE_URL,MMKVContract.BASE_URL_NOMAL);
         setBaseUrl(baseUrl);
     }
     public void addHttpSubscriber(Observable<D> observable,Class<D> clazz){

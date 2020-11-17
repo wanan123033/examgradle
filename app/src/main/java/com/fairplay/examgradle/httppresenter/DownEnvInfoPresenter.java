@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.fairplay.examgradle.base.JsonDataPresenter;
 import com.fairplay.examgradle.bean.EnvInfoBean;
+import com.fairplay.examgradle.contract.MMKVContract;
+import com.gwm.base.BaseApplication;
 import com.gwm.mvvm.BaseViewModel;
 import com.gwm.retrofit.Observable;
 
@@ -25,6 +27,8 @@ public class DownEnvInfoPresenter extends JsonDataPresenter<DownEnvInfoPresenter
     protected void onNextResult(EnvInfoBean response, int id) {
         Log.e("TAG=====",response.toString());
         if (getViewModel() instanceof BaseViewModel){
+            BaseApplication.getInstance().getMmkv().putString(MMKVContract.MQIP,response.data.mq.ip);
+            BaseApplication.getInstance().getMmkv().putString(MMKVContract.MQPORT,response.data.mq.port);
             ((BaseViewModel) getViewModel()).sendLiveData(response);
         }
     }

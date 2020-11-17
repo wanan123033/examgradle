@@ -19,8 +19,6 @@ import java.util.Locale;
  */
 
 public class LogUtils {
-    public static final String ALL_TAG = "ALL_TAG";                 //所有日志TAG
-    public static final String NORMAL_TAG = "NORMAL_TAG";       //正常日志
     public static final String OPERATION_TAG = "OPERATION_TAG"; //操作日志TAG
     public static final String CRASH_TAG = "CRASH_TAG";
     public static final String LOG_ENCRYPT_KEY = "19834762";
@@ -56,31 +54,8 @@ public class LogUtils {
         Logger.addLogAdapter(new DiskLogAdapter(new CrashLogAdapter(exam_crash)));
     }
 
-    /**
-     * 发送接收日志打印
-     *
-     * @param message
-     */
-    public static void normal(String message) {
-        Logger.t(NORMAL_TAG).i(message);
-    }
-
-    /**
-     * 用户操作日志打印
-     *
-     * @param message
-     */
-    public static void operation(String message) {
+    public static void operation(String message){
         Logger.t(OPERATION_TAG).i(message);
-    }
-
-    /**
-     * 过滤指令日志打印
-     *
-     * @param message
-     */
-    public static void all(String message) {
-        Logger.t(ALL_TAG).i(message);
     }
 
     public static void crash(String message) {

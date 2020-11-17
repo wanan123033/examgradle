@@ -12,7 +12,10 @@ import com.app.layout.activity_main;
 import com.blankj.utilcode.util.GsonUtils;
 import com.fairplay.examgradle.R;
 import com.fairplay.examgradle.bean.ChannelBean;
+import com.fairplay.examgradle.bean.EnvInfoBean;
+import com.fairplay.examgradle.contract.MMKVContract;
 import com.fairplay.examgradle.mq.MqttManager;
+import com.fairplay.examgradle.mq.interfaces.OnMqttAndroidConnectListener;
 import com.fairplay.examgradle.viewmodel.MainViewModel;
 import com.feipulai.common.view.baseToolbar.StatusBarUtil;
 import com.gwm.annotation.layout.Layout;
@@ -21,17 +24,22 @@ import com.gwm.base.BaseApplication;
 import com.gwm.mvvm.BaseMvvmActivity;
 import com.king.zxing.CaptureActivity;
 import com.king.zxing.Intents;
+import com.orhanobut.logger.utils.LogUtils;
 import com.tencent.mmkv.MMKV;
 
 @Layout(R.layout.activity_main)
 public class MainActivity extends BaseMvvmActivity<Object, MainViewModel,activity_main>{
     private static final int QR_CODE = 7598;
+    private MMKV mmkv;
     @OnClick({R.id.card_test,R.id.card_select,R.id.card_re,R.id.card_cannal})
     public void onClick(View view){
         switch (view.getId()){
             case R.id.card_test:
-                Intent intent = new Intent(getApplicationContext(),ExamResultActivity.class);
-                startActivity(intent);
+                String ip = mmkv.getString(MMKVContract.MQIP,"");
+                String port = mmkv.getString(MMKVContract.MQPORT,"");
+                startMqttService(ip,port);
+//                Intent intent = new Intent(getApplicationContext(),ExamResultActivity.class);
+//                startActivity(intent);
                 break;
             case R.id.card_select:
                 Intent intent1 = new Intent(getApplicationContext(),DataManagerActivity.class);
@@ -52,7 +60,7 @@ public class MainActivity extends BaseMvvmActivity<Object, MainViewModel,activit
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        mmkv = BaseApplication.getInstance().getMmkv();
         addFirstToast();
     }
 
@@ -66,11 +74,41 @@ public class MainActivity extends BaseMvvmActivity<Object, MainViewModel,activit
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == QR_CODE && data != null){
             String result = data.getStringExtra(Intents.Scan.RESULT);
-            Log.e("TAG====>",result);
             ChannelBean channelBean = GsonUtils.fromJson(result, ChannelBean.class);
             showDialog("加入通道中....");
             viewModel.scanQr(channelBean.channelCode);
-//            MqttManager.getInstance().subscribe("TEST-BASDF");
+        }
+    }
+    private void startMqttService(String ip,String port) {
+        showDialog("连接中...");
+        if(!MqttManager.getInstance().isConnected()){
+            MqttManager.getInstance().init(getApplication())
+                    .setServerIp(ip)
+                    .setServerPort(Integer.parseInt(port))
+                    .connect(this);
+            LogUtils.operation("MQTT 连接信息:ip="+ip+",port="+port);
+            MqttManager.getInstance().regeisterServerMsg(new OnMqttAndroidConnectListener() {
+                @Override
+                public void connect() {
+                    super.connect();
+                    dismissDialog();
+                    LogUtils.operation("MQTT 连接成功");
+                    Intent intent = new Intent(getApplicationContext(),ExamResultActivity.class);
+                    startActivity(intent);
+                }
+
+                @Override
+                public void disConnect() {
+                    super.disConnect();
+                    LogUtils.operation("MQTT 连接断开");
+                    dismissDialog();
+                }
+
+                @Override
+                public void onDataReceive(String message) {
+                    Log.e("TAG===>",message);
+                }
+            });
         }
     }
 }

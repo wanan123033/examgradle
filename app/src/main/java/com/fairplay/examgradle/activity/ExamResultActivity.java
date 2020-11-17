@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.layout.activity_exam_score;
 import com.blankj.utilcode.util.GsonUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.fairplay.database.DBManager;
 import com.fairplay.database.entity.Item;
 import com.fairplay.database.entity.MqttBean;
@@ -53,10 +54,11 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
     private List<ExamScoreBean> examScoreBeans;
     private ExamAdapter adapter;
     private ExamScoreBean currentScoreBean;
-    private int currentRoundNo;
+    private int currentRoundNo = 1;
     private MqttBean mqttBean;
     private String username;
     private OnMqttAndroidConnectListener listener;
+    private MMKV mmkv;
 
     private View.OnClickListener leftFinsh = v -> finsh();
 
@@ -78,6 +80,7 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mmkv = BaseApplication.getInstance().getMmkv();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         username = BaseApplication.getInstance().getMmkv().getString(MMKVContract.USERNAME,"");
         mBinding.stu_info.rv_score_data.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL,false));
@@ -86,13 +89,21 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
             @Override
             public void connect() {
                 super.connect();
-                Log.e("TAG===>","connect");
+
             }
 
             @Override
             public void disConnect() {
                 super.disConnect();
-                Log.e("TAG===>","disConnect");
+                String mqttIp = mmkv.getString(MMKVContract.MQIP,"");
+                String mqttPort = mmkv.getString(MMKVContract.MQPORT,"");
+                MqttManager.getInstance().init(getApplication())
+                        .setServerIp(mqttIp)
+                        .setServerPort(Integer.parseInt(mqttPort))
+                        .connect(ExamResultActivity.this);
+                MqttManager.getInstance().regeisterServerMsg(this);
+
+
             }
 
             @Override
@@ -108,6 +119,13 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
 
         try {
             JSONObject jsonObject = new JSONObject(message);
+            String channalCode = mmkv.getString(MMKVContract.CHANNEL_CODE, "");
+//            //通道号判断
+//            String code = jsonObject.getString("channelCode");
+//            if (TextUtils.isEmpty(channalCode) || !channalCode.equals(code)){
+//                return;
+//            }
+            //匹配用户判断
             int messageType = jsonObject.getInt("messageType");
             int matchUser = jsonObject.getInt("matchUser");
             boolean isUser = false;
@@ -144,13 +162,18 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
                 }
             }else if (messageType == 3) {
                 dismissDialog();
-                if (currentScoreBean != null){
-                    for (int i = 0 ; i < currentScoreBean.resultList.size() ; i++){
-                        currentScoreBean.resultList.get(i).isLock = false;
+                int data = jsonObject.getInt("data");
+                if (data == 1) {
+                    if (currentScoreBean != null) {
+                        for (int i = 0; i < currentScoreBean.resultList.size(); i++) {
+                            currentScoreBean.resultList.get(i).isLock = false;
+                        }
+                        if (adapter != null) {
+                            mBinding.stu_info.rv_score_data.setAdapter(adapter);
+                        }
                     }
-                    if (adapter != null){
-                        mBinding.stu_info.rv_score_data.setAdapter(adapter);
-                    }
+                }else {
+                    ToastUtils.showShort("服务器拒绝解锁!");
                 }
             }
         } catch (Exception e) {
@@ -217,11 +240,12 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
                 break;
             case R.id.tvj:
                 showDialog("申请解锁中...");
+                Log.e("TAG","currentRoundNo="+currentRoundNo);
                 viewModel.unLockStuScore(mqttBean,item,currentRoundNo);
                 break;
             case R.id.btn_score1:
                 String studentCode = mBinding.et_studentCode.getText().toString();
-                String json = "{\"channelCode\":\"TEST-BASDF\",\"data\":{\"examPlaceName\":\"广西民族大学相思湖学院田径场西东B\",\"examStatus\":0,\"groupNo\":\"100\",\"groupType\":\"0\",\"itemCode\":\"0002\",\"scheduleNo\":\"3\",\"sortName\":\"组\",\"studentCode\":\""+studentCode+"\",\"subitemCode\":\"0002\",\"trackNo\":\"1\"},\"id\":1604396768022,\"matchUser\":0,\"messageType\":1}";
+                String json = "{\"channelCode\":\"TEST-BASDF\",\"data\":{\"examPlaceName\":\"广西民族大学相思湖学院田径场西东B\",\"examStatus\":0,\"groupNo\":\"100\",\"groupType\":\"0\",\"itemCode\":\"0700\",\"scheduleNo\":\"3\",\"sortName\":\"组\",\"studentCode\":\""+"050180075"+"\",\"subitemCode\":\"07001\",\"trackNo\":\"1\"},\"id\":1604396768022,\"matchUser\":0,\"messageType\":1}";
                 packMsg(json);
                 break;
             case R.id.tv_send:
@@ -239,28 +263,34 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
     }
 
     private void saveAndSendResult() {
+        if (TextUtils.isEmpty(currentScoreBean.resultList.get(currentScoreBean.currentPosition).result.toString())){
+            return;
+        }
         if (currentScoreBean.currentPosition == currentScoreBean.resultList.size() - 1){   //输入的成绩到了某轮的最后一个  触发保存成绩,并发送成绩
-            RoundResult result = viewModel.saveResult(currentScoreBean,item,currentRoundNo);
-            currentScoreBean.resultList.get(currentScoreBean.currentPosition).isLock = true;
-            if (result == null){
+            RoundResult currentResult = viewModel.saveResult(mqttBean.getScheduleNo(),currentScoreBean,item,currentRoundNo,mqttBean);
+            if (currentResult == null){
                 return;
             }
+            if (currentResult != null){
+                currentScoreBean.resultList.get(currentScoreBean.currentPosition).isLock = true;
+            }
         }
+
         if(currentScoreBean.resultList.size() > 1 && currentScoreBean.currentPosition < currentScoreBean.resultList.size() - 1){   //输入的成绩没有到某轮的最后一个,移动光标到下一个成绩
             currentScoreBean.resultList.get(currentScoreBean.currentPosition).isLock = true;
             currentScoreBean.currentPosition = currentScoreBean.currentPosition + 1;
         }else {   //移动光标到下一个轮次
             currentScoreBean.resultList.get(currentScoreBean.currentPosition).isLock = true;
-            if (currentRoundNo < examScoreBeans.size() - 1){
+            if (currentRoundNo < examScoreBeans.size()){
                 currentRoundNo++;
-                currentScoreBean = examScoreBeans.get(currentRoundNo);
+                currentScoreBean = examScoreBeans.get(currentRoundNo - 1);
                 for (int i = 0 ; i < examScoreBeans.size() ; i++){
                     examScoreBeans.get(i).isSelected = false;
                 }
-                examScoreBeans.get(currentRoundNo).isSelected = true;
+                examScoreBeans.get(currentRoundNo - 1).isSelected = true;
             }
         }
-        adapter.setSelectPosition(currentRoundNo);
+        adapter.setSelectPosition(currentRoundNo - 1);
         mBinding.stu_info.rv_score_data.setAdapter(adapter);
     }
 
@@ -303,14 +333,14 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
         }else {
             adapter.setData(examScoreBeans);
         }
-        currentRoundNo = 0;
-        adapter.setSelectPosition(currentRoundNo);
+        currentRoundNo = 1;
+        adapter.setSelectPosition(currentRoundNo -1);
         mBinding.stu_info.rv_score_data.setAdapter(adapter);
         return mqtt_id;
     }
 
     public long initStudentExam2(MqttBean mqttBean, Item item){
-        List<RoundResult> stuRoundResult = DBManager.getInstance().getStuRoundResult(mqttBean.getStudentCode(), item.getItemCode(), item.getSubitemCode());
+        List<RoundResult> stuRoundResult = DBManager.getInstance().getStuRoundResult(mqttBean.getStudentCode(), item.getItemCode(), item.getSubitemCode(),mqttBean.getExamPlaceName(),mqttBean.getGroupNo(),mqttBean.getExamStatus());
         if (stuRoundResult == null || stuRoundResult.isEmpty()){
             return initStudentExam(mqttBean.getStudentCode(),item);
 
@@ -352,17 +382,18 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
                     score.result = new StringBuffer();
                     score.unit = item.getUnit();
                     score.order = multipleItem.getOrder();
-                    if (!scoreBean.resultList.contains(score))
+//                    if (!scoreBean.resultList.contains(score))
                         scoreBean.resultList.add(score);
                 }
             }
-            examScoreBeans.add(scoreBean);
+            if (!examScoreBeans.contains(scoreBean))
+                examScoreBeans.add(scoreBean);
         }
         if (examScoreBeans.size() < item.getRoundNum()){
             for (int i = examScoreBeans.size() ; i < item.getRoundNum() ; i++){
                 ExamScoreBean scoreBean = new ExamScoreBean();
                 scoreBean.studentCode = mqttBean.getStudentCode();
-                scoreBean.roundNo = i + 1;
+                scoreBean.roundNo = i;
                 scoreBean.item = item;
                 scoreBean.resultList = new ArrayList<>();
                 if (i == 0){
@@ -387,7 +418,8 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
                         scoreBean.resultList.add(score);
                     }
                 }
-                examScoreBeans.add(scoreBean);
+//                if (!examScoreBeans.contains(scoreBean))
+                    examScoreBeans.add(scoreBean);
             }
         }
         if (adapter == null) {
@@ -395,9 +427,10 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
         }else {
             adapter.setData(examScoreBeans);
         }
-        currentRoundNo = stuRoundResult.size();
+
+        currentRoundNo = examScoreBeans.get(examScoreBeans.size() - 1).roundNo;
         currentScoreBean = examScoreBeans.get(currentRoundNo - 1);
-        adapter.setSelectPosition(currentRoundNo);
+        adapter.setSelectPosition(currentRoundNo - 1);
         mBinding.stu_info.rv_score_data.setAdapter(adapter);
         Log.e("TAG===>",examScoreBeans.toString());
         MqttBean mqttBean1 = DBManager.getInstance().getMQTTBean(item.getItemCode(), item.getSubitemCode(),mqttBean.getStudentCode());
@@ -405,10 +438,10 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
     }
 
     private void appendScore(ExamScoreBean.Score score, String itemUnit, String scoreStr) {
-        if (itemUnit.equals("s")){
+        if ("s".equals(itemUnit)){
             score.result.append(Double.parseDouble(scoreStr) / 1000.0);
             return;
-        }else if (itemUnit.equals("minutes")){
+        }else if ("minutes".equals(itemUnit)){
             MyApplication.scoreDateFormat.applyPattern("mm:ss.SS");
             String format = MyApplication.scoreDateFormat.format(new Date(Long.parseLong(scoreStr)));
             score.result.append(format);
@@ -453,9 +486,10 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
     public void onMessage(MessageBusMessage message){
         int currentRound = (int) message.getData("currentRound");
         int currentPos = (int) message.getData("currentPos");
-        currentScoreBean = examScoreBeans.get(currentRound);
+        currentScoreBean = examScoreBeans.get(currentRound - 1);
         currentScoreBean.currentPosition = currentPos;
-        adapter.setSelectPosition(currentRound);
+        adapter.setSelectPosition(currentRound - 1);
+        currentRoundNo = currentRound;
         mBinding.stu_info.rv_score_data.setAdapter(adapter);
     }
     @Override
@@ -481,5 +515,6 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
     protected void onDestroy() {
         super.onDestroy();
         MqttManager.getInstance().unRegeisterServerMsg(listener);
+        MqttManager.getInstance().disConnect();
     }
 }

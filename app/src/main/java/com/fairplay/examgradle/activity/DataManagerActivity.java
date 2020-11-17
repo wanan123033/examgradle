@@ -1,6 +1,5 @@
 package com.fairplay.examgradle.activity;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,7 +16,6 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.fairplay.database.DBManager;
 import com.fairplay.examgradle.DBDataCleaner;
-import com.fairplay.examgradle.MyApplication;
 import com.fairplay.examgradle.R;
 import com.fairplay.examgradle.adapter.OperationAdapter;
 import com.fairplay.examgradle.bean.OperationBean;
@@ -29,11 +27,11 @@ import com.feipulai.common.db.DataBaseRespon;
 import com.feipulai.common.db.DataBaseTask;
 import com.feipulai.common.dbutils.BackupManager;
 import com.feipulai.common.dbutils.FileSelectActivity;
-import com.feipulai.common.utils.SharedPrefsUtil;
 import com.feipulai.common.view.dialog.EditDialog;
 import com.github.mjdev.libaums.fs.UsbFile;
 import com.gwm.annotation.layout.Layout;
 import com.gwm.base.BaseApplication;
+
 import com.gwm.mvvm.BaseMvvmTitleActivity;
 import com.gwm.view.titlebar.TitleBarBuilder;
 import com.orhanobut.logger.Logger;
@@ -148,26 +146,23 @@ public class DataManagerActivity extends BaseMvvmTitleActivity<Object, DataManag
     }
     private void showBackupFileNameDialog() {
 
-        createFileNameDialog(new EditDialog.OnConfirmClickListener() {
-            @Override
-            public void OnClickListener(Dialog dialog, String content) {
-                String text = content.trim();
-                UsbFile targetFile;
-                try {
-                    targetFile = FileSelectActivity.sSelectedFile.createFile(text + ".db");
-                    boolean backupSuccess = backupManager.backup(targetFile);
-                    UsbFile deleteFile = FileSelectActivity.sSelectedFile.createFile("." + text + "delete.db");
-                    deleteFile.delete();
-                    ToastUtils.showShort(backupSuccess ? "数据库备份成功" : "数据库备份失败");
-                    Logger.i(backupSuccess ? ("数据库备份成功,备份文件名:" +
-                            FileSelectActivity.sSelectedFile.getName() + "/" + targetFile.getName())
-                            : "数据库备份失败");
-                    FileSelectActivity.sSelectedFile = null;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    ToastUtils.showShort("文件创建失败,请确保路径目录不存在已有文件");
-                    Logger.i("文件创建失败,数据库备份失败");
-                }
+        createFileNameDialog((dialog, content) -> {
+            String text = content.trim();
+            UsbFile targetFile;
+            try {
+                targetFile = FileSelectActivity.sSelectedFile.createFile(text + ".db");
+                boolean backupSuccess = backupManager.backup(targetFile);
+                UsbFile deleteFile = FileSelectActivity.sSelectedFile.createFile("." + text + "delete.db");
+                deleteFile.delete();
+                ToastUtils.showShort(backupSuccess ? "数据库备份成功" : "数据库备份失败");
+                Logger.i(backupSuccess ? ("数据库备份成功,备份文件名:" +
+                        FileSelectActivity.sSelectedFile.getName() + "/" + targetFile.getName())
+                        : "数据库备份失败");
+                FileSelectActivity.sSelectedFile = null;
+            } catch (IOException e) {
+                e.printStackTrace();
+                ToastUtils.showShort("文件创建失败,请确保路径目录不存在已有文件");
+                Logger.i("文件创建失败,数据库备份失败");
             }
         });
     }

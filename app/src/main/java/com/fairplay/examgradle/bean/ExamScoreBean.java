@@ -14,6 +14,20 @@ public class ExamScoreBean {
     public String studentCode;
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ExamScoreBean that = (ExamScoreBean) o;
+        return roundNo == that.roundNo &&
+                studentCode.equals(that.studentCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(roundNo, studentCode);
+    }
+
+    @Override
     public String toString() {
         return "ExamScoreBean{" +
                 "resultList=" + resultList +

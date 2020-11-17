@@ -29,9 +29,11 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.gwm.R;
 import com.gwm.annotation.Permission;
 import com.gwm.annotation.layout.Layout;
+import com.gwm.annotation.messagebus.Subscrition;
 import com.gwm.inter.IViewBind;
 import com.gwm.layout.LayoutEventUtil;
 import com.gwm.messagesendreceive.MessageBus;
+import com.gwm.messagesendreceive.MessageBusMessage;
 import com.gwm.view.CustomDialog;
 
 import java.lang.ref.SoftReference;

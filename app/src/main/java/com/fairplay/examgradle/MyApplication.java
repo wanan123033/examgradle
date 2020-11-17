@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 public class MyApplication extends BaseApplication {
     public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd HH:mm");
     public static final SimpleDateFormat scoreDateFormat = new SimpleDateFormat();
+    public static final String LOG_PATH_NAME = "examgradle";
 
     @Override
     protected synchronized LayoutInflaterUtil getLayoutUtil() {
@@ -26,9 +27,8 @@ public class MyApplication extends BaseApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        LogUtils.initLogger(true,true,"examgradle");
         CrashHandler.getInstance().init(this);
-//        LogToFile.init();
+        LogUtils.initLogger(BuildConfig.DEBUG, BuildConfig.DEBUG, LOG_PATH_NAME);
     }
 
 }

@@ -18,7 +18,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible">
+            android:visibility="gone">
             <EditText
                 android:id="@+id/et_studentCode"
                 android:layout_width="200dp"
@@ -217,7 +217,7 @@
                 android:textSize="28sp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginBottom="5dp"
-                android:text="时间格式:  mm:ss.SS"/>
+                android:text=""/>
             <TextView
                 android:id="@+id/tv_current_user"
                 android:layout_width="wrap_content"

@@ -12,10 +12,6 @@ public class MessageBusMessage {
         this.bundle = bundle;
     }
 
-    public MessageBusMessage(String... action) {
-        this.action = action;
-    }
-
     public MessageBusMessage(Object data, String... action) {
         this.action = action;
         this.data = data;

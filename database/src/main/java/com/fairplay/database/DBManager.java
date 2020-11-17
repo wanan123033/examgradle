@@ -69,6 +69,18 @@ public class DBManager {
     }
 
     public Long insertRoundResult(RoundResult result) {
+        RoundResult roundResult = roundResultDao.queryBuilder().where(RoundResultDao.Properties.ItemCode.eq(result.getItemCode()),
+                RoundResultDao.Properties.SubitemCode.eq(result.getSubitemCode()),
+                RoundResultDao.Properties.ScheduleNo.eq(result.getScheduleNo()),
+                RoundResultDao.Properties.ExamPlaceName.eq(result.getExamPlaceName()),
+                RoundResultDao.Properties.GroundNo.eq(result.getGroundNo()),
+                RoundResultDao.Properties.StudentCode.eq(result.getStudentCode()),
+                RoundResultDao.Properties.RoundNo.eq(result.getRoundNo()),
+                RoundResultDao.Properties.IsLastResult.eq(1)).limit(1).unique();
+        if (roundResult != null){
+            roundResult.setIsLastResult(0);
+            roundResultDao.update(roundResult);
+        }
         return roundResultDao.insertOrReplace(result);
     }
 
@@ -219,6 +231,16 @@ public class DBManager {
         return roundResultDao.queryBuilder().where(RoundResultDao.Properties.StudentCode.eq(studentCode),
                 RoundResultDao.Properties.ItemCode.eq(itemCode),
                 RoundResultDao.Properties.SubitemCode.eq(subItemCode)).list();
+    }
+    public List<RoundResult> getStuRoundResult(String studentCode, String itemCode, String subItemCode,String examPlaceName,String groupNo,int examStatus) {
+        return roundResultDao.queryBuilder().where(RoundResultDao.Properties.StudentCode.eq(studentCode),
+                RoundResultDao.Properties.ItemCode.eq(itemCode),
+                RoundResultDao.Properties.SubitemCode.eq(subItemCode),
+                RoundResultDao.Properties.ExamPlaceName.eq(examPlaceName),
+                RoundResultDao.Properties.GroundNo.eq(groupNo),
+                RoundResultDao.Properties.ExamType.eq(examStatus),
+                RoundResultDao.Properties.IsLastResult.eq(1)).list();
+
     }
 
     public List<MqttBean> getMQTTBean(String itemCode, String subItemCode) {

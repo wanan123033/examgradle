@@ -33,7 +33,7 @@ public class ExamAdapter extends BaseRecyclerViewAdapter<ExamAdapter.ExamViewHol
         mBinding.rv_score.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL,false));
         ScoreAdapter adapter = new ScoreAdapter(context,examScoreBean.resultList);
         adapter.setSelectPosition(examScoreBean.currentPosition);
-        adapter.setCurrentRound(position);
+        adapter.setCurrentRound(examScoreBean.roundNo);
         if (selPos == position){
             adapter.setShow(true);
         }else {

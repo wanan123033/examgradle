@@ -34,7 +34,7 @@ public class ScoreUploadPresenter extends JsonDataPresenter<ScoreUploadPresenter
     public void scoreUpload(String trackNo, RoundResult result, StudentGroupItem groupItem, Item item) throws JSONException {
         this.result = result;
         String userInfo = BaseApplication.getInstance().getMmkv().getString(MMKVContract.USERNAME,"");
-        int examType = BaseApplication.getInstance().getMmkv().getInt(MMKVContract.EXAMTYPE,0);
+//        int examType = BaseApplication.getInstance().getMmkv().getInt(MMKVContract.EXAMTYPE,0);
         JSONObject jsonObject = new JSONObject();
         JSONArray roundJsonArr = new JSONArray();
         if (result.getIsMultioleResult() == 1){
@@ -72,7 +72,7 @@ public class ScoreUploadPresenter extends JsonDataPresenter<ScoreUploadPresenter
             roundJson.put("testTime",result.getTestTime());
 
 
-            roundJson.put("examState",examType);
+            roundJson.put("examState",result.getExamType());
             roundJson.put("printTime",result.getTestTime());
             roundJson.put("resultType",1);
             roundJson.put("msEquipment",getDeviceInfo());
@@ -87,7 +87,7 @@ public class ScoreUploadPresenter extends JsonDataPresenter<ScoreUploadPresenter
             roundJson.put("isFoul",1);
             roundJson.put("resultStatus",result.getResultState());
             roundJson.put("testTime",result.getTestTime());
-            roundJson.put("examState",examType);
+            roundJson.put("examState",result.getExamType());
             roundJson.put("printTime",result.getTestTime());
             roundJson.put("uploadTime",System.currentTimeMillis()+"");
             if (item.getMarkScore() == 0 && "m".equals(item.getUnit().trim())){

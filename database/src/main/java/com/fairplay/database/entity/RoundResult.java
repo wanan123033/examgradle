@@ -31,7 +31,7 @@ public class RoundResult {
     @NotNull
     private int resultState;//成绩状态 //是否犯规 0:未检录 1:正常 2:犯规 3:中退 4:弃权 5:测试     体侧系统没有中退和放弃,且犯规均为机器判定的犯规
     @NotNull
-    private int isLastResult;//是否为最好成绩 0-不是 1-是     身高体重最后成绩即为最好成绩
+    private int isLastResult;//是否为最终成绩 0-不是 1-是     身高体重最后成绩即为最好成绩
     @NotNull
     private int examType;//考试类型 0.正常 1.补考，(2.缓考,现没有这功能)
     @NotNull
@@ -51,14 +51,16 @@ public class RoundResult {
     private int trackNo;
     private String itemName;
     private String unit;
-    @Generated(hash = 546418504)
+    private String groundNo;
+    private String examPlaceName;
+    @Generated(hash = 1606331308)
     public RoundResult(Long id, @NotNull String studentCode, @NotNull String itemCode,
             String subitemCode, int machineCode, int roundNo, int testNo, String machineResult,
             int penaltyNum, String result, String result2, String score, String machineScore,
             int resultState, int isLastResult, int examType, @NotNull String testTime, String printTime,
             String endTime, int stumbleCount, int updateState, byte[] cycleResult, String scheduleNo,
             String mtEquipment, int isMultioleResult, String remark1, String remark2, String remark3,
-            int trackNo, String itemName, String unit) {
+            int trackNo, String itemName, String unit, String groundNo, String examPlaceName) {
         this.id = id;
         this.studentCode = studentCode;
         this.itemCode = itemCode;
@@ -90,6 +92,8 @@ public class RoundResult {
         this.trackNo = trackNo;
         this.itemName = itemName;
         this.unit = unit;
+        this.groundNo = groundNo;
+        this.examPlaceName = examPlaceName;
     }
     @Generated(hash = 1393632943)
     public RoundResult() {
@@ -279,5 +283,17 @@ public class RoundResult {
     }
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+    public String getGroundNo() {
+        return this.groundNo;
+    }
+    public void setGroundNo(String groundNo) {
+        this.groundNo = groundNo;
+    }
+    public String getExamPlaceName() {
+        return this.examPlaceName;
+    }
+    public void setExamPlaceName(String examPlaceName) {
+        this.examPlaceName = examPlaceName;
     }
 }

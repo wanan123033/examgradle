@@ -25,7 +25,7 @@ public class ServerActivity extends BaseTitleActivity<activity_server> {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mmkv = BaseApplication.getInstance().getMmkv();
-        String string = mmkv.getString(MMKVContract.BASE_URL, "http://gkapidev.exam.fplcloud.com");
+        String string = mmkv.getString(MMKVContract.BASE_URL, MMKVContract.BASE_URL_NOMAL);
         mBinding.et_server.setText(string);
         mBinding.et_server.setSelection(mBinding.et_server.getText().length());
     }

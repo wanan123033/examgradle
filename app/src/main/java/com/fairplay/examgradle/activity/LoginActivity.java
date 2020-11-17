@@ -21,11 +21,13 @@ import com.gwm.annotation.layout.Layout;
 import com.gwm.annotation.layout.OnClick;
 import com.gwm.base.BaseApplication;
 import com.gwm.mvvm.BaseMvvmActivity;
+import com.gwm.retrofit.Observable;
 import com.gwm.util.ContextUtil;
+import com.orhanobut.logger.utils.LogUtils;
 import com.tencent.mmkv.MMKV;
 
 @Layout(R.layout.activity_login)
-public class LoginActivity extends BaseMvvmActivity<EnvInfoBean, LoginViewModel, activity_login> {
+public class LoginActivity extends BaseMvvmActivity<Object, LoginViewModel, activity_login> {
     private MMKV mmkv;
     @Override
     protected Class<LoginViewModel> getViewModelClass() {
@@ -71,47 +73,19 @@ public class LoginActivity extends BaseMvvmActivity<EnvInfoBean, LoginViewModel,
         }
         username = username + "@" + CommonUtils.getDeviceId(ContextUtil.get());
         showDialog("登录中...");
+        LogUtils.operation("登录中...username="+username+",password="+password);
         viewModel.login(username,password);
     }
 
     @Override
-    public void onChanged(EnvInfoBean o) {
-        if (o != null){
-            //TODO 启动mqtt
-            Log.e("TAG=====+++++++",o.toString());
-            startMqttService(o);
+    public void onChanged(Object o) {
+        if (o != null && o instanceof EnvInfoBean){
+            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+            startActivity(intent);
             dismissDialog();
 
         }
     }
 
-    private void startMqttService(EnvInfoBean o) {
-//        MqttService.getInstance(getApplication()).start(o);
-        if(!MqttManager.getInstance().isConnected()){
-            MqttManager.getInstance().init(getApplication())
-                    .setServerIp(o.data.mq.ip)
-                    .setServerPort(Integer.parseInt(o.data.mq.port))
-                    .connect(this);
-            MqttManager.getInstance().regeisterServerMsg(new OnMqttAndroidConnectListener() {
-                @Override
-                public void connect() {
-                    super.connect();
-                    Log.e("TAG===>","connect");
-                    Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                    startActivity(intent);
-                }
 
-                @Override
-                public void disConnect() {
-                    super.disConnect();
-                    Log.e("TAG===>","disConnect");
-                }
-
-                @Override
-                public void onDataReceive(String message) {
-                    Log.e("TAG===>",message);
-                }
-            });
-        }
-    }
 }
