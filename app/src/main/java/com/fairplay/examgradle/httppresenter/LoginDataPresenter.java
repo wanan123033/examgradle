@@ -21,13 +21,17 @@ public class LoginDataPresenter extends BaseDataPresenter<LoginBean> {
     }
     @Override
     protected void onNextResult(LoginBean response, int id) {
-        System.out.println(response+"----25");
         if (response.code == 0) {
             BaseApplication.getInstance().getMmkv().putString(MMKVContract.CHANNEL_CODE,response.data.channelCode);
             BaseApplication.getInstance().getMmkv().putString(MMKVContract.TOKEN, response.data.token);
             DownEnvInfoPresenter envInfoPresenter = new DownEnvInfoPresenter();
             envInfoPresenter.setViewModel(getViewModel());
             envInfoPresenter.downEnv();
+
+            //下载项目信息
+            DownItemInfoPresenter presenter = new DownItemInfoPresenter();
+            presenter.setViewModel(getViewModel());
+            presenter.downItem();
         }else {
             ((BaseViewModel) getViewModel()).sendLiveData(response);
         }

@@ -53,6 +53,7 @@
         android:layout_alignLeft="@id/et_password"
         android:layout_below="@id/et_password"
         android:layout_marginTop="10dp"
+        android:checked="true"
         android:text="记住我"/>
     <Button
         android:id="@+id/btn_login"

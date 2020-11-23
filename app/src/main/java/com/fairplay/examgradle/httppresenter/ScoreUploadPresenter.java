@@ -6,13 +6,11 @@ import android.util.Log;
 import com.blankj.utilcode.util.ToastUtils;
 import com.fairplay.database.DBManager;
 import com.fairplay.database.entity.Item;
+import com.fairplay.database.entity.MqttBean;
 import com.fairplay.database.entity.MultipleResult;
 import com.fairplay.database.entity.RoundResult;
-import com.fairplay.database.entity.StudentGroupItem;
 import com.fairplay.examgradle.base.JsonDataPresenter;
 import com.fairplay.examgradle.bean.BaseBean;
-import com.fairplay.examgradle.contract.MMKVContract;
-import com.gwm.base.BaseApplication;
 import com.gwm.retrofit.Observable;
 
 import org.json.JSONArray;
@@ -31,10 +29,9 @@ public class ScoreUploadPresenter extends JsonDataPresenter<ScoreUploadPresenter
     /**
      * 成绩上传
      */
-    public void scoreUpload(String trackNo, RoundResult result, StudentGroupItem groupItem, Item item) throws JSONException {
+    public void scoreUpload(String trackNo, RoundResult result, MqttBean groupItem, Item item) throws JSONException {
         this.result = result;
-        String userInfo = BaseApplication.getInstance().getMmkv().getString(MMKVContract.USERNAME,"");
-//        int examType = BaseApplication.getInstance().getMmkv().getInt(MMKVContract.EXAMTYPE,0);
+        String userInfo = result.getUserInfo();
         JSONObject jsonObject = new JSONObject();
         JSONArray roundJsonArr = new JSONArray();
         if (result.getIsMultioleResult() == 1){

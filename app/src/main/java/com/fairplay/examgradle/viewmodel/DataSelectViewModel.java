@@ -25,7 +25,7 @@ public class DataSelectViewModel extends BaseViewModel<Object> {
         DataBaseExecutor.addTask(new DataBaseTask() {
             @Override
             public DataBaseRespon executeOper() {
-                List<MqttBean> mqttBeans = DBManager.getInstance().getMQTTBean(itemCode,subItemCode);
+                List<MqttBean> mqttBeans = DBManager.getInstance().getMQTTBean(itemCode,subItemCode, LOAD_DATAS, pageNum);
                 List<DataRtiveBean> dataRtiveBeans = new ArrayList<>();
                 Item item = DBManager.getInstance().getItemByItemCode(itemCode,itemCode);
                 Item subItem = DBManager.getInstance().getItemByItemCode(itemCode,subItemCode);
@@ -37,6 +37,7 @@ public class DataSelectViewModel extends BaseViewModel<Object> {
                     dataRtiveBean.itemCode = itemCode;
                     dataRtiveBean.subItemCode = subItemCode;
                     List<RoundResult> stuRoundResult = DBManager.getInstance().getStuRoundResult(mqttBean.getStudentCode(), mqttBean.getItemCode(), mqttBean.getSubitemCode());
+
                     for (RoundResult result : stuRoundResult){
                         if (result.getIsMultioleResult() == 0){   //单值项目
                             if (subItem.getMarkScore() == 1){  //打分项目

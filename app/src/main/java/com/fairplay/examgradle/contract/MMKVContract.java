@@ -2,7 +2,7 @@ package com.fairplay.examgradle.contract;
 
 public interface MMKVContract {
     String BASE_URL = "BASE_URL";                 //url地址
-    String BASE_URL_NOMAL = "http://gkdevapi.exam.fplcloud.com";                 //url地址
+    String BASE_URL_NOMAL = "https://api.ncee.fplcloud.com";                 //url地址
     String USERNAME = "USERNAME";                 //用户名
     String PASSWORD = "PASSWORD";                 //密码
     String TOKEN = "TOKEN";

@@ -24,8 +24,6 @@ public class ZipArchiver {
     public void doUnArchiver(final String srcfile, final String unrarPath, final String password, final IArchiverListener listener) {
         if (TextUtils.isEmpty(srcfile) || TextUtils.isEmpty(unrarPath))
             return;
-        LogUtils.normal("文件路径===》" + srcfile);
-        LogUtils.normal("解压路径===》" + unrarPath);
         mThreadPool.execute(new Runnable() {
             @Override
             public void run() {
@@ -37,7 +35,6 @@ public class ZipArchiver {
                     zFile.setFileNameCharset("GBK");
                     if (!zFile.isValidZipFile())
                         throw new ZipException("文件不合法!");
-                    LogUtils.normal("解压文件===》1");
                     File destDir = new File(unrarPath);
                     if (destDir.isDirectory() && !destDir.exists()) {
                         destDir.mkdir();
@@ -46,7 +43,6 @@ public class ZipArchiver {
                     if (zFile.isEncrypted()) {
                         zFile.setPassword(password.toCharArray());
                     }
-                    LogUtils.normal("解压文件===》2");
                     if (listener != null)
                         mHandler.post(new Runnable() {
                             @Override
@@ -59,7 +55,6 @@ public class ZipArchiver {
 //            zFile.extractAll(unrarPath);
                     FileHeader fh = null;
                     final int total = zFile.getFileHeaders().size();
-                    LogUtils.normal("解压文件数量===》" + total);
                     for (int i = 0; i < zFile.getFileHeaders().size(); i++) {
                         fh = (FileHeader) zFile.getFileHeaders().get(i);
                         String entrypath = "";

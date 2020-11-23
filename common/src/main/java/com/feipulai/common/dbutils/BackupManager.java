@@ -7,7 +7,6 @@ import com.feipulai.common.utils.FileUtil;
 import com.github.mjdev.libaums.fs.UsbFile;
 import com.github.mjdev.libaums.fs.UsbFileInputStream;
 import com.github.mjdev.libaums.fs.UsbFileOutputStream;
-import com.orhanobut.logger.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 
 /**
@@ -116,7 +116,6 @@ public class BackupManager {
             byte[] b = new byte[DB_HEAD.length];
             is.read(b);
             if (!Arrays.equals(b, DB_HEAD)) {
-                Logger.e("备份文件头不正确");
                 return false;
             }
             // 跳过这些字节
@@ -127,8 +126,7 @@ public class BackupManager {
             is.read(b);
             is.close();
             if (!Arrays.equals(b, DB_END)) {
-                Logger.e("备份文件尾不正确");
-                Logger.e("b" + Arrays.toString(b));
+
                 return false;
             }
             return true;

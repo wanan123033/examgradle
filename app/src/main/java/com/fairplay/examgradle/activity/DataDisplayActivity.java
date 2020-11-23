@@ -1,7 +1,6 @@
 package com.fairplay.examgradle.activity;
 
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,7 +17,6 @@ import com.fairplay.examgradle.bean.ScoreBean;
 import com.fairplay.examgradle.contract.Unit;
 import com.fairplay.examgradle.viewmodel.DataDisplayViewModel;
 import com.gwm.annotation.layout.Layout;
-import com.gwm.base.BaseApplication;
 import com.gwm.mvvm.BaseMvvmTitleActivity;
 import com.gwm.view.titlebar.TitleBarBuilder;
 
@@ -71,7 +69,7 @@ public class DataDisplayActivity extends BaseMvvmTitleActivity<Object, DataDispl
                     if(subItem.getTestType() != 1) {
                         scoreBean.result = result.getResult() + Unit.getUnit(subItem.getUnit()).getDesc();
                     }else {
-                        MyApplication.scoreDateFormat.applyPattern(item.getRemark1());
+                        MyApplication.scoreDateFormat.applyPattern(subItem.getRemark1());
                         scoreBean.result = MyApplication.scoreDateFormat.format(new Date(Long.parseLong(result.getResult())));
                     }
                 }else {
@@ -91,7 +89,7 @@ public class DataDisplayActivity extends BaseMvvmTitleActivity<Object, DataDispl
                         if(subItem.getTestType() != 1) {
                             scoreBean.result = multipleResult.getDesc() + "--" + multipleResult.getScore() + "  " + Unit.getUnit(subItem.getUnit()).getDesc();
                         }else {
-                            MyApplication.scoreDateFormat.applyPattern(item.getRemark1());
+                            MyApplication.scoreDateFormat.applyPattern(subItem.getRemark1());
                             scoreBean.result = MyApplication.scoreDateFormat.format(new Date(Long.parseLong(result.getScore())));
                         }
                     }else { //打分项目

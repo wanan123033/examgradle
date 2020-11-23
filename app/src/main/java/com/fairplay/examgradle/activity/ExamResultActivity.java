@@ -39,6 +39,7 @@ import com.gwm.base.BaseApplication;
 import com.gwm.messagesendreceive.MessageBusMessage;
 import com.gwm.mvvm.BaseMvvmTitleActivity;
 import com.gwm.view.titlebar.TitleBarBuilder;
+import com.orhanobut.logger.utils.LogUtils;
 import com.tencent.mmkv.MMKV;
 
 import org.json.JSONArray;
@@ -115,16 +116,16 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
     }
 
     private void packMsg(String message) {
-        Log.e("TAG====>",message);
+        LogUtils.operation("接收到推送信息:"+message);
 
         try {
             JSONObject jsonObject = new JSONObject(message);
             String channalCode = mmkv.getString(MMKVContract.CHANNEL_CODE, "");
-//            //通道号判断
-//            String code = jsonObject.getString("channelCode");
-//            if (TextUtils.isEmpty(channalCode) || !channalCode.equals(code)){
-//                return;
-//            }
+            //通道号判断
+            String code = jsonObject.getString("channelCode");
+            if (TextUtils.isEmpty(channalCode) || !channalCode.equals(code)){
+                return;
+            }
             //匹配用户判断
             int messageType = jsonObject.getInt("messageType");
             int matchUser = jsonObject.getInt("matchUser");
@@ -148,6 +149,7 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
                 if (messageType == 1) {
                     examScoreBeans.clear();
                     mqttBean = GsonUtils.fromJson(jsonObject.getJSONObject("data").toString(), MqttBean.class);
+                    LogUtils.operation("接收到推送考生信息:"+mqttBean.toString());
                     item = DBManager.getInstance().getItemByItemCode(mqttBean.getItemCode(), mqttBean.getSubitemCode());
                     long mqtt_id = initStudentExam2(mqttBean,item);
 
@@ -163,6 +165,7 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
             }else if (messageType == 3) {
                 dismissDialog();
                 int data = jsonObject.getInt("data");
+                LogUtils.operation("接收到推送解锁信息:"+jsonObject.toString());
                 if (data == 1) {
                     if (currentScoreBean != null) {
                         for (int i = 0; i < currentScoreBean.resultList.size(); i++) {
@@ -174,6 +177,7 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
                     }
                 }else {
                     ToastUtils.showShort("服务器拒绝解锁!");
+                    LogUtils.operation("页面提示:服务器拒绝解锁");
                 }
             }
         } catch (Exception e) {
@@ -186,7 +190,8 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
     public void onClick(View view){
         String text = mBinding.stu_info.tv_studentCode.getText().toString().trim();
         if (TextUtils.isEmpty(text) && view.getId() != R.id.btn_score1){
-            com.blankj.utilcode.util.ToastUtils.showShort("无考生信息");
+            ToastUtils.showShort("无考生信息");
+            LogUtils.operation("页面提示:无考生信息");
             return;
         }
         switch (view.getId()){
@@ -240,7 +245,9 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
                 break;
             case R.id.tvj:
                 showDialog("申请解锁中...");
-                Log.e("TAG","currentRoundNo="+currentRoundNo);
+                LogUtils.operation("用户点击了解锁:mqttBean="+mqttBean.toString());
+                LogUtils.operation("用户点击了解锁:item="+item.toString());
+                LogUtils.operation("用户点击了解锁:currentRoundNo="+currentRoundNo);
                 viewModel.unLockStuScore(mqttBean,item,currentRoundNo);
                 break;
             case R.id.btn_score1:
@@ -268,10 +275,12 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
         }
         if (currentScoreBean.currentPosition == currentScoreBean.resultList.size() - 1){   //输入的成绩到了某轮的最后一个  触发保存成绩,并发送成绩
             RoundResult currentResult = viewModel.saveResult(mqttBean.getScheduleNo(),currentScoreBean,item,currentRoundNo,mqttBean);
+            LogUtils.operation("保存成绩信息:"+currentResult.toString());
             if (currentResult == null){
                 return;
             }
             if (currentResult != null){
+                LogUtils.operation("上锁成绩信息:"+currentResult.toString());
                 currentScoreBean.resultList.get(currentScoreBean.currentPosition).isLock = true;
             }
         }
@@ -279,6 +288,7 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
         if(currentScoreBean.resultList.size() > 1 && currentScoreBean.currentPosition < currentScoreBean.resultList.size() - 1){   //输入的成绩没有到某轮的最后一个,移动光标到下一个成绩
             currentScoreBean.resultList.get(currentScoreBean.currentPosition).isLock = true;
             currentScoreBean.currentPosition = currentScoreBean.currentPosition + 1;
+            LogUtils.operation("移动光标到下一个成绩:currentPosition="+currentScoreBean.currentPosition+",currentRoundNo="+currentRoundNo);
         }else {   //移动光标到下一个轮次
             currentScoreBean.resultList.get(currentScoreBean.currentPosition).isLock = true;
             if (currentRoundNo < examScoreBeans.size()){
@@ -289,6 +299,7 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
                 }
                 examScoreBeans.get(currentRoundNo - 1).isSelected = true;
             }
+            LogUtils.operation("移动光标到下一个成绩:currentPosition="+currentScoreBean.currentPosition+",currentRoundNo="+currentRoundNo);
         }
         adapter.setSelectPosition(currentRoundNo - 1);
         mBinding.stu_info.rv_score_data.setAdapter(adapter);

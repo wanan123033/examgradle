@@ -2,11 +2,10 @@ package com.fairplay.examgradle.viewmodel;
 
 import android.content.Intent;
 
+import com.blankj.utilcode.util.CacheMemoryUtils;
 import com.fairplay.database.DBManager;
 import com.fairplay.database.entity.MqttBean;
 import com.fairplay.database.entity.RoundResult;
-import com.fairplay.examgradle.contract.MMKVContract;
-import com.fairplay.examgradle.httppresenter.DownGroupInfoPresenter;
 import com.fairplay.examgradle.httppresenter.DownItemInfoPresenter;
 import com.fairplay.examgradle.httppresenter.DownScheduleInfoPresenter;
 import com.fairplay.examgradle.service.DataScoreUploadService;
@@ -46,7 +45,8 @@ public class DataManagerViewModel extends BaseViewModel<Object> {
             mqttBeans.add(mqttBean);
         }
         Intent intent = new Intent(BaseApplication.getInstance(), DataScoreUploadService.class);
-        intent.putParcelableArrayListExtra(DataScoreUploadService.MQTT_BEAN,mqttBeans);
+        //预防数据量过大,使用CacheMemoryUtils
+        CacheMemoryUtils.getInstance().put(DataScoreUploadService.MQTT_BEAN,mqttBeans);
         BaseApplication.getInstance().startService(intent);
     }
 }

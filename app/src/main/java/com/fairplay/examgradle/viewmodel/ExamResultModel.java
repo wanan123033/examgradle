@@ -11,8 +11,12 @@ import com.fairplay.database.entity.MultipleResult;
 import com.fairplay.database.entity.RoundResult;
 import com.fairplay.examgradle.bean.ExamScoreBean;
 import com.fairplay.examgradle.bean.ScoreBean;
+import com.fairplay.examgradle.contract.MMKVContract;
 import com.fairplay.examgradle.httppresenter.ScoreUnLockPresenter;
+import com.gwm.base.BaseApplication;
 import com.gwm.mvvm.BaseViewModel;
+import com.orhanobut.logger.utils.LogUtils;
+import com.tencent.mmkv.MMKV;
 import com.zhy.http.okhttp.utils.L;
 
 import java.text.DateFormat;
@@ -181,6 +185,7 @@ public class ExamResultModel extends BaseViewModel<Object> {
 //        if (scoreCheck(item, "", currentScoreBean.resultList.get(currentScoreBean.resultList.size() - 1))) return null;
         if (currentScoreBean.resultList.get(currentScoreBean.currentPosition).isLock){
             ToastUtils.showShort("成绩已保存");
+            LogUtils.operation("页面提示:成绩已保存");
             return null;
         }
         RoundResult roundResult = new RoundResult();
@@ -196,6 +201,9 @@ public class ExamResultModel extends BaseViewModel<Object> {
         roundResult.setExamPlaceName(mqttBean.getExamPlaceName());
         roundResult.setGroundNo(mqttBean.getGroupNo());
         roundResult.setIsLastResult(1);
+        MMKV mmkv = BaseApplication.getInstance().getMmkv();
+        String username = mmkv.getString(MMKVContract.USERNAME, "");
+        roundResult.setUserInfo(username);
         if (item.getMachineCode() != null)
             roundResult.setMachineCode(Integer.parseInt(item.getMachineCode()));
 //        roundResult.setRoundNo(examScoreBean.currentScorePosition);
@@ -353,7 +361,7 @@ public class ExamResultModel extends BaseViewModel<Object> {
         if(currentScore.result.length() >= 1)
             currentScore.result.deleteCharAt(currentScore.result.length() - 1);
     }
-    private static boolean isLegalDate(String sDate,Item item) {
+    private boolean isLegalDate(String sDate,Item item) {
         DateFormat formatter = new SimpleDateFormat(item.getRemark1());
         try {
             Date date = formatter.parse(sDate);
@@ -363,7 +371,7 @@ public class ExamResultModel extends BaseViewModel<Object> {
             return false;
         }
     }
-    public static long getScoend(String sDate) {
+    private long getScoend(String sDate) {
         if (sDate.contains(":")) {
             String[] split = sDate.split(":");
             return Long.parseLong(split[0]) * 60L * 1000L + ((long) (Double.parseDouble(split[1]) * 1000.0));

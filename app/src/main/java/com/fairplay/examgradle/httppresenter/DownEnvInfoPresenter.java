@@ -25,6 +25,9 @@ public class DownEnvInfoPresenter extends JsonDataPresenter<DownEnvInfoPresenter
 
     @Override
     protected void onNextResult(EnvInfoBean response, int id) {
+        if (response.code >= 0){
+            ((BaseViewModel) getViewModel()).sendLiveData(response);
+        }
         Log.e("TAG=====",response.toString());
         if (getViewModel() instanceof BaseViewModel){
             BaseApplication.getInstance().getMmkv().putString(MMKVContract.MQIP,response.data.mq.ip);

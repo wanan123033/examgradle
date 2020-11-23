@@ -7,6 +7,7 @@ import android.util.Log;
 import com.gwm.annotation.http.HTTP;
 import com.gwm.base.BaseApplication;
 import com.gwm.util.ContextUtil;
+import com.orhanobut.logger.utils.LogUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.builder.GetBuilder;
 import com.zhy.http.okhttp.builder.HasParamsable;
@@ -38,7 +39,7 @@ public class BaseOkHttp {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
             @Override
             public void log(String message) {
-                Log.e("TAG===>",message);
+                LogUtils.crash(message);
             }
         });
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);

@@ -136,7 +136,7 @@ public class DownItemInfoPresenter extends JsonDataPresenter<DownItemInfoPresent
                     }
                     ToastUtils.showShort("数据下载成功");
                 }else {
-                    ToastUtils.showShort("数据下载失败");
+//                    ToastUtils.showShort("数据下载失败");
                 }
                 ((BaseViewModel)getViewModel()).sendLiveData(BaseActivity.DIMMSION_PROGREESS);
             }

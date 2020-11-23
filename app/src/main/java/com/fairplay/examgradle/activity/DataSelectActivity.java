@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.layout.activity_data_select;
+import com.blankj.utilcode.util.CacheMemoryUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.fairplay.database.DBManager;
 import com.fairplay.database.entity.DataRtiveBean;
@@ -25,6 +26,10 @@ import com.gwm.annotation.layout.OnClick;
 import com.gwm.annotation.layout.OnItemSelected;
 import com.gwm.base.BaseApplication;
 import com.gwm.mvvm.BaseMvvmTitleActivity;
+import com.orhanobut.logger.utils.LogUtils;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.tencent.mmkv.MMKV;
 
 import java.util.ArrayList;
@@ -34,11 +39,9 @@ import java.util.List;
 public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelectViewModel, activity_data_select> {
     private MMKV mmkv;
     private StudentAdapter adapter;
-    private int mPageNum;
     private List<DataRtiveBean> mList;
     private String itemCode;
     private String subItemCode;
-    private Item currentBigItem,currentSmoatItem;
     private List<Item> bigItems,subItems;
     private int pageNum = 0;
     @Override
@@ -58,17 +61,26 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
         initBigItem();
         initSmoatItem();
 
+        mBinding.refreshview.setOnRefreshListener(refreshlayout -> {
+            pageNum = 0;
+            viewModel.selectAll(itemCode,subItemCode,pageNum);
+        });
+        mBinding.refreshview.setOnLoadmoreListener(refreshlayout -> {
+            pageNum++;
+            viewModel.selectAll(itemCode,subItemCode,pageNum);
+        });
     }
 
     private void initSmoatItem() {
-        if (currentBigItem == null){
+        if (itemCode == null){
             return;
         }
-        subItems = DBManager.getInstance().getSmoatItems(currentBigItem.getItemCode());
+        subItems = DBManager.getInstance().getSmoatItems(itemCode);
         if (subItems == null || subItems.isEmpty()){
-            currentSmoatItem = currentBigItem;
+            subItemCode = itemCode;
             mBinding.sp_subitem.setAdapter(null);
-            viewModel.selectAll(currentSmoatItem.getItemCode(),currentSmoatItem.getSubitemCode(),0);
+            pageNum = 0;
+            viewModel.selectAll(subItemCode,subItemCode,pageNum);
             return;
         }
         List<String> bigItemNames = new ArrayList<>();
@@ -84,7 +96,7 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
         bigAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mBinding.sp_subitem.setAdapter(bigAdapter);
         mBinding.sp_subitem.setSelection(currentPos);
-        currentSmoatItem = subItems.get(currentPos);
+        subItemCode = subItems.get(currentPos).getSubitemCode();
     }
 
     private void initBigItem() {
@@ -106,18 +118,20 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
         bigAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mBinding.sp_item.setAdapter(bigAdapter);
         mBinding.sp_item.setSelection(currentBigPos);
-        currentBigItem = bigItems.get(currentBigPos);
+        itemCode = bigItems.get(currentBigPos).getItemCode();
     }
 
     @OnItemSelected({R.id.sp_item,R.id.sp_subitem})
     public void onItemSelected(AdapterView adapterView,int position){
         switch (adapterView.getId()){
             case R.id.sp_item:
-                currentBigItem = bigItems.get(position);
+                itemCode = bigItems.get(position).getItemCode();
                 initSmoatItem();
                 break;
             case R.id.sp_subitem:
-                viewModel.selectAll(currentSmoatItem.getItemCode(),currentSmoatItem.getSubitemCode(),pageNum);
+                subItemCode = subItems.get(position).getSubitemCode();
+                pageNum = 0;
+                viewModel.selectAll(itemCode,subItemCode,pageNum);
                 break;
         }
     }
@@ -129,7 +143,7 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
                 break;
             case R.id.btn_query:
                 String input = mBinding.et_input_text.getText().toString().trim();
-                mPageNum = 0;
+                pageNum = 0;
                 viewModel.searchStuCode(input);
                 break;
         }
@@ -139,6 +153,7 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
         List<DataRtiveBean> selectedBean = getSelectedBean();
         if (selectedBean == null || selectedBean.isEmpty()){
             ToastUtils.showShort("没有勾选成绩");
+            LogUtils.operation("页面提示:没有勾选成绩");
             return;
         }
         ArrayList<MqttBean> mqttBeans = new ArrayList<>();
@@ -147,7 +162,8 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
             mqttBeans.add(mqttBean);
         }
         Intent intent = new Intent(getApplicationContext(), DataScoreUploadService.class);
-        intent.putParcelableArrayListExtra(DataScoreUploadService.MQTT_BEAN,mqttBeans);
+//        intent.putParcelableArrayListExtra(DataScoreUploadService.MQTT_BEAN,mqttBeans);
+        CacheMemoryUtils.getInstance().put(DataScoreUploadService.MQTT_BEAN,mqttBeans);
         startService(intent);
     }
 

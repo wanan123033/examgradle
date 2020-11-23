@@ -1,7 +1,7 @@
 package com.fairplay.examgradle.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,27 +10,22 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.Observer;
 
 import com.app.layout.activity_splash;
-import com.blankj.utilcode.constant.PermissionConstants;
-import com.fairplay.database.DBManager;
-import com.fairplay.database.entity.Item;
-import com.fairplay.database.entity.MultipleItem;
+import com.blankj.utilcode.util.ToastUtils;
 import com.fairplay.examgradle.R;
 import com.fairplay.examgradle.bean.EnvInfoBean;
 import com.fairplay.examgradle.contract.MMKVContract;
-import com.fairplay.examgradle.httppresenter.DownGroupInfoPresenter;
-import com.fairplay.examgradle.httppresenter.DownGroupPresenter;
-import com.fairplay.examgradle.mq.MqttManager;
-import com.fairplay.examgradle.mq.interfaces.OnMqttAndroidConnectListener;
+import com.fairplay.examgradle.utils.CommonUtils;
 import com.fairplay.examgradle.viewmodel.SplashViewModel;
 import com.gwm.android.Handler;
 import com.gwm.annotation.Permission;
 import com.gwm.annotation.layout.Layout;
-import com.gwm.base.BaseActivity;
 import com.gwm.base.BaseApplication;
 import com.gwm.mvvm.BaseMvvmActivity;
+import com.gwm.mvvm.NetworkLiveData;
+import com.gwm.util.ContextUtil;
 import com.orhanobut.logger.utils.LogUtils;
 import com.tencent.mmkv.MMKV;
 
@@ -48,6 +43,19 @@ public class SplashActivity extends BaseMvvmActivity<Object, SplashViewModel,act
         mmkv = BaseApplication.getInstance().getMmkv();
         super.onCreate(savedInstanceState);
         LogUtils.operation("----------+++++++++++++++");
+
+        NetworkLiveData.observer(this, networkInfo -> {
+            if (networkInfo == null){
+                ToastUtils.showShort("网络未连接!");
+                Intent intent = new Intent();
+                intent.setClass(getApplicationContext(), LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            }
+
+        });
     }
 
     @Override
@@ -57,6 +65,7 @@ public class SplashActivity extends BaseMvvmActivity<Object, SplashViewModel,act
             Handler.getHandler().postDelayed(() -> {
                 String username = mmkv.getString(MMKVContract.USERNAME,"");
                 String passsword = mmkv.getString(MMKVContract.PASSWORD,"");
+                username = username + "@" + CommonUtils.getDeviceId(ContextUtil.get());
                 LogUtils.operation("自动登录:username="+username+",password="+passsword);
                 if (TextUtils.isEmpty(username) || TextUtils.isEmpty(passsword)){
                     Intent intent = new Intent();
@@ -74,8 +83,16 @@ public class SplashActivity extends BaseMvvmActivity<Object, SplashViewModel,act
 
     @Override
     public void onChanged(Object o) {
+        dismissDialog();
         if (o != null && o instanceof EnvInfoBean){
-            dismissDialog();
+            if (((EnvInfoBean) o).code >= 1){
+                ToastUtils.showShort(((EnvInfoBean) o).msg);
+                Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                startActivity(intent);
+            }else {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
         }else {
             Intent intent = new Intent();
             intent.setClass(getApplicationContext(), LoginActivity.class);
@@ -92,6 +109,7 @@ public class SplashActivity extends BaseMvvmActivity<Object, SplashViewModel,act
         Handler.getHandler().postDelayed(() -> {
             String username = mmkv.getString(MMKVContract.USERNAME,"");
             String passsword = mmkv.getString(MMKVContract.PASSWORD,"");
+            username = username + "@" + CommonUtils.getDeviceId(ContextUtil.get());
             LogUtils.operation("自动登录:username="+username+",password="+passsword);
             if (TextUtils.isEmpty(username) || TextUtils.isEmpty(passsword)){
                 Intent intent = new Intent();

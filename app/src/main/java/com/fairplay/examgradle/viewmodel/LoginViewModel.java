@@ -12,10 +12,5 @@ public class LoginViewModel extends BaseViewModel<Object> {
         LoginDataPresenter dataPresenter = new LoginDataPresenter();
         dataPresenter.setViewModel(this);
         dataPresenter.login(username,password);
-
-        //下载项目信息
-        DownItemInfoPresenter presenter = new DownItemInfoPresenter();
-        presenter.setViewModel(this);
-        presenter.downItem();
     }
 }

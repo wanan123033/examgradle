@@ -28,7 +28,7 @@ public class MyApplication extends BaseApplication {
     public void onCreate() {
         super.onCreate();
         CrashHandler.getInstance().init(this);
-        LogUtils.initLogger(BuildConfig.DEBUG, BuildConfig.DEBUG, LOG_PATH_NAME);
+        LogUtils.initLogger(true, true, LOG_PATH_NAME);
     }
 
 }

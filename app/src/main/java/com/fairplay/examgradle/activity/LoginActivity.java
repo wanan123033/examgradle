@@ -70,8 +70,12 @@ public class LoginActivity extends BaseMvvmActivity<Object, LoginViewModel, acti
         if (mBinding.cb_agin_pass.isChecked()){
             mmkv.putString(MMKVContract.USERNAME,username);
             mmkv.putString(MMKVContract.PASSWORD,password);
+        }else {
+            mmkv.remove(MMKVContract.USERNAME);
+            mmkv.remove(MMKVContract.PASSWORD);
         }
         username = username + "@" + CommonUtils.getDeviceId(ContextUtil.get());
+
         showDialog("登录中...");
         LogUtils.operation("登录中...username="+username+",password="+password);
         viewModel.login(username,password);
@@ -79,10 +83,14 @@ public class LoginActivity extends BaseMvvmActivity<Object, LoginViewModel, acti
 
     @Override
     public void onChanged(Object o) {
+        dismissDialog();
         if (o != null && o instanceof EnvInfoBean){
-            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-            startActivity(intent);
-            dismissDialog();
+            if (((EnvInfoBean) o).code >= 1){
+                ToastUtils.showShort(((EnvInfoBean) o).msg);
+            }else {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
 
         }
     }

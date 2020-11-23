@@ -38,8 +38,11 @@ public class ScanQrRespPresenter extends JsonDataPresenter<ScanQrRespPresenter.S
             ToastUtils.showShort("通道组加入成功");
             BaseApplication.getInstance().getMmkv().putString(MMKVContract.CHANNEL_CODE,channelCode);
             MqttManager.getInstance().subscribe(channelCode);
+            DownItemInfoPresenter itemInfoPresenter = new DownItemInfoPresenter();
+            itemInfoPresenter.setViewModel(getViewModel());
+            itemInfoPresenter.downItem();
         }else {
-
+            ToastUtils.showShort(response.msg);
         }
     }
 

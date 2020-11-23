@@ -5,6 +5,8 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.util.Arrays;
+
 @Entity
 public class RoundResult {
     @Id(autoincrement = true)
@@ -53,14 +55,16 @@ public class RoundResult {
     private String unit;
     private String groundNo;
     private String examPlaceName;
-    @Generated(hash = 1606331308)
+    private String userInfo;
+    @Generated(hash = 888422617)
     public RoundResult(Long id, @NotNull String studentCode, @NotNull String itemCode,
             String subitemCode, int machineCode, int roundNo, int testNo, String machineResult,
             int penaltyNum, String result, String result2, String score, String machineScore,
             int resultState, int isLastResult, int examType, @NotNull String testTime, String printTime,
             String endTime, int stumbleCount, int updateState, byte[] cycleResult, String scheduleNo,
             String mtEquipment, int isMultioleResult, String remark1, String remark2, String remark3,
-            int trackNo, String itemName, String unit, String groundNo, String examPlaceName) {
+            int trackNo, String itemName, String unit, String groundNo, String examPlaceName,
+            String userInfo) {
         this.id = id;
         this.studentCode = studentCode;
         this.itemCode = itemCode;
@@ -94,6 +98,7 @@ public class RoundResult {
         this.unit = unit;
         this.groundNo = groundNo;
         this.examPlaceName = examPlaceName;
+        this.userInfo = userInfo;
     }
     @Generated(hash = 1393632943)
     public RoundResult() {
@@ -295,5 +300,11 @@ public class RoundResult {
     }
     public void setExamPlaceName(String examPlaceName) {
         this.examPlaceName = examPlaceName;
+    }
+    public String getUserInfo() {
+        return this.userInfo;
+    }
+    public void setUserInfo(String userInfo) {
+        this.userInfo = userInfo;
     }
 }
