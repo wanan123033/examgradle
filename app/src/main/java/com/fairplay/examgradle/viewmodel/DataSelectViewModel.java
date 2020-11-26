@@ -2,10 +2,14 @@ package com.fairplay.examgradle.viewmodel;
 
 import android.util.Log;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.fairplay.database.DBManager;
 import com.fairplay.database.entity.DataRtiveBean;
+import com.fairplay.database.entity.ExamPlace;
+import com.fairplay.database.entity.GroupInfo;
 import com.fairplay.database.entity.Item;
-import com.fairplay.database.entity.MqttBean;
+import com.fairplay.database.entity.Schedule;
+import com.fairplay.database.entity.StudentGroupItem;
 import com.fairplay.database.entity.MultipleResult;
 import com.fairplay.database.entity.RoundResult;
 import com.fairplay.examgradle.contract.Unit;
@@ -19,25 +23,54 @@ import java.util.List;
 import java.util.Map;
 
 public class DataSelectViewModel extends BaseViewModel<Object> {
-    private int LOAD_DATAS = 100;
-    public void selectAll(String itemCode,String subItemCode,int pageNum) {
+    public void selectAll(String itemCode, String subItemCode, Schedule schedule, ExamPlace examPlace, GroupInfo groupInfo, int pageNum) {
+
+        if (schedule == null){
+            ToastUtils.showShort("请选择日程");
+            return;
+        }
+        if (examPlace == null){
+            ToastUtils.showShort("请选择场地");
+            return;
+        }
+        if (itemCode == null || subItemCode == null){
+            ToastUtils.showShort("请选择项目");
+            return;
+        }
 
         DataBaseExecutor.addTask(new DataBaseTask() {
             @Override
             public DataBaseRespon executeOper() {
-                List<MqttBean> mqttBeans = DBManager.getInstance().getMQTTBean(itemCode,subItemCode, LOAD_DATAS, pageNum);
+                List<StudentGroupItem> mqttBeans = null;
+                if (groupInfo == null) {
+                    mqttBeans = DBManager.getInstance().getMQTTBean(itemCode, subItemCode, schedule.getScheduleNo(), examPlace.getExamplaceName());
+                }else {
+                    mqttBeans = DBManager.getInstance().getMQTTBean(itemCode, subItemCode, schedule.getScheduleNo(), examPlace.getExamplaceName(),groupInfo);
+                }
                 List<DataRtiveBean> dataRtiveBeans = new ArrayList<>();
                 Item item = DBManager.getInstance().getItemByItemCode(itemCode,itemCode);
                 Item subItem = DBManager.getInstance().getItemByItemCode(itemCode,subItemCode);
-                for (MqttBean mqttBean : mqttBeans){
+                for (StudentGroupItem mqttBean : mqttBeans){
                     DataRtiveBean dataRtiveBean = new DataRtiveBean();
                     dataRtiveBean.studentCode = mqttBean.getStudentCode();
                     dataRtiveBean.itemName = item.getItemName()+"-"+subItem.getItemName();
                     dataRtiveBean.examPlaceName = mqttBean.getExamPlaceName();
                     dataRtiveBean.itemCode = itemCode;
                     dataRtiveBean.subItemCode = subItemCode;
-                    List<RoundResult> stuRoundResult = DBManager.getInstance().getStuRoundResult(mqttBean.getStudentCode(), mqttBean.getItemCode(), mqttBean.getSubitemCode());
+                    dataRtiveBean.scheduleNo = schedule.getScheduleNo();
+                    List<RoundResult> stuRoundResult = null;
+                    if (groupInfo == null) {
+                        stuRoundResult = DBManager.getInstance().getStuRoundResult(mqttBean.getStudentCode(),
+                                mqttBean.getItemCode(), mqttBean.getSubitemCode(),
+                                schedule.getScheduleNo(),
+                                examPlace.getExamplaceName());
+                    }else {
+                        stuRoundResult = DBManager.getInstance().getStuRoundResult(mqttBean.getStudentCode(),
+                                mqttBean.getItemCode(), mqttBean.getSubitemCode(),
+                                schedule.getScheduleNo(),
+                                examPlace.getExamplaceName(),groupInfo);
 
+                    }
                     for (RoundResult result : stuRoundResult){
                         if (result.getIsMultioleResult() == 0){   //单值项目
                             if (subItem.getMarkScore() == 1){  //打分项目
@@ -81,13 +114,31 @@ public class DataSelectViewModel extends BaseViewModel<Object> {
 
     }
 
-    public void searchStuCode(String stuCode) {
+    public void searchStuCode(String stuCode,String itemCode, String subItemCode, Schedule schedule, ExamPlace examPlace, GroupInfo groupInfo) {
+        if (schedule == null){
+            ToastUtils.showShort("请选择日程");
+            return;
+        }
+        if (examPlace == null){
+            ToastUtils.showShort("请选择场地");
+            return;
+        }
+        if (itemCode == null || subItemCode == null){
+            ToastUtils.showShort("请选择项目");
+            return;
+        }
+
         DataBaseExecutor.addTask(new DataBaseTask() {
             @Override
             public DataBaseRespon executeOper() {
-                List<MqttBean> mqttBeans = DBManager.getInstance().getMQTTBean(stuCode);
+                List<StudentGroupItem> mqttBeans = null;
+                if (groupInfo == null) {
+                    mqttBeans = DBManager.getInstance().getMQTTBean(stuCode,itemCode, subItemCode, schedule.getScheduleNo(), examPlace.getExamplaceName());
+                }else {
+                    mqttBeans = DBManager.getInstance().getMQTTBean(stuCode,itemCode, subItemCode, schedule.getScheduleNo(), examPlace.getExamplaceName(),groupInfo);
+                }
                 List<DataRtiveBean> dataRtiveBeans = new ArrayList<>();
-                for (MqttBean mqttBean : mqttBeans){
+                for (StudentGroupItem mqttBean : mqttBeans){
                     Item item = DBManager.getInstance().getItemByItemCode(mqttBean.getItemCode(),mqttBean.getItemCode());
                     Item subItem = DBManager.getInstance().getItemByItemCode(mqttBean.getItemCode(),mqttBean.getSubitemCode());
                     DataRtiveBean dataRtiveBean = new DataRtiveBean();
@@ -96,7 +147,20 @@ public class DataSelectViewModel extends BaseViewModel<Object> {
                     dataRtiveBean.examPlaceName = mqttBean.getExamPlaceName();
                     dataRtiveBean.itemCode = item.getItemCode();
                     dataRtiveBean.subItemCode = subItem.getSubitemCode();
-                    List<RoundResult> stuRoundResult = DBManager.getInstance().getStuRoundResult(mqttBean.getStudentCode(), mqttBean.getItemCode(), mqttBean.getSubitemCode());
+                    dataRtiveBean.scheduleNo = schedule.getScheduleNo();
+                    List<RoundResult> stuRoundResult = null;
+                    if (groupInfo == null) {
+                        stuRoundResult = DBManager.getInstance().getStuRoundResult(mqttBean.getStudentCode(),
+                                mqttBean.getItemCode(), mqttBean.getSubitemCode(),
+                                schedule.getScheduleNo(),
+                                examPlace.getExamplaceName());
+                    }else {
+                        stuRoundResult = DBManager.getInstance().getStuRoundResult(mqttBean.getStudentCode(),
+                                mqttBean.getItemCode(), mqttBean.getSubitemCode(),
+                                schedule.getScheduleNo(),
+                                examPlace.getExamplaceName(),groupInfo);
+
+                    }
                     for (RoundResult result : stuRoundResult){
                         if (result.getIsMultioleResult() == 0){   //单值项目
                             if (subItem.getMarkScore() == 1){  //打分项目
@@ -136,4 +200,6 @@ public class DataSelectViewModel extends BaseViewModel<Object> {
             }
         });
     }
+
+
 }

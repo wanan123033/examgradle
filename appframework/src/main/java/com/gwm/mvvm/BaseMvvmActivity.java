@@ -35,13 +35,8 @@ public abstract class BaseMvvmActivity<M,VM extends ViewModel<M>,V extends IView
 
     @Override
     public void onChanged(M o) {
-        try {
-            int i = Integer.parseInt(o.toString());
-            if (i == DIMMSION_PROGREESS){
-                dismissDialog();
-            }
-        }catch (NumberFormatException e){
-            e.printStackTrace();
-        }
+
     }
+
+
 }

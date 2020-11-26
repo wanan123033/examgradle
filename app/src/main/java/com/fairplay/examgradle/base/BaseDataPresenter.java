@@ -5,6 +5,8 @@ import com.fairplay.examgradle.contract.MMKVContract;
 import com.gwm.base.BaseActivity;
 import com.gwm.base.BaseApplication;
 import com.gwm.http.HttpParams;
+import com.gwm.messagesendreceive.MessageBus;
+import com.gwm.messagesendreceive.MessageBusMessage;
 import com.gwm.mvvm.BaseViewModel;
 import com.gwm.mvvm.ViewModel;
 import com.gwm.retrofit.Observable;
@@ -17,24 +19,6 @@ public abstract class BaseDataPresenter<D> extends com.gwm.base.BaseDataPresente
         super(IHttp.class);
         String baseUrl = BaseApplication.getInstance().getMmkv().getString(MMKVContract.BASE_URL,MMKVContract.BASE_URL_NOMAL);
         setBaseUrl(baseUrl);
-    }
-    public void addHttpSubscriber(Observable<D> observable,Class<D> clazz){
-        observable.subscriber(new HttpParams.HttpNetListener() {
-            @Override
-            public void onBefore(Request request, int id) {
-            }
-
-            @Override
-            public void onAfter(int id) {
-
-            }
-
-            @Override
-            public void inProgress(float progress, long total, int id) {
-
-            }
-        });
-        super.addHttpSubscriber(observable,clazz);
     }
 
     public ViewModel getViewModel() {

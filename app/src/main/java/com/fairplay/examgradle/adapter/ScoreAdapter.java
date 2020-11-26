@@ -49,7 +49,7 @@ public class ScoreAdapter extends BaseRecyclerViewAdapter<ScoreAdapter.ScoreView
         }
 
         mBinding.tv_result.setOnClickListener(v -> {
-            if (score.isLock){
+            if (!score.isLock){
                 Bundle bundle = new Bundle();
                 bundle.putInt("currentRound",roundNo);
                 bundle.putInt("currentPos",position);

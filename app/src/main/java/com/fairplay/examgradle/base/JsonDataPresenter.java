@@ -14,6 +14,7 @@ import com.gwm.mvvm.BaseViewModel;
 import com.gwm.util.ContextUtil;
 import com.gwm.util.EncryptUtil;
 import com.orhanobut.logger.Logger;
+import com.orhanobut.logger.utils.LogUtils;
 import com.tencent.mmkv.MMKV;
 
 import org.apache.commons.codec.binary.Hex;
@@ -96,6 +97,13 @@ public abstract class JsonDataPresenter<J extends JsonDataPresenter.HttpBaseBean
         }
         return null;
     }
+
+    @Override
+    protected synchronized void onErrorResult(Exception e, int id) {
+        super.onErrorResult(e, id);
+        ToastUtils.showShort("服务器错误:"+id);
+    }
+
     public interface HttpBaseBean{
         @JSON
         String sign(@Param("bizType")long bizType,
@@ -108,6 +116,8 @@ public abstract class JsonDataPresenter<J extends JsonDataPresenter.HttpBaseBean
     }
 
     public String getToken(){
-        return "Bearer " + mmkv.getString(MMKVContract.TOKEN,"");
+        String token = mmkv.getString(MMKVContract.TOKEN,"");
+        LogUtils.operation("token:"+token);
+        return "Bearer " + token;
     }
 }

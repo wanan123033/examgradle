@@ -53,6 +53,7 @@ public abstract class BaseRecyclerViewAdapter<VH extends BaseRecyclerViewAdapter
 
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position) {
+
         holder.setData(getItem(position),position);
     }
 

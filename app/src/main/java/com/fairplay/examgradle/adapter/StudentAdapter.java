@@ -23,15 +23,7 @@ public class StudentAdapter extends BaseRecyclerViewAdapter<StudentAdapter.ViewH
 
     @Override
     protected void setData(DataRtiveBean student, int position) {
-        mBinding.tv_stuCode.setText(student.studentCode);
-        mBinding.tv_stuName.setText(student.itemName);
-        mBinding.tv_sex.setText(student.examPlaceName);
-        mBinding.tv_score.setText(student.result);
-        mBinding.tv_fraction.setText(student.score);
 
-        mBinding.cb_select.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            student.isSelected = isChecked;
-        });
 
     }
 
@@ -44,6 +36,20 @@ public class StudentAdapter extends BaseRecyclerViewAdapter<StudentAdapter.ViewH
 
         public ViewHodel(BaseRecyclerViewAdapter adapter, @NonNull View itemView) {
             super(adapter, itemView);
+        }
+
+        @Override
+        public void setData(DataRtiveBean student, int position) {
+            super.setData(student, position);
+            mBinding.tv_stuCode.setText(student.studentCode);
+            mBinding.tv_stuName.setText(student.itemName);
+            mBinding.tv_sex.setText(student.examPlaceName);
+            mBinding.tv_score.setText(student.result);
+            mBinding.tv_fraction.setText(student.score);
+
+            mBinding.cb_select.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                student.isSelected = isChecked;
+            });
         }
     }
 }

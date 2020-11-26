@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import com.gwm.R;
 
+import java.lang.reflect.Field;
+
 public class CustomDialog extends ProgressDialog {
     TextView tv_load_dialog;
     String contentText;
@@ -32,9 +34,8 @@ public class CustomDialog extends ProgressDialog {
     private void init(Context context)
     {
         //设置不可取消，点击其他区域不能取消，实际中可以抽出去封装供外包设置
-        setCancelable(false);
+        setCancelable(true);
         setCanceledOnTouchOutside(false);
-
         setContentView(R.layout.layout_progress);
         tv_load_dialog = findViewById(R.id.tv_load_dialog);
         tv_load_dialog.setText(contentText);
@@ -52,5 +53,8 @@ public class CustomDialog extends ProgressDialog {
 
     public void setContentText(String toString) {
         contentText = toString;
+        if (isShowing()){
+            tv_load_dialog.setText(contentText);
+        }
     }
 }

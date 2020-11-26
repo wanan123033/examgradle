@@ -1,9 +1,17 @@
 package com.gwm.base;
 
+import android.text.TextUtils;
+import android.widget.TextView;
+
 import com.blankj.utilcode.util.LogUtils;
 import com.gwm.http.HttpObserver;
+import com.gwm.http.HttpParams;
+import com.gwm.messagesendreceive.MessageBus;
+import com.gwm.messagesendreceive.MessageBusMessage;
 import com.gwm.retrofit.Observable;
 import com.gwm.retrofit.RetrofitOKHttp;
+
+import okhttp3.Request;
 
 /**
  * Created by Administrator on 2018/1/25.
@@ -17,8 +25,29 @@ public abstract class BaseDataPresenter<S,D> implements HttpObserver<D>{
         this.clazz = clazz;
         retrofitOKHttp = RetrofitOKHttp.getInstance(clazz);
     }
-    protected void addHttpSubscriber(Observable<D> observable,Class<D> clazz){
-        observable = observable.subscriber(this).subscriber(clazz);
+    protected void addHttpSubscriber(String message,final Observable<D> observable,Class<D> clazz){
+        observable.setMessage(message);
+        observable.subscriber(new HttpParams.HttpNetListener() {
+            @Override
+            public void onBefore(Request request, int id) {
+                if (!TextUtils.isEmpty(observable.getMessage().toString())) {
+                    MessageBus.getBus().post(new MessageBusMessage(observable.getMessage(), "SHOW_PROGRESS"));
+                }
+            }
+
+            @Override
+            public void onAfter(int id) {
+                if (!TextUtils.isEmpty(observable.getMessage().toString())) {
+                    MessageBus.getBus().post(new MessageBusMessage("","DIMMSION_PROGREESS"));
+                }
+            }
+
+            @Override
+            public void inProgress(float progress, long total, int id) {
+
+            }
+        });
+        observable.subscriber(this).subscriber(clazz);
         retrofitOKHttp.runObservable(observable);
     }
 

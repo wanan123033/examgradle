@@ -10,18 +10,22 @@ import androidx.annotation.Nullable;
 
 import com.app.layout.activity_main;
 import com.blankj.utilcode.util.GsonUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.fairplay.examgradle.R;
 import com.fairplay.examgradle.bean.ChannelBean;
 import com.fairplay.examgradle.bean.EnvInfoBean;
 import com.fairplay.examgradle.contract.MMKVContract;
+import com.fairplay.examgradle.contract.Permission;
 import com.fairplay.examgradle.mq.MqttManager;
 import com.fairplay.examgradle.mq.interfaces.OnMqttAndroidConnectListener;
+import com.fairplay.examgradle.utils.CommonUtils;
 import com.fairplay.examgradle.viewmodel.MainViewModel;
 import com.feipulai.common.view.baseToolbar.StatusBarUtil;
 import com.gwm.annotation.layout.Layout;
 import com.gwm.annotation.layout.OnClick;
 import com.gwm.base.BaseApplication;
 import com.gwm.mvvm.BaseMvvmActivity;
+import com.gwm.util.ContextUtil;
 import com.king.zxing.CaptureActivity;
 import com.king.zxing.Intents;
 import com.orhanobut.logger.utils.LogUtils;
@@ -35,9 +39,16 @@ public class MainActivity extends BaseMvvmActivity<Object, MainViewModel,activit
     public void onClick(View view){
         switch (view.getId()){
             case R.id.card_test:
-                String ip = mmkv.getString(MMKVContract.MQIP,"");
-                String port = mmkv.getString(MMKVContract.MQPORT,"");
-                startMqttService(ip,port);
+//                showDialog("sssssss");
+                String permission = mmkv.getString(MMKVContract.PERMISSION,"");
+                if (permission.contains(Permission.hasTestScore)) {
+                    String ip = mmkv.getString(MMKVContract.MQIP, "");
+                    String port = mmkv.getString(MMKVContract.MQPORT, "");
+                    startMqttService(ip, port);
+                }else {
+                    ToastUtils.showShort("该用户无打分权限");
+                    return;
+                }
 //                Intent intent = new Intent(getApplicationContext(),ExamResultActivity.class);
 //                startActivity(intent);
                 break;
@@ -62,6 +73,7 @@ public class MainActivity extends BaseMvvmActivity<Object, MainViewModel,activit
         super.onCreate(savedInstanceState);
         mmkv = BaseApplication.getInstance().getMmkv();
         addFirstToast();
+        mBinding.txt_deviceid.setText(CommonUtils.getDeviceId(ContextUtil.get()));
     }
 
     @Override
@@ -75,7 +87,6 @@ public class MainActivity extends BaseMvvmActivity<Object, MainViewModel,activit
         if (requestCode == QR_CODE && data != null){
             String result = data.getStringExtra(Intents.Scan.RESULT);
             ChannelBean channelBean = GsonUtils.fromJson(result, ChannelBean.class);
-            showDialog("加入通道中....");
             viewModel.scanQr(channelBean.channelCode);
         }
     }

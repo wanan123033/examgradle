@@ -22,5 +22,13 @@ public class GroupInfoBean extends BaseBean<GroupInfoBean.GroupInfo>{
         public int examType;
         public String examPlaceName;   //场地名称
         public String rollCallPlaceName;
+        public List<StudentBean> studentCodeList;
+    }
+    public static class StudentBean{
+        public String sortName;   // 考生自己的组别，非分组的组别
+        public String studentCode;  // 准考证号
+        public String trackNo;  //道号
+        public String entranceRollCallStatus; // 入口检录状态(0: 未检录，1：已检录)
+        public String rollCallStatus;  // 上道检录状态(0: 未检录，1：已检录)
     }
 }

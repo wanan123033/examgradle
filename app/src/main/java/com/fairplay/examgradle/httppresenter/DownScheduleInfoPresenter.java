@@ -24,7 +24,7 @@ public class DownScheduleInfoPresenter extends JsonDataPresenter<DownScheduleInf
         String json = genJsonString(100020112,"");
         String token = getToken();
         Observable<ScheduleInfoBean> itemInfoBeanObservable = getHttpPresenter().downSiteScheduleInfo(token, json);
-        addHttpSubscriber(itemInfoBeanObservable,ScheduleInfoBean.class);
+        addHttpSubscriber("",itemInfoBeanObservable,ScheduleInfoBean.class);
     }
 
     @Override

@@ -304,7 +304,7 @@ public abstract class BaseActivity<V extends IViewBind> extends AppCompatActivit
 		return BaseApplication.getInstance().getLayoutUtil().getViewBind(resId);
 	}
 
-	CustomDialog dialog;
+	protected CustomDialog dialog;
 	public void handlerMessage(Message message){
 		if (message.what == SHOW_PROGRESS){
 			if (dialog == null){
@@ -347,5 +347,14 @@ public abstract class BaseActivity<V extends IViewBind> extends AppCompatActivit
 				act.handlerMessage(msg);
 			}
 		}
+	}
+
+	@Subscrition(action = "SHOW_PROGRESS",threadMode = Subscrition.ThreadMode.MAIN)
+	public void onEvent(MessageBusMessage message){
+		showDialog(message.getData().toString());
+	}
+	@Subscrition(action = "DIMMSION_PROGREESS",threadMode = Subscrition.ThreadMode.MAIN)
+	public void onEvent2(MessageBusMessage message){
+		dismissDialog();
 	}
 }

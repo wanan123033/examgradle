@@ -39,7 +39,7 @@ public class BaseOkHttp {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
             @Override
             public void log(String message) {
-                LogUtils.crash(message);
+                LogUtils.operation(message);
             }
         });
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);

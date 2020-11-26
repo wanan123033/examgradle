@@ -11,8 +11,11 @@
         android:layout_marginBottom="25dp"
         android:layout_marginTop="25dp"
         android:gravity="center"
-        android:orientation="horizontal">
-
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
         <EditText
             android:id="@+id/et_input_text"
             android:layout_width="231dp"
@@ -35,6 +38,24 @@
             android:text="检索"
             android:textColor="@color/white"
             android:textSize="20sp" />
+        </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+        <Spinner
+            android:id="@+id/sp_schedule"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="15dp"
+            android:background="@drawable/icon_spinner_bg"/>
+        <Spinner
+            android:id="@+id/sp_examplaceName"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="15dp"
+            android:background="@drawable/icon_spinner_bg"/>
         <Spinner
             android:id="@+id/sp_item"
             android:layout_width="wrap_content"
@@ -47,6 +68,13 @@
             android:layout_height="45dp"
             android:layout_marginLeft="15dp"
             android:background="@drawable/icon_spinner_bg"/>
+        <Spinner
+            android:id="@+id/sp_group"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="15dp"
+            android:background="@drawable/icon_spinner_bg"/>
+    </LinearLayout>
     </LinearLayout>
 
 
@@ -192,6 +220,7 @@
             android:visibility="gone"
             android:text="体重" />
         <TextView
+            android:id="@+id/tv_allSelected"
             style="@style/style_txt_white_title"
             android:layout_width="80dp"
             android:layout_height="match_parent"

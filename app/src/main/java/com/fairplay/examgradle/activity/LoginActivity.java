@@ -40,6 +40,7 @@ public class LoginActivity extends BaseMvvmActivity<Object, LoginViewModel, acti
         mmkv = BaseApplication.getInstance().getMmkv();
         mBinding.et_username.setText(mmkv.getString(MMKVContract.USERNAME,""));
         mBinding.et_password.setText(mmkv.getString(MMKVContract.PASSWORD,""));
+        mBinding.txt_deviceid.setText(CommonUtils.getDeviceId(ContextUtil.get()));
     }
     @OnClick({R.id.btn_login,R.id.tv_server})
     public void onClick(View view){
@@ -76,14 +77,12 @@ public class LoginActivity extends BaseMvvmActivity<Object, LoginViewModel, acti
         }
         username = username + "@" + CommonUtils.getDeviceId(ContextUtil.get());
 
-        showDialog("登录中...");
         LogUtils.operation("登录中...username="+username+",password="+password);
         viewModel.login(username,password);
     }
 
     @Override
     public void onChanged(Object o) {
-        dismissDialog();
         if (o != null && o instanceof EnvInfoBean){
             if (((EnvInfoBean) o).code >= 1){
                 ToastUtils.showShort(((EnvInfoBean) o).msg);

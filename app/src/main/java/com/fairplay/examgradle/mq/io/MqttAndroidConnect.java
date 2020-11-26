@@ -3,10 +3,13 @@ package com.fairplay.examgradle.mq.io;
 import android.widget.Toast;
 
 import com.blankj.utilcode.util.ToastUtils;
+import com.fairplay.examgradle.contract.MMKVContract;
 import com.fairplay.examgradle.mq.BuildRandomNumber;
 import com.fairplay.examgradle.mq.MqApi;
 import com.fairplay.examgradle.mq.MqttManager;
+import com.gwm.base.BaseApplication;
 import com.orhanobut.logger.Logger;
+import com.tencent.mmkv.MMKV;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
@@ -77,8 +80,11 @@ public class MqttAndroidConnect extends BaseConnect {
 
             MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
             mqttConnectOptions.setAutomaticReconnect(false);
-            mqttConnectOptions.setUserName(MqApi.userName);
-            mqttConnectOptions.setPassword(MqApi.password.toCharArray());
+            MMKV mmkv = BaseApplication.getInstance().getMmkv();
+            String user = mmkv.getString(MMKVContract.MQUSER, MqApi.userName);
+            String pass = mmkv.getString(MMKVContract.MQPASS, MqApi.password);
+            mqttConnectOptions.setUserName(user);
+            mqttConnectOptions.setPassword(pass.toCharArray());
             //设置true,不然重复发送
             mqttConnectOptions.setCleanSession(true);
             mqttAndroidClient.connect(mqttConnectOptions, null, new IMqttActionListener() {
@@ -96,9 +102,9 @@ public class MqttAndroidConnect extends BaseConnect {
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    showLog("connect failure = " + exception.getMessage().toString());
-                    connectFailCallBack(exception.getMessage().toString());
-                    Logger.e("connect failure = " + exception.getMessage().toString());
+                    showLog("connect failure = " + exception.getMessage());
+                    connectFailCallBack(exception.getMessage());
+                    Logger.e("connect failure = " + exception.getMessage());
                 }
             });
         } catch (Exception e) {

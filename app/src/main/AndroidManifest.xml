@@ -45,7 +45,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.MainActivity" android:screenOrientation="landscape">
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->
 <!--                <category android:name="android.intent.category.LAUNCHER" />-->
@@ -61,7 +61,6 @@
         <activity android:name=".activity.ItemInitActivity" android:screenOrientation="landscape"/>
         <activity android:name="com.king.zxing.CaptureActivity" android:screenOrientation="landscape" android:exported="true"/>
         <activity android:name=".activity.ExamResultActivity" android:screenOrientation="landscape"/>
-        <activity android:name=".activity.DataCatActivity" />
 
         <service android:name=".service.ScoreUploadServie" />
         <service android:name="org.eclipse.paho.android.service.MqttService" />

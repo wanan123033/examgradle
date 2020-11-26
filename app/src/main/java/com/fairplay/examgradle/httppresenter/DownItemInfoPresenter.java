@@ -134,11 +134,11 @@ public class DownItemInfoPresenter extends JsonDataPresenter<DownItemInfoPresent
                             }
                         }
                     }
-                    ToastUtils.showShort("数据下载成功");
+
                 }else {
 //                    ToastUtils.showShort("数据下载失败");
                 }
-                ((BaseViewModel)getViewModel()).sendLiveData(BaseActivity.DIMMSION_PROGREESS);
+//                ((BaseViewModel)getViewModel()).sendLiveData(BaseActivity.DIMMSION_PROGREESS);
             }
         });
 
@@ -151,7 +151,7 @@ public class DownItemInfoPresenter extends JsonDataPresenter<DownItemInfoPresent
         String json = genJsonString(100020111,"");
         String token = getToken();
         Observable<ItemInfoBean> itemInfoBeanObservable = getHttpPresenter().downItemInfo(token, json);
-        addHttpSubscriber(itemInfoBeanObservable,ItemInfoBean.class);
+        addHttpSubscriber("",itemInfoBeanObservable,ItemInfoBean.class);
     }
 
     public interface DownItemInfo extends JsonDataPresenter.HttpBaseBean{

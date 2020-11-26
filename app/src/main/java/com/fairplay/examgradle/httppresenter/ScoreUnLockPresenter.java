@@ -2,7 +2,7 @@ package com.fairplay.examgradle.httppresenter;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.fairplay.database.entity.Item;
-import com.fairplay.database.entity.MqttBean;
+import com.fairplay.database.entity.StudentGroupItem;
 import com.fairplay.examgradle.base.JsonDataPresenter;
 import com.fairplay.examgradle.bean.BaseBean;
 import com.fairplay.examgradle.contract.MMKVContract;
@@ -22,7 +22,7 @@ public class ScoreUnLockPresenter extends JsonDataPresenter<ScoreUnLockPresenter
         super(ScoreUnLockInfo.class);
     }
 
-    public void scoreUnLock(MqttBean mqttBean, Item item,int roundNo){
+    public void scoreUnLock(StudentGroupItem mqttBean, Item item, int roundNo){
         int examState = BaseApplication.getInstance().getMmkv().getInt(MMKVContract.EXAMTYPE, 0);
         String userInfo = BaseApplication.getInstance().getMmkv().getString(MMKVContract.USERNAME,"");
         String roundResult = getJsonCreator().roundResult(mqttBean.getTrackNo(),
@@ -37,21 +37,20 @@ public class ScoreUnLockPresenter extends JsonDataPresenter<ScoreUnLockPresenter
         try {
             getJson = genJsonString(100020173,getJsonCreator().data(mqttBean.getScheduleNo(),
                     mqttBean.getItemCode(),mqttBean.getSubitemCode(),mqttBean.getStudentCode(),
-                    item.getTestNum()+"",mqttBean.getExamPlaceName(),mqttBean.getGroupNo(),mqttBean.getGroupType(),mqttBean.getSortName(),
+                    item.getTestNum()+"",mqttBean.getExamPlaceName(),mqttBean.getGroupNo()+"",mqttBean.getGroupType()+"",mqttBean.getSortName(),
                     "1",item.getMachineCode(),item.getItemName(),new JSONObject(roundResult)));
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         Observable<BaseBean> observable = getHttpPresenter().unlockStudentResult(getToken(),getJson);
-        addHttpSubscriber(observable,BaseBean.class);
+        addHttpSubscriber("",observable,BaseBean.class);
     }
 
     @Override
     protected void onNextResult(BaseBean response, int id) {
         if (response.code == 1){
             ToastUtils.showShort(response.msg);
-            ((BaseViewModel)getViewModel()).sendLiveData(BaseActivity.DIMMSION_PROGREESS);
         }
     }
 

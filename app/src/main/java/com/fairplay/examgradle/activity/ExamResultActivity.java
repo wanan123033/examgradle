@@ -18,7 +18,7 @@ import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.fairplay.database.DBManager;
 import com.fairplay.database.entity.Item;
-import com.fairplay.database.entity.MqttBean;
+import com.fairplay.database.entity.StudentGroupItem;
 import com.fairplay.database.entity.MultipleItem;
 import com.fairplay.database.entity.MultipleResult;
 import com.fairplay.database.entity.RoundResult;
@@ -51,12 +51,13 @@ import java.util.List;
 
 @Layout(R.layout.activity_exam_score)
 public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResultModel, activity_exam_score> {
+    public static final String PACK_JSON = "PACK_JSON";
     private Item item;
     private List<ExamScoreBean> examScoreBeans;
     private ExamAdapter adapter;
     private ExamScoreBean currentScoreBean;
     private int currentRoundNo = 1;
-    private MqttBean mqttBean;
+    private StudentGroupItem mqttBean;
     private String username;
     private OnMqttAndroidConnectListener listener;
     private MMKV mmkv;
@@ -86,45 +87,78 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
         username = BaseApplication.getInstance().getMmkv().getString(MMKVContract.USERNAME,"");
         mBinding.stu_info.rv_score_data.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL,false));
         mBinding.tv_current_user.setText("当前用户:"+username);
-        listener = new OnMqttAndroidConnectListener() {
-            @Override
-            public void connect() {
-                super.connect();
+        String packJson = getIntent().getStringExtra(PACK_JSON);
+        if (TextUtils.isEmpty(packJson)) {
+            listener = new OnMqttAndroidConnectListener() {
+                @Override
+                public void connect() {
+                    super.connect();
 
-            }
+                }
 
-            @Override
-            public void disConnect() {
-                super.disConnect();
-                String mqttIp = mmkv.getString(MMKVContract.MQIP,"");
-                String mqttPort = mmkv.getString(MMKVContract.MQPORT,"");
-                MqttManager.getInstance().init(getApplication())
-                        .setServerIp(mqttIp)
-                        .setServerPort(Integer.parseInt(mqttPort))
-                        .connect(ExamResultActivity.this);
-                MqttManager.getInstance().regeisterServerMsg(this);
+                @Override
+                public void disConnect() {
+                    super.disConnect();
+                    String mqttIp = mmkv.getString(MMKVContract.MQIP, "");
+                    String mqttPort = mmkv.getString(MMKVContract.MQPORT, "");
+                    MqttManager.getInstance().init(getApplication())
+                            .setServerIp(mqttIp)
+                            .setServerPort(Integer.parseInt(mqttPort))
+                            .connect(ExamResultActivity.this);
+                    MqttManager.getInstance().regeisterServerMsg(this);
 
 
-            }
+                }
 
-            @Override
-            public void onDataReceive(String message) {
-                packMsg(message);
-            }
-        };
-        MqttManager.getInstance().regeisterServerMsg(listener);
+                @Override
+                public void onDataReceive(String message) {
+                    packMsg(message,true);
+                }
+            };
+            MqttManager.getInstance().regeisterServerMsg(listener);
+        }else {
+            packMsg(packJson,false);
+            listener = new OnMqttAndroidConnectListener() {
+                @Override
+                public void connect() {
+                    super.connect();
+
+                }
+
+                @Override
+                public void disConnect() {
+                    super.disConnect();
+                    String mqttIp = mmkv.getString(MMKVContract.MQIP, "");
+                    String mqttPort = mmkv.getString(MMKVContract.MQPORT, "");
+                    MqttManager.getInstance().init(getApplication())
+                            .setServerIp(mqttIp)
+                            .setServerPort(Integer.parseInt(mqttPort))
+                            .connect(ExamResultActivity.this);
+                    MqttManager.getInstance().regeisterServerMsg(this);
+
+
+                }
+
+                @Override
+                public void onDataReceive(String message) {
+                    packMsg(message,true);
+                }
+            };
+            MqttManager.getInstance().regeisterServerMsg(listener);
+        }
     }
-
-    private void packMsg(String message) {
+    private int flag = 1;
+    private void packMsg(String message,boolean isChannalCode) {
         LogUtils.operation("接收到推送信息:"+message);
-
         try {
             JSONObject jsonObject = new JSONObject(message);
-            String channalCode = mmkv.getString(MMKVContract.CHANNEL_CODE, "");
-            //通道号判断
-            String code = jsonObject.getString("channelCode");
-            if (TextUtils.isEmpty(channalCode) || !channalCode.equals(code)){
-                return;
+            if (isChannalCode) {
+                String channalCode = mmkv.getString(MMKVContract.CHANNEL_CODE, "");
+                //通道号判断
+                String code = jsonObject.getString("channelCode");
+                if (TextUtils.isEmpty(channalCode) || !channalCode.equals(code)) {
+                    return;
+                }
             }
             //匹配用户判断
             int messageType = jsonObject.getInt("messageType");
@@ -148,7 +182,7 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
             if (currentScoreBean == null && examScoreBeans.isEmpty()) {
                 if (messageType == 1) {
                     examScoreBeans.clear();
-                    mqttBean = GsonUtils.fromJson(jsonObject.getJSONObject("data").toString(), MqttBean.class);
+                    mqttBean = GsonUtils.fromJson(jsonObject.getJSONObject("data").toString(), StudentGroupItem.class);
                     LogUtils.operation("接收到推送考生信息:"+mqttBean.toString());
                     item = DBManager.getInstance().getItemByItemCode(mqttBean.getItemCode(), mqttBean.getSubitemCode());
                     long mqtt_id = initStudentExam2(mqttBean,item);
@@ -168,14 +202,30 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
                 LogUtils.operation("接收到推送解锁信息:"+jsonObject.toString());
                 if (data == 1) {
                     if (currentScoreBean != null) {
-                        for (int i = 0; i < currentScoreBean.resultList.size(); i++) {
-                            currentScoreBean.resultList.get(i).isLock = false;
+                        if (examScoreBeans != null && !examScoreBeans.isEmpty()){
+                            for (ExamScoreBean bean : examScoreBeans){
+                                for (int i = 0; i < bean.resultList.size(); i++) {
+                                    bean.resultList.get(i).isLock = false;
+                                }
+                            }
                         }
+
                         if (adapter != null) {
                             mBinding.stu_info.rv_score_data.setAdapter(adapter);
                         }
                     }
                 }else {
+                    if (examScoreBeans != null && !examScoreBeans.isEmpty()) {
+                        for (ExamScoreBean bean : examScoreBeans) {
+                            for (int i = 0; i < bean.resultList.size(); i++) {
+                                if (!TextUtils.isEmpty(bean.resultList.get(i).result.toString()))
+                                    bean.resultList.get(i).isLock = true;
+                            }
+                        }
+                    }
+                    if (adapter != null) {
+                        mBinding.stu_info.rv_score_data.setAdapter(adapter);
+                    }
                     ToastUtils.showShort("服务器拒绝解锁!");
                     LogUtils.operation("页面提示:服务器拒绝解锁");
                 }
@@ -248,12 +298,17 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
                 LogUtils.operation("用户点击了解锁:mqttBean="+mqttBean.toString());
                 LogUtils.operation("用户点击了解锁:item="+item.toString());
                 LogUtils.operation("用户点击了解锁:currentRoundNo="+currentRoundNo);
-                viewModel.unLockStuScore(mqttBean,item,currentRoundNo);
+                if (currentRoundNo == 1){
+                    viewModel.unLockStuScore(mqttBean,item,currentRoundNo);
+                }else if (currentRoundNo == 2){
+                    viewModel.unLockStuScore(mqttBean,item,1);
+                    viewModel.unLockStuScore(mqttBean,item,2);
+                }
                 break;
             case R.id.btn_score1:
                 String studentCode = mBinding.et_studentCode.getText().toString();
-                String json = "{\"channelCode\":\"TEST-BASDF\",\"data\":{\"examPlaceName\":\"广西民族大学相思湖学院田径场西东B\",\"examStatus\":0,\"groupNo\":\"100\",\"groupType\":\"0\",\"itemCode\":\"0700\",\"scheduleNo\":\"3\",\"sortName\":\"组\",\"studentCode\":\""+"050180075"+"\",\"subitemCode\":\"07001\",\"trackNo\":\"1\"},\"id\":1604396768022,\"matchUser\":0,\"messageType\":1}";
-                packMsg(json);
+                String json = "{\"channelCode\":\"TEST-BASDF\",\"data\":{\"examPlaceName\":\"广西民族大学相思湖学院田径场西东B\",\"examStatus\":0,\"groupNo\":\"100\",\"groupType\":\"0\",\"itemCode\":\"0400\",\"scheduleNo\":\"3\",\"sortName\":\"组\",\"studentCode\":\""+"050180075"+"\",\"subitemCode\":\"04001\",\"trackNo\":\"1\"},\"id\":1604396768022,\"matchUser\":0,\"messageType\":1}";
+                packMsg(json,false);
                 break;
             case R.id.tv_send:
                 saveAndSendResult();
@@ -275,9 +330,16 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
         }
         if (currentScoreBean.currentPosition == currentScoreBean.resultList.size() - 1){   //输入的成绩到了某轮的最后一个  触发保存成绩,并发送成绩
             RoundResult currentResult = viewModel.saveResult(mqttBean.getScheduleNo(),currentScoreBean,item,currentRoundNo,mqttBean);
-            LogUtils.operation("保存成绩信息:"+currentResult.toString());
             if (currentResult == null){
-                return;
+                //TODO 上传成绩
+                List<RoundResult> stuRoundResult = DBManager.getInstance().getStuRoundResult(mqttBean.getStudentCode(), mqttBean.getItemCode(), mqttBean.getSubitemCode(), mqttBean.getScheduleNo(), mqttBean.getExamPlaceName(), mqttBean.getGroupNo(), mqttBean.getGroupType());
+                for(RoundResult result : stuRoundResult){
+                    LogUtils.operation("上传成绩信息:"+result.toString());
+                    Intent intent = new Intent(getApplicationContext(), ScoreUploadServie.class);
+                    intent.putExtra(ScoreUploadServie.ROUNDID,result.getId().longValue());
+                    startService(intent);
+                }
+
             }
             if (currentResult != null){
                 LogUtils.operation("上锁成绩信息:"+currentResult.toString());
@@ -350,8 +412,12 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
         return mqtt_id;
     }
 
-    public long initStudentExam2(MqttBean mqttBean, Item item){
-        List<RoundResult> stuRoundResult = DBManager.getInstance().getStuRoundResult(mqttBean.getStudentCode(), item.getItemCode(), item.getSubitemCode(),mqttBean.getExamPlaceName(),mqttBean.getGroupNo(),mqttBean.getExamStatus());
+    public long initStudentExam2(StudentGroupItem mqttBean, Item item){
+        List<RoundResult> stuRoundResult = DBManager.getInstance().getStuRoundResult(mqttBean.getStudentCode(),
+                mqttBean.getItemCode(),mqttBean.getSubitemCode(),
+                mqttBean.getScheduleNo(),
+                mqttBean.getExamPlaceName(),
+                mqttBean.getGroupNo(),mqttBean.getGroupType());
         if (stuRoundResult == null || stuRoundResult.isEmpty()){
             return initStudentExam(mqttBean.getStudentCode(),item);
 
@@ -444,7 +510,7 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
         adapter.setSelectPosition(currentRoundNo - 1);
         mBinding.stu_info.rv_score_data.setAdapter(adapter);
         Log.e("TAG===>",examScoreBeans.toString());
-        MqttBean mqttBean1 = DBManager.getInstance().getMQTTBean(item.getItemCode(), item.getSubitemCode(),mqttBean.getStudentCode());
+        StudentGroupItem mqttBean1 = DBManager.getInstance().getMQTTBean(item.getItemCode(), item.getSubitemCode(),mqttBean.getStudentCode());
         return mqttBean1.getId();
     }
 
@@ -501,6 +567,8 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
         currentScoreBean.currentPosition = currentPos;
         adapter.setSelectPosition(currentRound - 1);
         currentRoundNo = currentRound;
+        StringBuffer result = currentScoreBean.resultList.get(currentScoreBean.currentPosition).result;
+        result.delete(0,result.length());
         mBinding.stu_info.rv_score_data.setAdapter(adapter);
     }
     @Override

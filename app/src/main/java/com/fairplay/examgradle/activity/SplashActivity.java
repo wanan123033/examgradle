@@ -54,7 +54,6 @@ public class SplashActivity extends BaseMvvmActivity<Object, SplashViewModel,act
                 startActivity(intent);
                 finish();
             }
-
         });
     }
 
@@ -83,7 +82,6 @@ public class SplashActivity extends BaseMvvmActivity<Object, SplashViewModel,act
 
     @Override
     public void onChanged(Object o) {
-        dismissDialog();
         if (o != null && o instanceof EnvInfoBean){
             if (((EnvInfoBean) o).code >= 1){
                 ToastUtils.showShort(((EnvInfoBean) o).msg);
@@ -93,13 +91,6 @@ public class SplashActivity extends BaseMvvmActivity<Object, SplashViewModel,act
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
             }
-        }else {
-            Intent intent = new Intent();
-            intent.setClass(getApplicationContext(), LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
         }
     }
 

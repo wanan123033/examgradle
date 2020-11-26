@@ -16,6 +16,7 @@ public class RoundResult {
     @NotNull
     private String itemCode;//默认为default
     private String subitemCode;//默认为default
+    private int grouptype;
     @NotNull
     private int machineCode;
     @NotNull
@@ -53,22 +54,23 @@ public class RoundResult {
     private int trackNo;
     private String itemName;
     private String unit;
-    private String groundNo;
+    private int groundNo;
     private String examPlaceName;
     private String userInfo;
-    @Generated(hash = 888422617)
+    @Generated(hash = 709942273)
     public RoundResult(Long id, @NotNull String studentCode, @NotNull String itemCode,
-            String subitemCode, int machineCode, int roundNo, int testNo, String machineResult,
-            int penaltyNum, String result, String result2, String score, String machineScore,
-            int resultState, int isLastResult, int examType, @NotNull String testTime, String printTime,
-            String endTime, int stumbleCount, int updateState, byte[] cycleResult, String scheduleNo,
-            String mtEquipment, int isMultioleResult, String remark1, String remark2, String remark3,
-            int trackNo, String itemName, String unit, String groundNo, String examPlaceName,
-            String userInfo) {
+            String subitemCode, int grouptype, int machineCode, int roundNo, int testNo,
+            String machineResult, int penaltyNum, String result, String result2, String score,
+            String machineScore, int resultState, int isLastResult, int examType,
+            @NotNull String testTime, String printTime, String endTime, int stumbleCount,
+            int updateState, byte[] cycleResult, String scheduleNo, String mtEquipment,
+            int isMultioleResult, String remark1, String remark2, String remark3, int trackNo,
+            String itemName, String unit, int groundNo, String examPlaceName, String userInfo) {
         this.id = id;
         this.studentCode = studentCode;
         this.itemCode = itemCode;
         this.subitemCode = subitemCode;
+        this.grouptype = grouptype;
         this.machineCode = machineCode;
         this.roundNo = roundNo;
         this.testNo = testNo;
@@ -126,6 +128,12 @@ public class RoundResult {
     }
     public void setSubitemCode(String subitemCode) {
         this.subitemCode = subitemCode;
+    }
+    public int getGrouptype() {
+        return this.grouptype;
+    }
+    public void setGrouptype(int grouptype) {
+        this.grouptype = grouptype;
     }
     public int getMachineCode() {
         return this.machineCode;
@@ -289,10 +297,10 @@ public class RoundResult {
     public void setUnit(String unit) {
         this.unit = unit;
     }
-    public String getGroundNo() {
+    public int getGroundNo() {
         return this.groundNo;
     }
-    public void setGroundNo(String groundNo) {
+    public void setGroundNo(int groundNo) {
         this.groundNo = groundNo;
     }
     public String getExamPlaceName() {
@@ -306,5 +314,46 @@ public class RoundResult {
     }
     public void setUserInfo(String userInfo) {
         this.userInfo = userInfo;
+    }
+
+    @Override
+    public String toString() {
+        return "RoundResult{" +
+                "id=" + id +
+                ", studentCode='" + studentCode + '\'' +
+                ", itemCode='" + itemCode + '\'' +
+                ", subitemCode='" + subitemCode + '\'' +
+                ", grouptype=" + grouptype +
+                ", machineCode=" + machineCode +
+                ", roundNo=" + roundNo +
+                ", testNo=" + testNo +
+                ", machineResult='" + machineResult + '\'' +
+                ", penaltyNum=" + penaltyNum +
+                ", result='" + result + '\'' +
+                ", result2='" + result2 + '\'' +
+                ", score='" + score + '\'' +
+                ", machineScore='" + machineScore + '\'' +
+                ", resultState=" + resultState +
+                ", isLastResult=" + isLastResult +
+                ", examType=" + examType +
+                ", testTime='" + testTime + '\'' +
+                ", printTime='" + printTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                ", stumbleCount=" + stumbleCount +
+                ", updateState=" + updateState +
+                ", cycleResult=" + Arrays.toString(cycleResult) +
+                ", scheduleNo='" + scheduleNo + '\'' +
+                ", mtEquipment='" + mtEquipment + '\'' +
+                ", isMultioleResult=" + isMultioleResult +
+                ", remark1='" + remark1 + '\'' +
+                ", remark2='" + remark2 + '\'' +
+                ", remark3='" + remark3 + '\'' +
+                ", trackNo=" + trackNo +
+                ", itemName='" + itemName + '\'' +
+                ", unit='" + unit + '\'' +
+                ", groundNo=" + groundNo +
+                ", examPlaceName='" + examPlaceName + '\'' +
+                ", userInfo='" + userInfo + '\'' +
+                '}';
     }
 }

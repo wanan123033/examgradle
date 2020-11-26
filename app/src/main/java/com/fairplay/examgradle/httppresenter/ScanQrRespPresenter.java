@@ -28,12 +28,11 @@ public class ScanQrRespPresenter extends JsonDataPresenter<ScanQrRespPresenter.S
         String getJson = genJsonString(100020180,getJsonCreator().channelCode(channelCode));
         String token = getToken();
         Observable<TopicBean> addTopic = getHttpPresenter().scanQrResp(token,getJson);
-        addHttpSubscriber(addTopic, TopicBean.class);
+        addHttpSubscriber("加入裁判组...",addTopic, TopicBean.class);
     }
 
     @Override
     protected void onNextResult(TopicBean response, int id) {
-        ((BaseViewModel)getViewModel()).sendLiveData(BaseActivity.DIMMSION_PROGREESS);
         if (response.data == 0){
             ToastUtils.showShort("通道组加入成功");
             BaseApplication.getInstance().getMmkv().putString(MMKVContract.CHANNEL_CODE,channelCode);

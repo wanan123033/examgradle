@@ -3,6 +3,8 @@ package com.gwm.util;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.orhanobut.logger.utils.LogUtils;
+
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -66,13 +68,13 @@ public class EncryptUtil {
      */
     public String setEncryptData(String paramsData) {
         try {
-            Log.e("TAG===","加密前:"+paramsData);
-            Log.e("TAG===","加密key:"+AES_KEY);
+            LogUtils.operation("加密前:"+paramsData);
+            LogUtils.operation("加密key:"+AES_KEY);
             Cipher cipher = Cipher.getInstance("AES");
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             byte[] encoderStr = cipher.doFinal(paramsData.getBytes("UTF-8"));
             String dd = new String(Hex.encodeHex(encoderStr));
-            Log.e("TAG===","加密后:"+dd);
+            LogUtils.operation("加密后:"+dd);
             return dd;
         } catch (Exception e) {
             e.printStackTrace();
@@ -86,12 +88,12 @@ public class EncryptUtil {
      * @return
      */
     public String getSignData(String signData) {
-        Log.e("Tag","sign前:"+signData);
+        LogUtils.operation("sign前:"+signData);
         String sign = new String(Hex.encodeHex(DigestUtils.sha(signData)));
         String startString = sign.substring(0, 8);
         String endString = sign.substring(8, sign.length());
         String dd = startString + randomS + endString;
-        Log.e("Tag","sign后:"+dd);
+        LogUtils.operation("sign后:"+dd);
         return dd;
     }
     public String decodeHttpData(String data, String sign) {

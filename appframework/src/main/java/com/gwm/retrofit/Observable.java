@@ -33,6 +33,7 @@ public class Observable<T> {
         }
     };
     private String secretKey;
+    private Object message;
 
     /**
      * 配置请求回调监听
@@ -104,5 +105,13 @@ public class Observable<T> {
 
     public String secretKey() {
         return secretKey;
+    }
+
+    public Object getMessage() {
+        return message;
+    }
+
+    public void setMessage(Object message) {
+        this.message = message;
     }
 }

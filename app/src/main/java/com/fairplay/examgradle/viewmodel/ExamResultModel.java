@@ -1,27 +1,23 @@
 package com.fairplay.examgradle.viewmodel;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.fairplay.database.DBManager;
 import com.fairplay.database.entity.Item;
-import com.fairplay.database.entity.MqttBean;
+import com.fairplay.database.entity.StudentGroupItem;
 import com.fairplay.database.entity.MultipleResult;
 import com.fairplay.database.entity.RoundResult;
 import com.fairplay.examgradle.bean.ExamScoreBean;
-import com.fairplay.examgradle.bean.ScoreBean;
 import com.fairplay.examgradle.contract.MMKVContract;
 import com.fairplay.examgradle.httppresenter.ScoreUnLockPresenter;
 import com.gwm.base.BaseApplication;
 import com.gwm.mvvm.BaseViewModel;
 import com.orhanobut.logger.utils.LogUtils;
 import com.tencent.mmkv.MMKV;
-import com.zhy.http.okhttp.utils.L;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 
 public class ExamResultModel extends BaseViewModel<Object> {
@@ -51,31 +47,46 @@ public class ExamResultModel extends BaseViewModel<Object> {
      */
     public boolean scoreCheck(Item item, String score, ExamScoreBean.Score currentScore) {
         if ("score".equals(item.getUnit()) && item.getMarkScore() == 0){  //测量的得分项目不做处理  输多少就是多少
+            if (currentScore.result.length() == 1 && currentScore.result.toString().equals("0")){
+                currentScore.result.deleteCharAt(0);
+                return false;
+            }
+            if (item.getMaxValue() != null) {
+                if (Double.parseDouble(currentScore.result.toString() + score) > Double.parseDouble(item.getMaxValue())) {
+                    ToastUtils.showShort("当前项目最大成绩为:" + item.getMaxValue());
+                    return true;
+                }
+            }else {
+                if (Double.parseDouble(currentScore.result.toString() + score) > Double.parseDouble("9999")) {
+                    ToastUtils.showShort("当前项目最大成绩为:9999");
+                    return true;
+                }
+            }
             return false;
         }
         if (currentScore.result.toString().contains(".") && score.equals(".")){
             ToastUtils.showShort("已含有小数点");
             return true;
         }
-        if (item.getTestType() != 1) {   //非计时项目
-            //小数位数判断
-            int digital = item.getDigital();
-            if (currentScore.result.toString().contains(".")) {
-                String s = currentScore.result.substring(currentScore.result.indexOf(".") + 1);
-                if (s.length() + 1 > digital) {
-                    ToastUtils.showShort("小数位数超过指定位数");
-                    return true;
-                }
-                if (currentScore.result.toString().split("\\.").length > 2) {
-                    ToastUtils.showShort("非法的值错误");
-                    return true;
-                }
-
-            }
-            if (digital == 0 && score.equals(".")){
-                ToastUtils.showShort("没有小数值");
+        //小数位数判断
+        int digital = item.getDigital();
+        if (currentScore.result.toString().contains(".")) {
+            String s = currentScore.result.substring(currentScore.result.indexOf(".") + 1);
+            if (s.length() + 1 > digital) {
+                ToastUtils.showShort("小数位数超过指定位数");
                 return true;
             }
+            if (currentScore.result.toString().split("\\.").length > 2) {
+                ToastUtils.showShort("非法的值错误");
+                return true;
+            }
+
+        }
+        if (digital == 0 && score.equals(".")){
+            ToastUtils.showShort("没有小数值");
+            return true;
+        }
+        if (item.getTestType() != 1) {   //非计时项目
             try {
 //                //最小值判断
 //                if (item.getMinValue() != null)
@@ -83,7 +94,12 @@ public class ExamResultModel extends BaseViewModel<Object> {
 //                        ToastUtils.showShort("当前项目最小成绩为:" + item.getMinValue());
 //                        return true;
 //                    }
+                if (currentScore.result.length() == 1 && currentScore.result.toString().equals("0")){
+                    currentScore.result.deleteCharAt(0);
+                    return false;
+                }
                 //最大值判断
+
                 if (item.getMaxValue() != null) {
                     if (Double.parseDouble(currentScore.result.toString() + score) > Double.parseDouble(item.getMaxValue())) {
                         ToastUtils.showShort("当前项目最大成绩为:" + item.getMaxValue());
@@ -181,7 +197,7 @@ public class ExamResultModel extends BaseViewModel<Object> {
      * @param currentRoundNo  当前轮次
      * @param mqttBean
      */
-    public RoundResult saveResult(String scheduleNo, ExamScoreBean currentScoreBean, Item item, int currentRoundNo, MqttBean mqttBean) {
+    public RoundResult saveResult(String scheduleNo, ExamScoreBean currentScoreBean, Item item, int currentRoundNo, StudentGroupItem mqttBean) {
 //        if (scoreCheck(item, "", currentScoreBean.resultList.get(currentScoreBean.resultList.size() - 1))) return null;
         if (currentScoreBean.resultList.get(currentScoreBean.currentPosition).isLock){
             ToastUtils.showShort("成绩已保存");
@@ -200,6 +216,7 @@ public class ExamResultModel extends BaseViewModel<Object> {
         roundResult.setExamType(mqttBean.getExamStatus());
         roundResult.setExamPlaceName(mqttBean.getExamPlaceName());
         roundResult.setGroundNo(mqttBean.getGroupNo());
+        roundResult.setGrouptype(mqttBean.getGroupType());
         roundResult.setIsLastResult(1);
         MMKV mmkv = BaseApplication.getInstance().getMmkv();
         String username = mmkv.getString(MMKVContract.USERNAME, "");
@@ -380,7 +397,7 @@ public class ExamResultModel extends BaseViewModel<Object> {
         }
     }
 
-    public void unLockStuScore(MqttBean mqttBean,Item item, int currentRoundNo) {
+    public void unLockStuScore(StudentGroupItem mqttBean, Item item, int currentRoundNo) {
         ScoreUnLockPresenter presenter = new ScoreUnLockPresenter();
         presenter.setViewModel(this);
         presenter.scoreUnLock(mqttBean,item,currentRoundNo);

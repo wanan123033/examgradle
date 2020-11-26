@@ -57,7 +57,7 @@ public interface IHttp {
      * @param json
      * @return
      */
-    @HTTP(url = "/run/downSiteScheduleItemStudent")
+    @HTTP(url = "/run/downSiteScheduleItemGroup")
     Observable<SiteStudentBean> downSiteScheduleItemStudent(@HeaderString ("Authorization")String token,@JSON String json);
 
     /**
@@ -81,8 +81,6 @@ public interface IHttp {
 
     @HTTP(url = "/run/downSiteScheduleItemGroup")
     Observable<GroupInfoBean> downGroup(@HeaderString ("Authorization")String token,@JSON String json);
-    @HTTP(url = "/run/downSiteScheduleItemGroup")
-    Observable<BaseBean> upload(@HeaderString ("Authorization")String token,@JSON String json);
     @HTTP(url = "/run/scanQrResp")
     Observable<TopicBean> scanQrResp(@HeaderString ("Authorization")String token, @JSON String json);
 

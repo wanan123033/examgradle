@@ -6,11 +6,14 @@ import android.util.Log;
 import com.blankj.utilcode.util.ToastUtils;
 import com.fairplay.database.DBManager;
 import com.fairplay.database.entity.Item;
-import com.fairplay.database.entity.MqttBean;
+import com.fairplay.database.entity.StudentGroupItem;
 import com.fairplay.database.entity.MultipleResult;
 import com.fairplay.database.entity.RoundResult;
 import com.fairplay.examgradle.base.JsonDataPresenter;
 import com.fairplay.examgradle.bean.BaseBean;
+import com.gwm.base.BaseActivity;
+import com.gwm.messagesendreceive.MessageBus;
+import com.gwm.messagesendreceive.MessageBusMessage;
 import com.gwm.retrofit.Observable;
 
 import org.json.JSONArray;
@@ -29,7 +32,7 @@ public class ScoreUploadPresenter extends JsonDataPresenter<ScoreUploadPresenter
     /**
      * 成绩上传
      */
-    public void scoreUpload(String trackNo, RoundResult result, MqttBean groupItem, Item item) throws JSONException {
+    public void scoreUpload(String trackNo, RoundResult result, StudentGroupItem groupItem, Item item) throws JSONException {
         this.result = result;
         String userInfo = result.getUserInfo();
         JSONObject jsonObject = new JSONObject();
@@ -141,7 +144,7 @@ public class ScoreUploadPresenter extends JsonDataPresenter<ScoreUploadPresenter
         String token = getToken();
         String string = genJsonString(100020170, jsonArray.toString());
         Observable<BaseBean> observable = getHttpPresenter().uploadStudentResult(token,string);
-        addHttpSubscriber(observable,BaseBean.class);
+        addHttpSubscriber("",observable,BaseBean.class);
     }
 
     @Override
@@ -149,6 +152,7 @@ public class ScoreUploadPresenter extends JsonDataPresenter<ScoreUploadPresenter
         if (response.code == 0 && response.msg.equals("上传成功")){
             DBManager.getInstance().updateResultStateUnload(result);
             ToastUtils.showLong("上传成绩成功");
+            MessageBus.getBus().post(new MessageBusMessage("","DIMMSION_PROGREESS"));
         }else {
             ToastUtils.showLong("上传成绩失败");
         }

@@ -20,7 +20,7 @@ public class DownEnvInfoPresenter extends JsonDataPresenter<DownEnvInfoPresenter
     public void downEnv(){
         String jsonString = genJsonString(100020110, "");
         Observable<EnvInfoBean> downEnvInfo = getHttpPresenter().downEnvInfo(getToken(), jsonString);
-        addHttpSubscriber(downEnvInfo,EnvInfoBean.class);
+        addHttpSubscriber("加载配置信息...",downEnvInfo,EnvInfoBean.class);
     }
 
     @Override
@@ -32,11 +32,11 @@ public class DownEnvInfoPresenter extends JsonDataPresenter<DownEnvInfoPresenter
         if (getViewModel() instanceof BaseViewModel){
             BaseApplication.getInstance().getMmkv().putString(MMKVContract.MQIP,response.data.mq.ip);
             BaseApplication.getInstance().getMmkv().putString(MMKVContract.MQPORT,response.data.mq.port);
+            BaseApplication.getInstance().getMmkv().putString(MMKVContract.MQUSER,response.data.mq.username);
+            BaseApplication.getInstance().getMmkv().putString(MMKVContract.MQPASS,response.data.mq.password);
             ((BaseViewModel) getViewModel()).sendLiveData(response);
         }
     }
-
-
     public interface DownEnvInfo extends JsonDataPresenter.HttpBaseBean{
 
     }

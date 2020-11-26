@@ -19,4 +19,7 @@ public interface MMKVContract {
     String CHANNEL_CODE = "CHANNEL_CODE";  //通道号
     String MQIP = "MQIP";  //MQ IP
     String MQPORT = "MQPORT";
+    String MQUSER = "MQUSER";
+    String MQPASS = "MQPASS";
+    String PERMISSION = "PERMISSION";
 }
