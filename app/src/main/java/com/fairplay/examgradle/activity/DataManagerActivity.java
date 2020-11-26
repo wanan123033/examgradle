@@ -137,6 +137,7 @@ public class DataManagerActivity extends BaseMvvmTitleActivity<Object, DataManag
                     public void onClick(DialogInterface dialog, int which) {
                         BaseApplication.getInstance().getMmkv().putInt(MMKVContract.EXAMTYPE,which);
                         dialog.dismiss();
+                        showDialog("下载信息中...");
                         DBManager.getInstance().clear();
                         viewModel.rosterDownload();
                     }

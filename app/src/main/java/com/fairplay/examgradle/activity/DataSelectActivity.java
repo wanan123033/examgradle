@@ -99,9 +99,10 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
             return;
         }
         if (currentExamPlace == null){
-            return;
+            groupInfoList = DBManager.getInstance().getAllGroupInfo(currentSchedule.getScheduleNo(),null, itemCode, subItemCode);
+        }else {
+            groupInfoList = DBManager.getInstance().getAllGroupInfo(currentSchedule.getScheduleNo(), currentExamPlace.getExamplaceName(), itemCode, subItemCode);
         }
-        groupInfoList = DBManager.getInstance().getAllGroupInfo(currentSchedule.getScheduleNo(), currentExamPlace.getExamplaceName(), itemCode, subItemCode);
         List<String> strings = new ArrayList<>();
         strings.add("所有分组");
         for (GroupInfo groupInfo : groupInfoList){
@@ -115,6 +116,7 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
 
     private void initExamPlaceList(List<ExamPlace> examPlaceList) {
         List<String> strings = new ArrayList<>();
+        strings.add("所有场地");
         for (ExamPlace schedule : examPlaceList){
             strings.add(schedule.getExamplaceName());
         }
@@ -194,6 +196,7 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
             case R.id.sp_subitem:
                 subItemCode = subItems.get(position).getSubitemCode();
                 pageNum = 1;
+                initExamPlaceList();
                 initGroupInfo();
                 break;
             case R.id.sp_schedule:
@@ -208,13 +211,23 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
                 viewModel.selectAll(itemCode,subItemCode,currentSchedule,currentExamPlace,currentGroupInfo,pageNum);
                 break;
             case R.id.sp_examplaceName:
-                currentExamPlace = examPlaceList.get(position);
+                if (position > 0){
+                    currentExamPlace = examPlaceList.get(position - 1);
+                }else {
+                    currentExamPlace = null;
+                }
                 initGroupInfo();
                 break;
         }
 
 
     }
+
+    private void initExamPlaceList() {
+        examPlaceList = DBManager.getInstance().getExamplace(itemCode, subItemCode);
+        initExamPlaceList(examPlaceList);
+    }
+
     @OnClick({R.id.btn_upload,R.id.btn_query,R.id.tv_allSelected})
     public void onClick(View v){
         switch (v.getId()){
@@ -294,6 +307,7 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
                 intent.putExtra(DataDisplayActivity.SCHEDULE_NO, bean.scheduleNo);
                 startActivity(intent);
             });
+            mBinding.txt_stu_sumNumber.setText(mList.size()+"");
             mBinding.rv_results.setAdapter(adapter);
         }else if (o instanceof Integer){
             if (((Integer)o) != BaseActivity.DIMMSION_PROGREESS) {

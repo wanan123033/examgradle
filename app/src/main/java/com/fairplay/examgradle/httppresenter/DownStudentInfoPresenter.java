@@ -55,8 +55,9 @@ public class DownStudentInfoPresenter extends JsonDataPresenter<DownStudentInfoP
                 }
                 DBManager.getInstance().insertGroupInfo(dataGroup);
                 ExamPlace place = new ExamPlace();
-                Log.e("TAG",group.examPlaceName);
                 place.setExamplaceName(group.examPlaceName);
+                place.setItemCode(group.examItemCode);
+                place.setSubItemCode(group.subitemCode);
                 DBManager.getInstance().insertExamPlace(place);
                 List<GroupInfoBean.StudentBean> studentCodeList = group.studentCodeList;
                 if (studentCodeList != null && !studentCodeList.isEmpty()){

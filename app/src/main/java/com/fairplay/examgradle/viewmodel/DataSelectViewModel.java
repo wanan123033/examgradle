@@ -1,5 +1,6 @@
 package com.fairplay.examgradle.viewmodel;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.blankj.utilcode.util.ToastUtils;
@@ -29,10 +30,7 @@ public class DataSelectViewModel extends BaseViewModel<Object> {
             ToastUtils.showShort("请选择日程");
             return;
         }
-        if (examPlace == null){
-            ToastUtils.showShort("请选择场地");
-            return;
-        }
+
         if (itemCode == null || subItemCode == null){
             ToastUtils.showShort("请选择项目");
             return;
@@ -43,9 +41,17 @@ public class DataSelectViewModel extends BaseViewModel<Object> {
             public DataBaseRespon executeOper() {
                 List<StudentGroupItem> mqttBeans = null;
                 if (groupInfo == null) {
-                    mqttBeans = DBManager.getInstance().getMQTTBean(itemCode, subItemCode, schedule.getScheduleNo(), examPlace.getExamplaceName());
+                    if (examPlace == null) {
+                        mqttBeans = DBManager.getInstance().getMQTTBean(itemCode, subItemCode, schedule.getScheduleNo(), null);
+                    }else {
+                        mqttBeans = DBManager.getInstance().getMQTTBean(itemCode, subItemCode, schedule.getScheduleNo(), examPlace.getExamplaceName());
+                    }
                 }else {
-                    mqttBeans = DBManager.getInstance().getMQTTBean(itemCode, subItemCode, schedule.getScheduleNo(), examPlace.getExamplaceName(),groupInfo);
+                    if (examPlace == null) {
+                        mqttBeans = DBManager.getInstance().getMQTTBean(itemCode, subItemCode, schedule.getScheduleNo(), null,groupInfo);
+                    }else {
+                        mqttBeans = DBManager.getInstance().getMQTTBean(itemCode, subItemCode, schedule.getScheduleNo(), examPlace.getExamplaceName(),groupInfo);
+                    }
                 }
                 List<DataRtiveBean> dataRtiveBeans = new ArrayList<>();
                 Item item = DBManager.getInstance().getItemByItemCode(itemCode,itemCode);
@@ -60,15 +66,31 @@ public class DataSelectViewModel extends BaseViewModel<Object> {
                     dataRtiveBean.scheduleNo = schedule.getScheduleNo();
                     List<RoundResult> stuRoundResult = null;
                     if (groupInfo == null) {
-                        stuRoundResult = DBManager.getInstance().getStuRoundResult(mqttBean.getStudentCode(),
-                                mqttBean.getItemCode(), mqttBean.getSubitemCode(),
-                                schedule.getScheduleNo(),
-                                examPlace.getExamplaceName());
+                        if (examPlace == null) {
+                            stuRoundResult = DBManager.getInstance().getStuRoundResult(mqttBean.getStudentCode(),
+                                    mqttBean.getItemCode(), mqttBean.getSubitemCode(),
+                                    schedule.getScheduleNo(),
+                                    null);
+                        }else {
+                            stuRoundResult = DBManager.getInstance().getStuRoundResult(mqttBean.getStudentCode(),
+                                    mqttBean.getItemCode(), mqttBean.getSubitemCode(),
+                                    schedule.getScheduleNo(),
+                                    examPlace.getExamplaceName());
+                        }
+
                     }else {
-                        stuRoundResult = DBManager.getInstance().getStuRoundResult(mqttBean.getStudentCode(),
-                                mqttBean.getItemCode(), mqttBean.getSubitemCode(),
-                                schedule.getScheduleNo(),
-                                examPlace.getExamplaceName(),groupInfo);
+                        if (examPlace == null) {
+                            stuRoundResult = DBManager.getInstance().getStuRoundResult(mqttBean.getStudentCode(),
+                                    mqttBean.getItemCode(), mqttBean.getSubitemCode(),
+                                    schedule.getScheduleNo(),
+                                    null,groupInfo);
+                        }else {
+                            stuRoundResult = DBManager.getInstance().getStuRoundResult(mqttBean.getStudentCode(),
+                                    mqttBean.getItemCode(), mqttBean.getSubitemCode(),
+                                    schedule.getScheduleNo(),
+                                    examPlace.getExamplaceName(),groupInfo);
+                        }
+
 
                     }
                     for (RoundResult result : stuRoundResult){
@@ -119,10 +141,6 @@ public class DataSelectViewModel extends BaseViewModel<Object> {
             ToastUtils.showShort("请选择日程");
             return;
         }
-        if (examPlace == null){
-            ToastUtils.showShort("请选择场地");
-            return;
-        }
         if (itemCode == null || subItemCode == null){
             ToastUtils.showShort("请选择项目");
             return;
@@ -132,10 +150,19 @@ public class DataSelectViewModel extends BaseViewModel<Object> {
             @Override
             public DataBaseRespon executeOper() {
                 List<StudentGroupItem> mqttBeans = null;
+                String exan = null;
                 if (groupInfo == null) {
-                    mqttBeans = DBManager.getInstance().getMQTTBean(stuCode,itemCode, subItemCode, schedule.getScheduleNo(), examPlace.getExamplaceName());
+                    if (examPlace == null) {
+                        mqttBeans = DBManager.getInstance().getMQTTBean(stuCode,itemCode, subItemCode, schedule.getScheduleNo(), exan);
+                    }else {
+                        mqttBeans = DBManager.getInstance().getMQTTBean(stuCode,itemCode, subItemCode, schedule.getScheduleNo(), examPlace.getExamplaceName());
+                    }
                 }else {
-                    mqttBeans = DBManager.getInstance().getMQTTBean(stuCode,itemCode, subItemCode, schedule.getScheduleNo(), examPlace.getExamplaceName(),groupInfo);
+                    if (examPlace == null) {
+                        mqttBeans = DBManager.getInstance().getMQTTBean(stuCode,itemCode, subItemCode, schedule.getScheduleNo(), null,groupInfo);
+                    }else {
+                        mqttBeans = DBManager.getInstance().getMQTTBean(stuCode, itemCode, subItemCode, schedule.getScheduleNo(), examPlace.getExamplaceName(), groupInfo);
+                    }
                 }
                 List<DataRtiveBean> dataRtiveBeans = new ArrayList<>();
                 for (StudentGroupItem mqttBean : mqttBeans){
@@ -150,15 +177,29 @@ public class DataSelectViewModel extends BaseViewModel<Object> {
                     dataRtiveBean.scheduleNo = schedule.getScheduleNo();
                     List<RoundResult> stuRoundResult = null;
                     if (groupInfo == null) {
-                        stuRoundResult = DBManager.getInstance().getStuRoundResult(mqttBean.getStudentCode(),
-                                mqttBean.getItemCode(), mqttBean.getSubitemCode(),
-                                schedule.getScheduleNo(),
-                                examPlace.getExamplaceName());
+                        if (examPlace == null){
+                            stuRoundResult = DBManager.getInstance().getStuRoundResult(mqttBean.getStudentCode(),
+                                    mqttBean.getItemCode(), mqttBean.getSubitemCode(),
+                                    schedule.getScheduleNo(),
+                                    null);
+                        }else {
+                            stuRoundResult = DBManager.getInstance().getStuRoundResult(mqttBean.getStudentCode(),
+                                    mqttBean.getItemCode(), mqttBean.getSubitemCode(),
+                                    schedule.getScheduleNo(),
+                                    examPlace.getExamplaceName());
+                        }
                     }else {
-                        stuRoundResult = DBManager.getInstance().getStuRoundResult(mqttBean.getStudentCode(),
-                                mqttBean.getItemCode(), mqttBean.getSubitemCode(),
-                                schedule.getScheduleNo(),
-                                examPlace.getExamplaceName(),groupInfo);
+                        if (examPlace == null){
+                            stuRoundResult = DBManager.getInstance().getStuRoundResult(mqttBean.getStudentCode(),
+                                    mqttBean.getItemCode(), mqttBean.getSubitemCode(),
+                                    schedule.getScheduleNo(),
+                                    null, groupInfo);
+                        }else {
+                            stuRoundResult = DBManager.getInstance().getStuRoundResult(mqttBean.getStudentCode(),
+                                    mqttBean.getItemCode(), mqttBean.getSubitemCode(),
+                                    schedule.getScheduleNo(),
+                                    examPlace.getExamplaceName(), groupInfo);
+                        }
 
                     }
                     for (RoundResult result : stuRoundResult){

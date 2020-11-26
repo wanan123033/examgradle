@@ -33,16 +33,21 @@ public class ScanQrRespPresenter extends JsonDataPresenter<ScanQrRespPresenter.S
 
     @Override
     protected void onNextResult(TopicBean response, int id) {
-        if (response.data == 0){
-            ToastUtils.showShort("通道组加入成功");
-            BaseApplication.getInstance().getMmkv().putString(MMKVContract.CHANNEL_CODE,channelCode);
-            MqttManager.getInstance().subscribe(channelCode);
-            DownItemInfoPresenter itemInfoPresenter = new DownItemInfoPresenter();
-            itemInfoPresenter.setViewModel(getViewModel());
-            itemInfoPresenter.downItem();
-        }else {
-            ToastUtils.showShort(response.msg);
+        try {
+            if (response.data == 0){
+                ToastUtils.showShort("通道组加入成功");
+                BaseApplication.getInstance().getMmkv().putString(MMKVContract.CHANNEL_CODE,channelCode);
+                MqttManager.getInstance().subscribe(channelCode);
+                DownItemInfoPresenter itemInfoPresenter = new DownItemInfoPresenter();
+                itemInfoPresenter.setViewModel(getViewModel());
+                itemInfoPresenter.downItem();
+            }else {
+                ToastUtils.showShort(response.msg);
+            }
+        }catch (Exception e){
+            ToastUtils.showShort("通道组加入失败");
         }
+
     }
 
     public interface ScanQrRespInfo extends JsonDataPresenter.HttpBaseBean{

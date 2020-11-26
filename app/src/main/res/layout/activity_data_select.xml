@@ -50,12 +50,7 @@
             android:layout_height="45dp"
             android:layout_marginLeft="15dp"
             android:background="@drawable/icon_spinner_bg"/>
-        <Spinner
-            android:id="@+id/sp_examplaceName"
-            android:layout_width="wrap_content"
-            android:layout_height="45dp"
-            android:layout_marginLeft="15dp"
-            android:background="@drawable/icon_spinner_bg"/>
+
         <Spinner
             android:id="@+id/sp_item"
             android:layout_width="wrap_content"
@@ -64,16 +59,24 @@
             android:background="@drawable/icon_spinner_bg"/>
         <Spinner
             android:id="@+id/sp_subitem"
+            android:layout_width="270dp"
+            android:layout_height="45dp"
+            android:layout_marginLeft="15dp"
+            android:background="@drawable/icon_spinner_bg"/>
+        <Spinner
+            android:id="@+id/sp_examplaceName"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_marginLeft="15dp"
             android:background="@drawable/icon_spinner_bg"/>
+
         <Spinner
             android:id="@+id/sp_group"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_marginLeft="15dp"
             android:background="@drawable/icon_spinner_bg"/>
+
     </LinearLayout>
     </LinearLayout>
 
