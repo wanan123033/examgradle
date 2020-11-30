@@ -106,8 +106,6 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
                             .setServerPort(Integer.parseInt(mqttPort))
                             .connect(ExamResultActivity.this);
                     MqttManager.getInstance().regeisterServerMsg(this);
-
-
                 }
 
                 @Override
@@ -417,7 +415,8 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
                 mqttBean.getItemCode(),mqttBean.getSubitemCode(),
                 mqttBean.getScheduleNo(),
                 mqttBean.getExamPlaceName(),
-                mqttBean.getGroupNo(),mqttBean.getGroupType());
+                mqttBean.getGroupNo(),mqttBean.getGroupType(),
+                mqttBean.getExamStatus());
         if (stuRoundResult == null || stuRoundResult.isEmpty()){
             return initStudentExam(mqttBean.getStudentCode(),item);
 

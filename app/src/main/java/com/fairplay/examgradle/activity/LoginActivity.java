@@ -78,11 +78,13 @@ public class LoginActivity extends BaseMvvmActivity<Object, LoginViewModel, acti
         username = username + "@" + CommonUtils.getDeviceId(ContextUtil.get());
 
         LogUtils.operation("登录中...username="+username+",password="+password);
+        showDialog("登录中...");
         viewModel.login(username,password);
     }
 
     @Override
     public void onChanged(Object o) {
+        dismissDialog();
         if (o != null && o instanceof EnvInfoBean){
             if (((EnvInfoBean) o).code >= 1){
                 ToastUtils.showShort(((EnvInfoBean) o).msg);

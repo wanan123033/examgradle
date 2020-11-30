@@ -102,6 +102,8 @@ public class DBManager {
         multipleItemDao.deleteAll();
         roundResultDao.deleteAll();
         multipleResultDao.deleteAll();
+        examPlaceDao.deleteAll();
+        studentGroupItemDao.deleteAll();
     }
 
     public Map<String,Object> getItemStudenCount(String itemCode,String subItemCode){
@@ -385,6 +387,17 @@ public class DBManager {
                 RoundResultDao.Properties.ExamPlaceName.eq(examPlaceName),
                 RoundResultDao.Properties.IsLastResult.eq(1),
                 RoundResultDao.Properties.GroundNo.eq(groupNo),
+                RoundResultDao.Properties.Grouptype.eq(groupType)).list();
+    }
+    public List<RoundResult> getStuRoundResult(String studentCode,String itemCode, String subitemCode, String scheduleNo, String examPlaceName, int groupNo, int groupType,int examType) {
+        return roundResultDao.queryBuilder().where(RoundResultDao.Properties.StudentCode.eq(studentCode),
+                RoundResultDao.Properties.ItemCode.eq(itemCode),
+                RoundResultDao.Properties.SubitemCode.eq(subitemCode),
+                RoundResultDao.Properties.ScheduleNo.eq(scheduleNo),
+                RoundResultDao.Properties.ExamPlaceName.eq(examPlaceName),
+                RoundResultDao.Properties.IsLastResult.eq(1),
+                RoundResultDao.Properties.GroundNo.eq(groupNo),
+                RoundResultDao.Properties.ExamType.eq(examType),
                 RoundResultDao.Properties.Grouptype.eq(groupType)).list();
     }
 

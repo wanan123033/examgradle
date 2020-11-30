@@ -8,20 +8,20 @@
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/item_view_card"
-        android:layout_width="116dp"
-        android:layout_height="116dp"
-        custom:cardBackgroundColor="@color/colorAccent"
+        android:id="@+id/card_view"
+        android:layout_width="145dp"
+        android:layout_height="145dp"
+        android:layout_marginTop="15dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        custom:cardBackgroundColor="@drawable/data_message_item_selector"
         custom:cardCornerRadius="10dp"
         custom:cardElevation="0dp">
 
         <ImageView
-            android:id="@+id/img_item_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginBottom="10dp" />
-
+            android:id="@+id/iv_type_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"/>
     </androidx.cardview.widget.CardView>
 
     <TextView
@@ -32,7 +32,7 @@
         android:gravity="center"
         android:text="跳绳测试仪"
         android:textColor="@color/black"
-        android:textSize="18sp" />
+        android:textSize="20sp" />
 </LinearLayout>
 
 

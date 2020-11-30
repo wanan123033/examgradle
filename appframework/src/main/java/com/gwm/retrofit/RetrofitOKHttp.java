@@ -53,6 +53,7 @@ public class RetrofitOKHttp<T> extends BaseOkHttp{
                 params.observer = observable1.getObserver();
                 params.websocketListener = observable1.getListener();
                 params.netListener = observable1.getNetListener();
+
                 if (observable1 == observable) {    //判断执行的请求是不是参数对应的请求
                     sendHttp(params);
                     break;

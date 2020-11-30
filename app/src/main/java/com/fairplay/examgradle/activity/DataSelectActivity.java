@@ -75,13 +75,7 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
         itemCode = mmkv.getString(MMKVContract.CURRENT_ITEM,"");
         subItemCode = mmkv.getString(MMKVContract.CURRENT_SUB_ITEM,"");
 
-        scheduleList = DBManager.getInstance().getAllSchedule();
-        initSchedule(scheduleList);
-        examPlaceList = DBManager.getInstance().getAllExamplace();
-        initExamPlaceList(examPlaceList);
-//        viewModel.selectAll(itemCode,subItemCode,pageNum);
-        initBigItem();
-        initSmoatItem();
+
 
         mBinding.refreshview.setOnRefreshListener(refreshlayout -> {
             mBinding.refreshview.finishRefresh();
@@ -92,6 +86,18 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
             mBinding.refreshview.finishLoadmore();
             ToastUtils.showShort("没有更多数据了");
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        scheduleList = DBManager.getInstance().getAllSchedule();
+        initSchedule(scheduleList);
+        examPlaceList = DBManager.getInstance().getAllExamplace();
+        initExamPlaceList(examPlaceList);
+//        viewModel.selectAll(itemCode,subItemCode,pageNum);
+        initBigItem();
+        initSmoatItem();
     }
 
     private void initGroupInfo() {

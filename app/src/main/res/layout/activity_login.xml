@@ -76,6 +76,6 @@
         android:layout_marginBottom="6dp"
         android:layout_marginRight="10dp"
         android:text="打分终端（安卓版）"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="20sp" />
 </RelativeLayout>

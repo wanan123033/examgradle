@@ -24,7 +24,7 @@ public class OperationAdapter extends BaseRecyclerViewAdapter<OperationAdapter.V
     @Override
     protected void setData(OperationBean operationBean, int position) {
         Log.e("TAG===",operationBean.toString());
-        mBinding.img_item_price.setBackgroundResource(operationBean.res);
+        mBinding.iv_type_image.setBackgroundResource(operationBean.res);
         mBinding.tv_item.setText(operationBean.name);
     }
 

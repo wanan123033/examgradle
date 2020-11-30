@@ -94,7 +94,7 @@ public class ExamResultModel extends BaseViewModel<Object> {
 //                        ToastUtils.showShort("当前项目最小成绩为:" + item.getMinValue());
 //                        return true;
 //                    }
-                if (currentScore.result.length() == 1 && currentScore.result.toString().equals("0")){
+                if (currentScore.result.length() == 1 && currentScore.result.toString().equals("0") && !score.equals(".")){
                     currentScore.result.deleteCharAt(0);
                     return false;
                 }
@@ -149,12 +149,21 @@ public class ExamResultModel extends BaseViewModel<Object> {
                         ToastUtils.showShort("时间格式错误");
                         return true;
                     }
+                    String[] strings = currentScore.result.toString().split("\\.");
+                    if (strings[0].length() != 2){
+                        ToastUtils.showShort("秒钟必须是两位数");
+                        return true;
+                    }
                 }
             }
             if (item.getUnit().equals("minutes")){
                 String[] split = (currentScore.result.toString()+score).split(":");
                 if (Integer.parseInt(split[0]) > 60){
                     ToastUtils.showShort("分钟最大是60");
+                    return true;
+                }
+                if (split[0].length() != 2){
+                    ToastUtils.showShort("分钟必须是两位数");
                     return true;
                 }
                 if (split.length > 1){
@@ -165,6 +174,10 @@ public class ExamResultModel extends BaseViewModel<Object> {
                     }
                     if (SS.contains(".")){
                         String[] strings = SS.split("\\.");
+                        if (strings[0].length() != 2){
+                            ToastUtils.showShort("秒钟必须是两位数");
+                            return true;
+                        }
                         if (strings.length > 1){
                             String string = strings[1];
                             Double ms = Double.parseDouble(string);

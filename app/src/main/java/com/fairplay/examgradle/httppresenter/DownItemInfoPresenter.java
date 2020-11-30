@@ -67,6 +67,9 @@ public class DownItemInfoPresenter extends JsonDataPresenter<DownItemInfoPresent
                                 item.setRemark1("0.00");
                             }
                         }
+                        if (item.getTestType() == 1 && item.getDigital() == 1){
+                            item.setRemark1("ss.S");
+                        }
                         DBManager.getInstance().insertItem(item);
                         if (info.subitemList != null && !info.subitemList.isEmpty()){
                             for (int j = 0 ; j < info.subitemList.size() ; j++){          //子项信息
@@ -113,6 +116,9 @@ public class DownItemInfoPresenter extends JsonDataPresenter<DownItemInfoPresent
                                     }else if (subItem.getDigital() == 2){
                                         subItem.setRemark1("0.00");
                                     }
+                                }
+                                if (subItem.getTestType() == 1 && subItem.getDigital() == 1){
+                                    subItem.setRemark1("ss.S");
                                 }
                                 Log.e("TAG===>",subItem.toString());
                                 long subItemId = DBManager.getInstance().insertItem(subItem);

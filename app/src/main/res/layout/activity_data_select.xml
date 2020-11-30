@@ -15,6 +15,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="5dp"
             android:orientation="horizontal">
         <EditText
             android:id="@+id/et_input_text"
@@ -139,7 +140,7 @@
 
         <Button
             android:id="@+id/btn_upload"
-            android:layout_width="121dp"
+            android:layout_width="151dp"
             android:layout_height="35dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
@@ -239,8 +240,6 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/view_bottom"
         android:layout_below="@+id/view_data_head">
-
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_results"
             android:layout_width="match_parent"
