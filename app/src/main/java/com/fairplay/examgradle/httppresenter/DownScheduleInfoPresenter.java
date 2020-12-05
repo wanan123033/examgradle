@@ -41,7 +41,6 @@ public class DownScheduleInfoPresenter extends JsonDataPresenter<DownScheduleInf
                             schedule.setSiteName(response.data.siteName);
                             schedule.setScheduleNo(info.scheduleNo);
                             DBManager.getInstance().insertSchedule(schedule);
-
                         }
                     }
                 }else {

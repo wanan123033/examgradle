@@ -160,6 +160,12 @@ public class DownItemInfoPresenter extends JsonDataPresenter<DownItemInfoPresent
         addHttpSubscriber("",itemInfoBeanObservable,ItemInfoBean.class);
     }
 
+    @Override
+    protected synchronized void onErrorResult(Exception e, int id) {
+        super.onErrorResult(e, id);
+        ToastUtils.showShort("下载项目信息出错:"+e.getMessage());
+    }
+
     public interface DownItemInfo extends JsonDataPresenter.HttpBaseBean{
 
     }

@@ -1,7 +1,5 @@
 package com.fairplay.examgradle.httppresenter;
 
-import android.util.Log;
-
 import com.blankj.utilcode.util.ToastUtils;
 import com.fairplay.database.DBManager;
 import com.fairplay.database.entity.ExamPlace;
@@ -11,10 +9,8 @@ import com.fairplay.examgradle.base.JsonDataPresenter;
 import com.fairplay.examgradle.bean.GroupInfoBean;
 import com.gwm.annotation.json.JSON;
 import com.gwm.annotation.json.Param;
-import com.gwm.base.BaseActivity;
 import com.gwm.messagesendreceive.MessageBus;
 import com.gwm.messagesendreceive.MessageBusMessage;
-import com.gwm.mvvm.BaseViewModel;
 import com.gwm.retrofit.Observable;
 
 import java.util.List;
@@ -71,7 +67,7 @@ public class DownStudentInfoPresenter extends JsonDataPresenter<DownStudentInfoP
                         studentGroupItem.setExamPlaceName(dataGroup.examPlaceName);
                         studentGroupItem.setStudentCode(studentBean.studentCode);
                         studentGroupItem.setTrackNo(studentBean.trackNo);
-                        studentGroupItem.setExamStatus(examType);
+                        studentGroupItem.setExamStatus(studentBean.examStatus);
                         studentGroupItem.setScheduleNo(group.scheduleNo);
                         DBManager.getInstance().insertMqttBean(studentGroupItem);
                     }

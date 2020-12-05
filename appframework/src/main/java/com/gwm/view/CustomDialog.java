@@ -24,15 +24,13 @@ public class CustomDialog extends ProgressDialog {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
         init(getContext());
     }
 
-    private void init(Context context)
-    {
+    private void init(Context context){
         //设置不可取消，点击其他区域不能取消，实际中可以抽出去封装供外包设置
         setCancelable(true);
         setCanceledOnTouchOutside(false);
@@ -53,7 +51,7 @@ public class CustomDialog extends ProgressDialog {
 
     public void setContentText(String toString) {
         contentText = toString;
-        if (isShowing()){
+        if (tv_load_dialog != null){
             tv_load_dialog.setText(contentText);
         }
     }

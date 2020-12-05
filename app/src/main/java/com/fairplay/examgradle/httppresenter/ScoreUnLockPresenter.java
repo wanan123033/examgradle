@@ -10,6 +10,8 @@ import com.gwm.annotation.json.JSON;
 import com.gwm.annotation.json.Param;
 import com.gwm.base.BaseActivity;
 import com.gwm.base.BaseApplication;
+import com.gwm.messagesendreceive.MessageBus;
+import com.gwm.messagesendreceive.MessageBusMessage;
 import com.gwm.mvvm.BaseViewModel;
 import com.gwm.retrofit.Observable;
 
@@ -49,6 +51,7 @@ public class ScoreUnLockPresenter extends JsonDataPresenter<ScoreUnLockPresenter
 
     @Override
     protected void onNextResult(BaseBean response, int id) {
+        MessageBus.getBus().post(new MessageBusMessage("","DIMMSION_PROGREESS"));
         if (response.code == 1){
             ToastUtils.showShort(response.msg);
         }

@@ -30,5 +30,6 @@ public class GroupInfoBean extends BaseBean<GroupInfoBean.GroupInfo>{
         public String trackNo;  //道号
         public String entranceRollCallStatus; // 入口检录状态(0: 未检录，1：已检录)
         public String rollCallStatus;  // 上道检录状态(0: 未检录，1：已检录)
+        public int examStatus;   // 考试类型 0:正常 1.缓考，2.补考
     }
 }

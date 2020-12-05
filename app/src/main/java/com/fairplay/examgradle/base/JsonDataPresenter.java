@@ -34,9 +34,6 @@ import javax.crypto.spec.SecretKeySpec;
 
 public abstract class JsonDataPresenter<J extends JsonDataPresenter.HttpBaseBean,D> extends BaseDataPresenter<D> {
     private Object jsonCreator;
-    private static final String BASESTRING = "0123456789abcdefghijklmnopqrstuvwxyz";
-    private static String CHECK_CODE = "fp2018";
-    private static String AES_KEY = CHECK_CODE;
     private MMKV mmkv;
 
     public JsonDataPresenter(Class<J> clazz) {
@@ -101,7 +98,6 @@ public abstract class JsonDataPresenter<J extends JsonDataPresenter.HttpBaseBean
     @Override
     protected synchronized void onErrorResult(Exception e, int id) {
         super.onErrorResult(e, id);
-        ToastUtils.showShort("服务器错误:"+id);
     }
 
     public interface HttpBaseBean{

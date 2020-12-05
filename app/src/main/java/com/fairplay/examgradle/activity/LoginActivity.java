@@ -92,7 +92,6 @@ public class LoginActivity extends BaseMvvmActivity<Object, LoginViewModel, acti
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
             }
-
         }
     }
 

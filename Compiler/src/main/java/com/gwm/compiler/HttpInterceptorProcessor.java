@@ -41,7 +41,9 @@ public class HttpInterceptorProcessor extends BaseProcessor {
                         .addCode("$T cookieJar = new $T(new $T(context));\n", CookieJarImpl, CookieJarImpl, PersistentCookieStore)
                         .addCode("OkHttpClient okHttpClient = new OkHttpClient.Builder()\n")
                         .addCode(".cookieJar(cookieJar)\n")
-                        .addCode(".connectTimeout(60L*20, $T.SECONDS)\n", TimeUnit)
+                        .addCode(".connectTimeout(60L*2L, $T.SECONDS)\n", TimeUnit)
+                        .addCode(".readTimeout(60L*20L, TimeUnit.SECONDS)\n" +
+                                ".writeTimeout(60L*20L, TimeUnit.SECONDS)\n")
                         .addCode(".retryOnConnectionFailure(true)\n");
 //                ClassName HttpInterceptor = ClassName.get("com.gwm.http", "HttpInterceptor");
 //                builder.addCode("\t.addInterceptor(new $T())\n", HttpInterceptor);

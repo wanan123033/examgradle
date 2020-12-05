@@ -9,8 +9,6 @@ import org.greenrobot.greendao.annotation.Generated;
 public class Schedule {
     @Id(autoincrement = true)
     private Long id;
-    @Unique
-    @NotNull
     private String scheduleNo; //日程序号 （场次）
     @NotNull
     private long beginTime;
@@ -18,9 +16,9 @@ public class Schedule {
     private String itemCode;  //项目素质代码
     private String subitemCode; //项目专项代码
     private String siteName;  //考点名称
-    @Generated(hash = 1189489864)
-    public Schedule(Long id, @NotNull String scheduleNo, long beginTime,
-            long endTime, String itemCode, String subitemCode, String siteName) {
+    @Generated(hash = 1493428422)
+    public Schedule(Long id, String scheduleNo, long beginTime, long endTime,
+            String itemCode, String subitemCode, String siteName) {
         this.id = id;
         this.scheduleNo = scheduleNo;
         this.beginTime = beginTime;

@@ -11,6 +11,7 @@ import com.fairplay.examgradle.contract.Permission;
 import com.gwm.base.BaseApplication;
 import com.gwm.mvvm.BaseViewModel;
 import com.gwm.retrofit.Observable;
+import com.gwm.util.ContextUtil;
 
 import java.util.List;
 
@@ -54,8 +55,22 @@ public class LoginDataPresenter extends BaseDataPresenter<LoginBean> {
             DownItemInfoPresenter presenter = new DownItemInfoPresenter();
             presenter.setViewModel(getViewModel());
             presenter.downItem();
+            //下载日程信息
+            DownScheduleInfoPresenter scheduleInfoPresenter = new DownScheduleInfoPresenter();
+            scheduleInfoPresenter.setViewModel(getViewModel());
+            scheduleInfoPresenter.downSchedule();
         }else {
+            ToastUtils.showShort(response.msg);
             ((BaseViewModel) getViewModel()).sendLiveData(response);
         }
+    }
+
+    @Override
+    protected synchronized void onErrorResult(Exception e, int id) {
+        super.onErrorResult(e, id);
+        Intent intent = new Intent();
+        intent.setClass(ContextUtil.get(),LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ContextUtil.get().startActivity(intent);
     }
 }

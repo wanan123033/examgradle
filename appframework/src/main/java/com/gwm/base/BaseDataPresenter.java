@@ -54,7 +54,8 @@ public abstract class BaseDataPresenter<S,D> implements HttpObserver<D>{
     @Override
     public void onError(Exception e, int id) {
         onErrorResult(e,id);
-        LogUtils.e(e);
+
+//        LogUtils.e(e);
     }
 
     @Override

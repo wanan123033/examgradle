@@ -12,5 +12,6 @@ public class LoginViewModel extends BaseViewModel<Object> {
         LoginDataPresenter dataPresenter = new LoginDataPresenter();
         dataPresenter.setViewModel(this);
         dataPresenter.login(username,password);
+
     }
 }

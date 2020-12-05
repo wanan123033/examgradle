@@ -62,20 +62,20 @@ public class SplashActivity extends BaseMvvmActivity<Object, SplashViewModel,act
         super.onResume();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N){
             Handler.getHandler().postDelayed(() -> {
-                String username = mmkv.getString(MMKVContract.USERNAME,"");
-                String passsword = mmkv.getString(MMKVContract.PASSWORD,"");
-                username = username + "@" + CommonUtils.getDeviceId(ContextUtil.get());
-                LogUtils.operation("自动登录:username="+username+",password="+passsword);
-                if (TextUtils.isEmpty(username) || TextUtils.isEmpty(passsword)){
+//                String username = mmkv.getString(MMKVContract.USERNAME,"");
+//                String passsword = mmkv.getString(MMKVContract.PASSWORD,"");
+//                username = username + "@" + CommonUtils.getDeviceId(ContextUtil.get());
+//                LogUtils.operation("自动登录:username="+username+",password="+passsword);
+//                if (TextUtils.isEmpty(username) || TextUtils.isEmpty(passsword)){
                     Intent intent = new Intent();
                     intent.setClass(getApplicationContext(), LoginActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                     finish();
-                }else {
-                    viewModel.login(username,passsword);
-                }
+//                }else {
+//                    viewModel.login(username,passsword);
+//                }
             },1000);
         }
     }
@@ -98,20 +98,20 @@ public class SplashActivity extends BaseMvvmActivity<Object, SplashViewModel,act
     public void onPermissionGranted() {
         super.onPermissionGranted();
         Handler.getHandler().postDelayed(() -> {
-            String username = mmkv.getString(MMKVContract.USERNAME,"");
-            String passsword = mmkv.getString(MMKVContract.PASSWORD,"");
-            username = username + "@" + CommonUtils.getDeviceId(ContextUtil.get());
-            LogUtils.operation("自动登录:username="+username+",password="+passsword);
-            if (TextUtils.isEmpty(username) || TextUtils.isEmpty(passsword)){
+//            String username = mmkv.getString(MMKVContract.USERNAME,"");
+//            String passsword = mmkv.getString(MMKVContract.PASSWORD,"");
+//            username = username + "@" + CommonUtils.getDeviceId(ContextUtil.get());
+//            LogUtils.operation("自动登录:username="+username+",password="+passsword);
+//            if (TextUtils.isEmpty(username) || TextUtils.isEmpty(passsword)){
                 Intent intent = new Intent();
                 intent.setClass(getApplicationContext(), LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
-            }else {
-                viewModel.login(username,passsword);
-            }
+//            }else {
+//                viewModel.login(username,passsword);
+//            }
         },1000);
     }
 
