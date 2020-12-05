@@ -48,7 +48,6 @@ public class DataScoreUploadService extends IntentService {
                     e.printStackTrace();
                 }
             }
-
         }
         CacheMemoryUtils.getInstance().clear();
     }
