@@ -316,6 +316,7 @@ public class ExamResultActivity  extends BaseMvvmTitleActivity<Object, ExamResul
                 mBinding.stu_info.rv_score_data.setAdapter(adapter);
                 break;
             case R.id.tv_enter1:
+
                 quitCommit();
                 break;
 

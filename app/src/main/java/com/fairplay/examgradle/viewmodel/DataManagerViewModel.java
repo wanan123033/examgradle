@@ -30,7 +30,7 @@ public class DataManagerViewModel extends BaseViewModel<Object> {
         DownItemInfoPresenter downItemInfoPresenter = new DownItemInfoPresenter();
         downItemInfoPresenter.setViewModel(this);
         downItemInfoPresenter.downItem();
-//        //3.下载分组信息
+        //3.下载分组信息
 //        DownGroupInfoPresenter downGroupInfoPresenter = new DownGroupInfoPresenter();
 //        downGroupInfoPresenter.setViewModel(this);
 //        int exam = BaseApplication.getInstance().getMmkv().getInt(MMKVContract.EXAMTYPE,0);

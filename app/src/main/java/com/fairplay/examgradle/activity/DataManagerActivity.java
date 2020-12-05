@@ -141,7 +141,7 @@ public class DataManagerActivity extends BaseMvvmTitleActivity<Object, DataManag
                         DBManager.getInstance().clear();
                         viewModel.rosterDownload();
                     }
-                }).setCancelable(false).create().show();
+                }).setCancelable(true).create().show();
 
     }
     private void showBackupFileNameDialog() {

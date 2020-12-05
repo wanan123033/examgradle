@@ -268,12 +268,12 @@ public class DBManager {
         if (TextUtils.isEmpty(examplaceName)){
             return groupInfoDao.queryBuilder().where(GroupInfoDao.Properties.ScheduleNo.eq(scheduleNo),
                     GroupInfoDao.Properties.ItemCode.eq(itemCode),
-                    GroupInfoDao.Properties.SubItemCode.eq(subItemCode)).list();
+                    GroupInfoDao.Properties.SubItemCode.eq(subItemCode)).orderAsc(GroupInfoDao.Properties.GroupNo).list();
         }else {
             return groupInfoDao.queryBuilder().where(GroupInfoDao.Properties.ScheduleNo.eq(scheduleNo),
                     GroupInfoDao.Properties.ExamPlaceName.eq(examplaceName),
                     GroupInfoDao.Properties.ItemCode.eq(itemCode),
-                    GroupInfoDao.Properties.SubItemCode.eq(subItemCode)).list();
+                    GroupInfoDao.Properties.SubItemCode.eq(subItemCode)).orderAsc(GroupInfoDao.Properties.GroupNo).list();
         }
     }
 

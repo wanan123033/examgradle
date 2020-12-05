@@ -51,8 +51,8 @@ public class ScoreUnLockPresenter extends JsonDataPresenter<ScoreUnLockPresenter
 
     @Override
     protected void onNextResult(BaseBean response, int id) {
-        MessageBus.getBus().post(new MessageBusMessage("","DIMMSION_PROGREESS"));
         if (response.code == 1){
+            MessageBus.getBus().post(new MessageBusMessage("","DIMMSION_PROGREESS"));
             ToastUtils.showShort(response.msg);
         }
     }
