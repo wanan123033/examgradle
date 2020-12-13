@@ -64,6 +64,7 @@ public class DataSelectViewModel extends BaseViewModel<Object> {
                     dataRtiveBean.itemCode = itemCode;
                     dataRtiveBean.subItemCode = subItemCode;
                     dataRtiveBean.scheduleNo = schedule.getScheduleNo();
+                    dataRtiveBean.examType = mqttBean.getExamStatus();
                     List<RoundResult> stuRoundResult = null;
                     if (groupInfo == null) {
                         if (examPlace == null) {
@@ -175,6 +176,7 @@ public class DataSelectViewModel extends BaseViewModel<Object> {
                     dataRtiveBean.itemCode = item.getItemCode();
                     dataRtiveBean.subItemCode = subItem.getSubitemCode();
                     dataRtiveBean.scheduleNo = schedule.getScheduleNo();
+                    dataRtiveBean.examType = mqttBean.getExamStatus();
                     List<RoundResult> stuRoundResult = null;
                     if (groupInfo == null) {
                         if (examPlace == null){

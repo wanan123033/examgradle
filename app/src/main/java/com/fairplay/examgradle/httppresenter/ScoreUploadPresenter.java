@@ -155,6 +155,7 @@ public class ScoreUploadPresenter extends JsonDataPresenter<ScoreUploadPresenter
             MessageBus.getBus().post(new MessageBusMessage("","DIMMSION_PROGREESS"));
         }else {
             ToastUtils.showLong("上传成绩失败");
+            MessageBus.getBus().post(new MessageBusMessage("","DIMMSION_PROGREESS"));
         }
     }
 

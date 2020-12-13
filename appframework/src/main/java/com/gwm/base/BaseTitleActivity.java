@@ -47,8 +47,8 @@ public abstract class BaseTitleActivity<V extends IViewBind> extends BaseActivit
 
     public TitleBarBuilder setTitleBarBuilder(TitleBarBuilder builder){
         return builder.setLeftText("返回")
-                .setLeftTextSize(18)
-                .setTitleTextSize(18)
+                .setLeftTextSize(30)
+                .setTitleTextSize(30)
                 .setLeftImageResource(R.mipmap.icon_white_goback)
                 .setLeftImageVisibility(View.VISIBLE)
                 .setBackgroundColor(getResources().getColor(R.color.colorPrimary))

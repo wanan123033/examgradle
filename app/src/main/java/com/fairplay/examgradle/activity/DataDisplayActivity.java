@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.layout.activity_data_display;
+import com.blankj.utilcode.util.CacheMemoryUtils;
 import com.fairplay.database.DBManager;
 import com.fairplay.database.entity.Item;
 import com.fairplay.database.entity.MultipleResult;
@@ -18,6 +19,7 @@ import com.fairplay.examgradle.MyApplication;
 import com.fairplay.examgradle.R;
 import com.fairplay.examgradle.adapter.ResultAdapter;
 import com.fairplay.examgradle.bean.ScoreBean;
+import com.fairplay.examgradle.contract.CacheContract;
 import com.fairplay.examgradle.contract.MMKVContract;
 import com.fairplay.examgradle.contract.Permission;
 import com.fairplay.examgradle.contract.Unit;
@@ -40,11 +42,7 @@ import java.util.List;
 
 @Layout(R.layout.activity_data_display)
 public class DataDisplayActivity extends BaseMvvmTitleActivity<Object, DataDisplayViewModel, activity_data_display> {
-    public static final String StudentCode = "StudentCode";
-    public static final String ItemCode = "ItemCode";
-    public static final String SubItemCode = "SubItemCode";
-    public static final String EXAM_PLACE_NAME = "ExamPlaceName";
-    public static final String SCHEDULE_NO = "scheduleNo";
+
     private String studentCode;
     private String itemCode;
     private String subItemCode;
@@ -55,6 +53,8 @@ public class DataDisplayActivity extends BaseMvvmTitleActivity<Object, DataDispl
     private StudentGroupItem studentGroupItem;
     private int examType;
     private Item subItem;
+
+
 
     @Override
     protected Class<DataDisplayViewModel> getViewModelClass() {
@@ -70,19 +70,21 @@ public class DataDisplayActivity extends BaseMvvmTitleActivity<Object, DataDispl
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mmkv = BaseApplication.getInstance().getMmkv();
-        studentCode = getIntent().getStringExtra(StudentCode);
-        itemCode = getIntent().getStringExtra(ItemCode);
-        examplaceName = getIntent().getStringExtra(EXAM_PLACE_NAME);
-        subItemCode = getIntent().getStringExtra(SubItemCode);
-        scheduleNo = getIntent().getStringExtra(SCHEDULE_NO);
+        CacheMemoryUtils utils = CacheMemoryUtils.getInstance();
+        studentCode = utils.get(CacheContract.StudentCode);
+        itemCode = utils.get(CacheContract.ItemCode);
+        examplaceName = utils.get(CacheContract.EXAM_PLACE_NAME);
+        subItemCode = utils.get(CacheContract.SubItemCode);
+        scheduleNo = utils.get(CacheContract.SCHEDULE_NO);
+        examType = utils.get(CacheContract.EXAMTYPE,0);
         Item item = DBManager.getInstance().getItemByItemCode(itemCode,itemCode);
 
         subItem = DBManager.getInstance().getItemByItemCode(itemCode,subItemCode);
-        mBinding.tv_sex.setText(item.getItemName()+"-"+subItem.getItemName());
+        if (subItem != null && item != null)
+            mBinding.tv_sex.setText(item.getItemName()+"-"+subItem.getItemName());
         mBinding.tv_stuCode.setText(studentCode);
         mBinding.tv_stuName.setText(examplaceName);
 
-        examType = mmkv.getInt(MMKVContract.EXAMTYPE,0);
         studentGroupItem = DBManager.getInstance().getMQTTBean(itemCode,subItemCode,studentCode,examType,examplaceName,scheduleNo);
 
         String permission = mmkv.getString(MMKVContract.PERMISSION,"");
@@ -195,6 +197,7 @@ public class DataDisplayActivity extends BaseMvvmTitleActivity<Object, DataDispl
                     LogUtils.operation("MQTT 连接成功");
                     Intent intent = new Intent(getApplicationContext(),ExamResultActivity.class);
                     intent.putExtra(ExamResultActivity.PACK_JSON,message);
+                    intent.putExtra(ExamResultActivity.PACK_JSON_XIA,1);
                     startActivity(intent);
                 }
 

@@ -18,12 +18,13 @@ public class StudentGroupItem {
     private int groupNo;
     private int groupType;
     private String sortName;
-    private String trackNo;
+    private int trackNo;
     private String studentCode;
     private String scheduleNo;
-@Generated(hash = 1558150412)
+
+@Generated(hash = 1186210337)
 public StudentGroupItem(Long id, String itemCode, String subitemCode, String examPlaceName,
-        int examStatus, int groupNo, int groupType, String sortName, String trackNo,
+        int examStatus, int groupNo, int groupType, String sortName, int trackNo,
         String studentCode, String scheduleNo) {
     this.id = id;
     this.itemCode = itemCode;
@@ -37,74 +38,9 @@ public StudentGroupItem(Long id, String itemCode, String subitemCode, String exa
     this.studentCode = studentCode;
     this.scheduleNo = scheduleNo;
 }
+
 @Generated(hash = 1800385417)
 public StudentGroupItem() {
-}
-public Long getId() {
-    return this.id;
-}
-public void setId(Long id) {
-    this.id = id;
-}
-public String getItemCode() {
-    return this.itemCode;
-}
-public void setItemCode(String itemCode) {
-    this.itemCode = itemCode;
-}
-public String getSubitemCode() {
-    return this.subitemCode;
-}
-public void setSubitemCode(String subitemCode) {
-    this.subitemCode = subitemCode;
-}
-public String getExamPlaceName() {
-    return this.examPlaceName;
-}
-public void setExamPlaceName(String examPlaceName) {
-    this.examPlaceName = examPlaceName;
-}
-public int getExamStatus() {
-    return this.examStatus;
-}
-public void setExamStatus(int examStatus) {
-    this.examStatus = examStatus;
-}
-public int getGroupNo() {
-    return this.groupNo;
-}
-public void setGroupNo(int groupNo) {
-    this.groupNo = groupNo;
-}
-public int getGroupType() {
-    return this.groupType;
-}
-public void setGroupType(int groupType) {
-    this.groupType = groupType;
-}
-public String getSortName() {
-    return this.sortName;
-}
-public void setSortName(String sortName) {
-    this.sortName = sortName;
-}
-public String getTrackNo() {
-    return this.trackNo;
-}
-public void setTrackNo(String trackNo) {
-    this.trackNo = trackNo;
-}
-public String getStudentCode() {
-    return this.studentCode;
-}
-public void setStudentCode(String studentCode) {
-    this.studentCode = studentCode;
-}
-public String getScheduleNo() {
-    return this.scheduleNo;
-}
-public void setScheduleNo(String scheduleNo) {
-    this.scheduleNo = scheduleNo;
 }
 
     @Override
@@ -123,4 +59,92 @@ public void setScheduleNo(String scheduleNo) {
                 ", scheduleNo='" + scheduleNo + '\'' +
                 '}';
     }
+
+public Long getId() {
+    return this.id;
+}
+
+public void setId(Long id) {
+    this.id = id;
+}
+
+public String getItemCode() {
+    return this.itemCode;
+}
+
+public void setItemCode(String itemCode) {
+    this.itemCode = itemCode;
+}
+
+public String getSubitemCode() {
+    return this.subitemCode;
+}
+
+public void setSubitemCode(String subitemCode) {
+    this.subitemCode = subitemCode;
+}
+
+public String getExamPlaceName() {
+    return this.examPlaceName;
+}
+
+public void setExamPlaceName(String examPlaceName) {
+    this.examPlaceName = examPlaceName;
+}
+
+public int getExamStatus() {
+    return this.examStatus;
+}
+
+public void setExamStatus(int examStatus) {
+    this.examStatus = examStatus;
+}
+
+public int getGroupNo() {
+    return this.groupNo;
+}
+
+public void setGroupNo(int groupNo) {
+    this.groupNo = groupNo;
+}
+
+public int getGroupType() {
+    return this.groupType;
+}
+
+public void setGroupType(int groupType) {
+    this.groupType = groupType;
+}
+
+public String getSortName() {
+    return this.sortName;
+}
+
+public void setSortName(String sortName) {
+    this.sortName = sortName;
+}
+
+public int getTrackNo() {
+    return this.trackNo;
+}
+
+public void setTrackNo(int trackNo) {
+    this.trackNo = trackNo;
+}
+
+public String getStudentCode() {
+    return this.studentCode;
+}
+
+public void setStudentCode(String studentCode) {
+    this.studentCode = studentCode;
+}
+
+public String getScheduleNo() {
+    return this.scheduleNo;
+}
+
+public void setScheduleNo(String scheduleNo) {
+    this.scheduleNo = scheduleNo;
+}
 }

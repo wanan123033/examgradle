@@ -2,6 +2,7 @@ package com.fairplay.examgradle.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -24,6 +25,7 @@ import com.fairplay.examgradle.R;
 import com.fairplay.examgradle.adapter.ArrayAdapter;
 import com.fairplay.examgradle.adapter.StudentAdapter;
 import com.fairplay.examgradle.adapter.StudentResultAdapter;
+import com.fairplay.examgradle.contract.CacheContract;
 import com.fairplay.examgradle.contract.MMKVContract;
 import com.fairplay.examgradle.service.DataScoreUploadService;
 import com.fairplay.examgradle.viewmodel.DataSelectViewModel;
@@ -75,8 +77,6 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
         itemCode = mmkv.getString(MMKVContract.CURRENT_ITEM,"");
         subItemCode = mmkv.getString(MMKVContract.CURRENT_SUB_ITEM,"");
 
-
-
         mBinding.refreshview.setOnRefreshListener(refreshlayout -> {
             mBinding.refreshview.finishRefresh();
             pageNum = 1;
@@ -92,13 +92,18 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
     protected void onResume() {
         super.onResume();
         scheduleList = DBManager.getInstance().getAllSchedule();
-        initSchedule(scheduleList);
         examPlaceList = DBManager.getInstance().getAllExamplace();
+
+        initSchedule(scheduleList);
         initExamPlaceList(examPlaceList);
-//        viewModel.selectAll(itemCode,subItemCode,pageNum);
         initBigItem();
         initSmoatItem();
+
+
     }
+
+
+
 
     private void initGroupInfo() {
         if (currentSchedule == null){
@@ -111,13 +116,21 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
         }
         List<String> strings = new ArrayList<>();
         strings.add("所有分组");
-        for (GroupInfo groupInfo : groupInfoList){
+
+        GroupInfo groupInfoCurr = CacheMemoryUtils.getInstance().get(CacheContract.CurrentGroup);
+        int currentPos = 0;
+        for (int i = 0 ; i < groupInfoList.size() ; i++){
+            GroupInfo groupInfo = groupInfoList.get(i);
             int type = groupInfo.getGroupType();
             strings.add((type == 0 ? "男子":type == 1?"女子":"混合")+groupInfo.getGroupNo()+"组");
+            if (groupInfo.equals(groupInfoCurr)){
+                currentPos = i + 1;
+            }
         }
         ArrayAdapter adapter = new ArrayAdapter(getApplication(), android.R.layout.simple_spinner_item,android.R.id.text1,strings);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mBinding.sp_group.setAdapter(adapter);
+        mBinding.sp_group.setSelection(currentPos);
     }
 
     private void initExamPlaceList(List<ExamPlace> examPlaceList) {
@@ -126,20 +139,39 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
         for (ExamPlace schedule : examPlaceList){
             strings.add(schedule.getExamplaceName());
         }
+        String examPlaceName = CacheMemoryUtils.getInstance().get(CacheContract.EXAM_PLACE_NAME);
+        int currentPos = 0;
+        for (int i = 0 ; i < examPlaceList.size() ; i++){
+            if (examPlaceName == null){
+                break;
+            }else {
+                if (examPlaceName.equals(examPlaceList.get(i).getExamplaceName())){
+                    currentPos = i + 1;
+                }
+            }
+        }
         ArrayAdapter adapter = new ArrayAdapter(getApplication(), android.R.layout.simple_spinner_item,android.R.id.text1,strings);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mBinding.sp_examplaceName.setAdapter(adapter);
+        mBinding.sp_examplaceName.setSelection(currentPos);
     }
 
     private void initSchedule(List<Schedule> scheduleList) {
         List<String> strings = new ArrayList<>();
-        for (Schedule schedule : scheduleList){
+        String scheduNo = CacheMemoryUtils.getInstance().get(CacheContract.SCHEDULE_NO);
+        int currentPos = 0;
+        for (int i = 0 ; i < scheduleList.size() ; i++){
+            Schedule schedule = scheduleList.get(i);
             String format = MyApplication.simpleDateFormat.format(new Date(schedule.getBeginTime()));
             strings.add("第"+schedule.getScheduleNo()+"场 "+ format);
+            if (schedule.getScheduleNo().equals(scheduNo)){
+                currentPos = i;
+            }
         }
         ArrayAdapter adapter = new ArrayAdapter(getApplication(), android.R.layout.simple_spinner_item,android.R.id.text1,strings);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mBinding.sp_schedule.setAdapter(adapter);
+        mBinding.sp_schedule.setSelection(currentPos);
     }
 
     private void initSmoatItem() {
@@ -155,11 +187,18 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
         }
         List<String> bigItemNames = new ArrayList<>();
         int currentPos = 0;
+        String subItemCodecurr = CacheMemoryUtils.getInstance().get(CacheContract.SubItemCode);
         for (int i = 0 ; i < subItems.size() ; i++){
             Item item = subItems.get(i);
             bigItemNames.add(item.getItemName());
-            if (item.getItemCode().equals(subItemCode)){
-                currentPos = i;
+            if (TextUtils.isEmpty(subItemCodecurr)) {
+                if (item.getSubitemCode().equals(subItemCode)) {
+                    currentPos = i;
+                }
+            }else {
+                if (item.getSubitemCode().equals(subItemCodecurr)){
+                    currentPos = i;
+                }
             }
         }
         ArrayAdapter bigAdapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_item,android.R.id.text1,bigItemNames);
@@ -174,13 +213,20 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
         if(bigItems == null || bigItems.isEmpty()){
             return;
         }
+        String currentItemCode = CacheMemoryUtils.getInstance().get(CacheContract.ItemCode);
         List<String> bigItemNames = new ArrayList<>();
         int currentBigPos = 0;
         for (int i = 0 ; i < bigItems.size() ; i++){
             Item item = bigItems.get(i);
             bigItemNames.add(item.getItemName());
-            if (item.getItemCode().equals(itemCode)){
-                currentBigPos = i;
+            if (TextUtils.isEmpty(currentItemCode)) {
+                if (item.getItemCode().equals(itemCode)) {
+                    currentBigPos = i;
+                }
+            }else {
+                if (item.getItemCode().equals(currentItemCode)){
+                    currentBigPos = i;
+                }
             }
         }
         ArrayAdapter bigAdapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_item,android.R.id.text1,bigItemNames);
@@ -214,11 +260,13 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
                     currentGroupInfo = groupInfoList.get(position - 1);
                 else
                     currentGroupInfo = null;
+                CacheMemoryUtils.getInstance().put(CacheContract.CurrentGroup,currentGroupInfo);
                 viewModel.selectAll(itemCode,subItemCode,currentSchedule,currentExamPlace,currentGroupInfo,pageNum);
                 break;
             case R.id.sp_examplaceName:
                 if (position > 0){
                     currentExamPlace = examPlaceList.get(position - 1);
+                    CacheMemoryUtils.getInstance().put(CacheContract.EXAM_PLACE_NAME,currentExamPlace.getExamplaceName());
                 }else {
                     currentExamPlace = null;
                 }
@@ -260,11 +308,13 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
             adapter.setOnItemClickListener((parent, view, position, id) -> {
                 DataRtiveBean bean = mList.get(position);
                 Intent intent = new Intent(getApplicationContext(),DataDisplayActivity.class);
-                intent.putExtra(DataDisplayActivity.StudentCode,bean.studentCode);
-                intent.putExtra(DataDisplayActivity.ItemCode,bean.itemCode);
-                intent.putExtra(DataDisplayActivity.SubItemCode,bean.subItemCode);
-                intent.putExtra(DataDisplayActivity.EXAM_PLACE_NAME,bean.examPlaceName);
-                intent.putExtra(DataDisplayActivity.SCHEDULE_NO, bean.scheduleNo);
+                CacheMemoryUtils utils = CacheMemoryUtils.getInstance();
+                utils.put(CacheContract.StudentCode,bean.studentCode);
+                utils.put(CacheContract.ItemCode,bean.itemCode);
+                utils.put(CacheContract.SubItemCode,bean.subItemCode);
+                utils.put(CacheContract.EXAM_PLACE_NAME,bean.examPlaceName);
+                utils.put(CacheContract.SCHEDULE_NO,bean.scheduleNo);
+                utils.put(CacheContract.EXAMTYPE,bean.examType);
                 startActivity(intent);
             });
             mBinding.rv_results.setAdapter(adapter);
@@ -285,7 +335,7 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
         }
         Intent intent = new Intent(getApplicationContext(), DataScoreUploadService.class);
 //        intent.putParcelableArrayListExtra(DataScoreUploadService.MQTT_BEAN,mqttBeans);
-        CacheMemoryUtils.getInstance().put(DataScoreUploadService.MQTT_BEAN,mqttBeans);
+        CacheMemoryUtils.getInstance().put(CacheContract.MQTT_BEAN,mqttBeans);
         startService(intent);
     }
 
@@ -306,11 +356,13 @@ public class DataSelectActivity extends BaseMvvmTitleActivity<Object, DataSelect
             adapter.setOnItemClickListener((parent, view, position, id) -> {
                 DataRtiveBean bean = mList.get(position);
                 Intent intent = new Intent(getApplicationContext(),DataDisplayActivity.class);
-                intent.putExtra(DataDisplayActivity.StudentCode,bean.studentCode);
-                intent.putExtra(DataDisplayActivity.ItemCode,bean.itemCode);
-                intent.putExtra(DataDisplayActivity.SubItemCode,bean.subItemCode);
-                intent.putExtra(DataDisplayActivity.EXAM_PLACE_NAME,bean.examPlaceName);
-                intent.putExtra(DataDisplayActivity.SCHEDULE_NO, bean.scheduleNo);
+                CacheMemoryUtils utils = CacheMemoryUtils.getInstance();
+                utils.put(CacheContract.StudentCode,bean.studentCode);
+                utils.put(CacheContract.ItemCode,bean.itemCode);
+                utils.put(CacheContract.SubItemCode,bean.subItemCode);
+                utils.put(CacheContract.EXAM_PLACE_NAME,bean.examPlaceName);
+                utils.put(CacheContract.SCHEDULE_NO,bean.scheduleNo);
+                utils.put(CacheContract.EXAMTYPE,bean.examType);
                 startActivity(intent);
             });
             mBinding.txt_stu_sumNumber.setText(mList.size()+"");

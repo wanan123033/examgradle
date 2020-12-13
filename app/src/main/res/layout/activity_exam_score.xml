@@ -32,6 +32,58 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/tv_order"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:layout_marginRight="10dp"
+                android:layout_alignParentRight="true"
+                android:text="顺序：0"/>
+
+            <Spinner
+                android:id="@+id/sp_subitem"
+                android:layout_width="300dp"
+                android:layout_below="@id/tv_order"
+                android:layout_alignRight="@id/tv_order"
+                android:layout_marginTop="8dp"
+                android:layout_height="35dp"
+                android:background="@drawable/icon_spinner_bg"/>
+            <CheckBox
+                android:id="@+id/cb_lock"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginRight="12dp"
+                android:layout_toLeftOf="@id/sp_subitem"
+                android:layout_alignTop="@id/sp_subitem"/>
+            <Button
+                android:id="@+id/btn_last"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="37dp"
+                android:layout_marginBottom="125dp"
+                android:background="@color/colorAccent"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:text="上一个"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+            <Button
+                android:id="@+id/btn_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="37dp"
+                android:layout_marginBottom="45dp"
+                android:background="@color/colorAccent"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:text="下一个"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

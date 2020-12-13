@@ -6,6 +6,7 @@ import android.telephony.TelephonyManager;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.fairplay.examgradle.contract.MMKVContract;
+import com.fairplay.examgradle.utils.CommonUtils;
 import com.gwm.annotation.json.JSON;
 import com.gwm.annotation.json.Param;
 import com.gwm.base.BaseActivity;
@@ -76,7 +77,7 @@ public abstract class JsonDataPresenter<J extends JsonDataPresenter.HttpBaseBean
         TelephonyManager phone = (TelephonyManager) ContextUtil.get().getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
         WifiManager wifi = (WifiManager) ContextUtil.get().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
-        return wifi.getConnectionInfo().getMacAddress() + "," + phone.getDeviceId() + "," + getCpuName() + "," + phone.getNetworkOperator();
+        return wifi.getConnectionInfo().getMacAddress() + "," + CommonUtils.getDeviceId(ContextUtil.get()) + "," + getCpuName() + "," + phone.getNetworkOperator();
     }
     private static String getCpuName() {
         String str1 = "/proc/cpuinfo";

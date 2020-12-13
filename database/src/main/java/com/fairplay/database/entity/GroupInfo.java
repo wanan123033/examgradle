@@ -3,8 +3,14 @@ package com.fairplay.database.entity;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Index;
 
-@Entity
+import java.util.Objects;
+
+@Entity(indexes = {
+        @Index(value = "sortName ASC,itemCode ASC,subItemCode ASC," +
+                "groupType ASC,scheduleNo ASC,groupNo ASC,examPlaceName ASC", unique = true)
+})
 public class GroupInfo {
     @Id(autoincrement = true)
     private Long id;
@@ -91,5 +97,19 @@ public class GroupInfo {
                 ", groupNo=" + groupNo +
                 ", examPlaceName='" + examPlaceName + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GroupInfo groupInfo = (GroupInfo) o;
+        return groupType == groupInfo.groupType &&
+                groupNo == groupInfo.groupNo &&
+                sortName.equals(groupInfo.sortName) &&
+                itemCode.equals(groupInfo.itemCode) &&
+                subItemCode.equals(groupInfo.subItemCode) &&
+                scheduleNo.equals(groupInfo.scheduleNo) &&
+                examPlaceName.equals(groupInfo.examPlaceName);
     }
 }

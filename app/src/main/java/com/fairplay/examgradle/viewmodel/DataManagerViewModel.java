@@ -6,6 +6,7 @@ import com.blankj.utilcode.util.CacheMemoryUtils;
 import com.fairplay.database.DBManager;
 import com.fairplay.database.entity.StudentGroupItem;
 import com.fairplay.database.entity.RoundResult;
+import com.fairplay.examgradle.contract.CacheContract;
 import com.fairplay.examgradle.contract.MMKVContract;
 import com.fairplay.examgradle.httppresenter.DownItemInfoPresenter;
 import com.fairplay.examgradle.httppresenter.DownScheduleInfoPresenter;
@@ -51,7 +52,7 @@ public class DataManagerViewModel extends BaseViewModel<Object> {
         }
         Intent intent = new Intent(BaseApplication.getInstance(), DataScoreUploadService.class);
         //预防数据量过大,使用CacheMemoryUtils
-        CacheMemoryUtils.getInstance().put(DataScoreUploadService.MQTT_BEAN,mqttBeans);
+        CacheMemoryUtils.getInstance().put(CacheContract.MQTT_BEAN,mqttBeans);
         BaseApplication.getInstance().startService(intent);
     }
 }

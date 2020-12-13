@@ -221,5 +221,8 @@ public class DataManagerActivity extends BaseMvvmTitleActivity<Object, DataManag
     @Override
     public void onChanged(Object o) {
         super.onChanged(o);
+        if (o instanceof String && o.equals("DIMMSION_PROGREESS")){
+            dismissDialog();
+        }
     }
 }

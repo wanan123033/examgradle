@@ -27,7 +27,7 @@ public class ScoreUnLockPresenter extends JsonDataPresenter<ScoreUnLockPresenter
     public void scoreUnLock(StudentGroupItem mqttBean, Item item, int roundNo){
         int examState = BaseApplication.getInstance().getMmkv().getInt(MMKVContract.EXAMTYPE, 0);
         String userInfo = BaseApplication.getInstance().getMmkv().getString(MMKVContract.USERNAME,"");
-        String roundResult = getJsonCreator().roundResult(mqttBean.getTrackNo(),
+        String roundResult = getJsonCreator().roundResult(String.valueOf(mqttBean.getTrackNo()),
                 roundNo + "",
                 1,
                 examState,

@@ -131,15 +131,21 @@ public class DBManager {
         multipleResultDao.insertInTx(multipleResult1);
     }
     public Item getItemByItemCode(String itemCode,String subitemCode) {
+        if (itemCode == null){
+            return null;
+        }
+        if (subitemCode == null){
+            return null;
+        }
         return itemDao.queryBuilder().where(ItemDao.Properties.ItemCode.eq(itemCode),ItemDao.Properties.SubitemCode.eq(subitemCode)).limit(1).unique();
     }
 
     public void insertSchedule(Schedule schedule) {
-        scheduleDao.insert(schedule);
+        scheduleDao.insertOrReplaceInTx(schedule);
     }
 
     public void insertMultipItem(MultipleItem multipleItem) {
-        multipleItemDao.insert(multipleItem);
+        multipleItemDao.insertInTx(multipleItem);
     }
 
     public List<MultipleItem> getMultipleItemList(Long itemId) {
@@ -206,6 +212,7 @@ public class DBManager {
             Item item = itemDao.readEntity(cursor, 0);
             itemList.add(item);
         }
+        cursor.close();
         return itemList;
     }
 
@@ -231,10 +238,11 @@ public class DBManager {
     }
 
     public void insertGroupInfo(GroupInfo dataGroup) {
-        groupInfoDao.insertInTx(dataGroup);
+        groupInfoDao.insertOrReplaceInTx(dataGroup);
     }
 
     public StudentGroupItem getMQTTBean(String itemCode, String subItemCode, String studentCode, int examType, String examplaceName,String scheduleNo) {
+
         return studentGroupItemDao.queryBuilder().where(StudentGroupItemDao.Properties.ItemCode.eq(itemCode),
                 StudentGroupItemDao.Properties.SubitemCode.eq(subItemCode),
                 StudentGroupItemDao.Properties.StudentCode.eq(studentCode),
@@ -268,12 +276,16 @@ public class DBManager {
         if (TextUtils.isEmpty(examplaceName)){
             return groupInfoDao.queryBuilder().where(GroupInfoDao.Properties.ScheduleNo.eq(scheduleNo),
                     GroupInfoDao.Properties.ItemCode.eq(itemCode),
-                    GroupInfoDao.Properties.SubItemCode.eq(subItemCode)).orderAsc(GroupInfoDao.Properties.GroupNo).list();
+                    GroupInfoDao.Properties.SubItemCode.eq(subItemCode))
+                    .orderDesc(GroupInfoDao.Properties.GroupType)
+                    .orderAsc(GroupInfoDao.Properties.GroupNo).list();
         }else {
             return groupInfoDao.queryBuilder().where(GroupInfoDao.Properties.ScheduleNo.eq(scheduleNo),
                     GroupInfoDao.Properties.ExamPlaceName.eq(examplaceName),
                     GroupInfoDao.Properties.ItemCode.eq(itemCode),
-                    GroupInfoDao.Properties.SubItemCode.eq(subItemCode)).orderAsc(GroupInfoDao.Properties.GroupNo).list();
+                    GroupInfoDao.Properties.SubItemCode.eq(subItemCode))
+                    .orderDesc(GroupInfoDao.Properties.GroupType)
+                    .orderAsc(GroupInfoDao.Properties.GroupNo).list();
         }
     }
 
@@ -281,12 +293,14 @@ public class DBManager {
         if (TextUtils.isEmpty(examplaceName)){
             return studentGroupItemDao.queryBuilder().where(StudentGroupItemDao.Properties.ItemCode.eq(itemCode),
                     StudentGroupItemDao.Properties.SubitemCode.eq(subItemCode),
-                    StudentGroupItemDao.Properties.ScheduleNo.eq(scheduleNo)).list();
+                    StudentGroupItemDao.Properties.ScheduleNo.eq(scheduleNo))
+                    .orderAsc(StudentGroupItemDao.Properties.TrackNo).list();
         }else {
             return studentGroupItemDao.queryBuilder().where(StudentGroupItemDao.Properties.ItemCode.eq(itemCode),
                     StudentGroupItemDao.Properties.SubitemCode.eq(subItemCode),
                     StudentGroupItemDao.Properties.ScheduleNo.eq(scheduleNo),
-                    StudentGroupItemDao.Properties.ExamPlaceName.eq(examplaceName)).list();
+                    StudentGroupItemDao.Properties.ExamPlaceName.eq(examplaceName))
+                    .orderAsc(StudentGroupItemDao.Properties.TrackNo).list();
         }
 
     }
@@ -297,14 +311,16 @@ public class DBManager {
                     StudentGroupItemDao.Properties.SubitemCode.eq(subItemCode),
                     StudentGroupItemDao.Properties.ScheduleNo.eq(scheduleNo),
                     StudentGroupItemDao.Properties.GroupNo.eq(groupInfo.groupNo),
-                    StudentGroupItemDao.Properties.GroupType.eq(groupInfo.getGroupType())).list();
+                    StudentGroupItemDao.Properties.GroupType.eq(groupInfo.getGroupType()))
+                    .orderAsc(StudentGroupItemDao.Properties.TrackNo).list();
         }else {
             return studentGroupItemDao.queryBuilder().where(StudentGroupItemDao.Properties.ItemCode.eq(itemCode),
                     StudentGroupItemDao.Properties.SubitemCode.eq(subItemCode),
                     StudentGroupItemDao.Properties.ScheduleNo.eq(scheduleNo),
                     StudentGroupItemDao.Properties.ExamPlaceName.eq(examplaceName),
                     StudentGroupItemDao.Properties.GroupNo.eq(groupInfo.groupNo),
-                    StudentGroupItemDao.Properties.GroupType.eq(groupInfo.getGroupType())).list();
+                    StudentGroupItemDao.Properties.GroupType.eq(groupInfo.getGroupType()))
+                    .orderAsc(StudentGroupItemDao.Properties.TrackNo).list();
         }
     }
     public List<StudentGroupItem> getMQTTBean(String stuCode,String itemCode, String subItemCode, String scheduleNo, String examplaceName, GroupInfo groupInfo) {
@@ -314,7 +330,8 @@ public class DBManager {
                     StudentGroupItemDao.Properties.ScheduleNo.eq(scheduleNo),
                     StudentGroupItemDao.Properties.GroupNo.eq(groupInfo.groupNo),
                     StudentGroupItemDao.Properties.GroupType.eq(groupInfo.getGroupType()),
-                    StudentGroupItemDao.Properties.StudentCode.eq(stuCode)).list();
+                    StudentGroupItemDao.Properties.StudentCode.eq(stuCode))
+                    .orderAsc(StudentGroupItemDao.Properties.TrackNo).list();
         }else {
             return studentGroupItemDao.queryBuilder().where(StudentGroupItemDao.Properties.ItemCode.eq(itemCode),
                     StudentGroupItemDao.Properties.SubitemCode.eq(subItemCode),
@@ -322,7 +339,8 @@ public class DBManager {
                     StudentGroupItemDao.Properties.ExamPlaceName.eq(examplaceName),
                     StudentGroupItemDao.Properties.GroupNo.eq(groupInfo.groupNo),
                     StudentGroupItemDao.Properties.GroupType.eq(groupInfo.getGroupType()),
-                    StudentGroupItemDao.Properties.StudentCode.eq(stuCode)).list();
+                    StudentGroupItemDao.Properties.StudentCode.eq(stuCode))
+                    .orderAsc(StudentGroupItemDao.Properties.TrackNo).list();
         }
     }
     public List<StudentGroupItem> getMQTTBean(String stuCode,String itemCode, String subItemCode, String scheduleNo, String examplaceName) {
@@ -330,13 +348,15 @@ public class DBManager {
             return studentGroupItemDao.queryBuilder().where(StudentGroupItemDao.Properties.ItemCode.eq(itemCode),
                     StudentGroupItemDao.Properties.SubitemCode.eq(subItemCode),
                     StudentGroupItemDao.Properties.ScheduleNo.eq(scheduleNo),
-                    StudentGroupItemDao.Properties.StudentCode.eq(stuCode)).list();
+                    StudentGroupItemDao.Properties.StudentCode.eq(stuCode))
+                    .orderAsc(StudentGroupItemDao.Properties.TrackNo).list();
         }else {
             return studentGroupItemDao.queryBuilder().where(StudentGroupItemDao.Properties.ItemCode.eq(itemCode),
                     StudentGroupItemDao.Properties.SubitemCode.eq(subItemCode),
                     StudentGroupItemDao.Properties.ScheduleNo.eq(scheduleNo),
                     StudentGroupItemDao.Properties.ExamPlaceName.eq(examplaceName),
-                    StudentGroupItemDao.Properties.StudentCode.eq(stuCode)).list();
+                    StudentGroupItemDao.Properties.StudentCode.eq(stuCode))
+                    .orderAsc(StudentGroupItemDao.Properties.TrackNo).list();
         }
     }
 
@@ -403,5 +423,74 @@ public class DBManager {
 
     public List<ExamPlace> getExamplace(String itemCode, String subItemCode) {
         return examPlaceDao.queryBuilder().where(ExamPlaceDao.Properties.ItemCode.eq(itemCode),ExamPlaceDao.Properties.SubItemCode.eq(subItemCode)).list();
+    }
+
+    public StudentGroupItem getStudentItemGroup(StudentGroupItem mqttBean) {
+        List<StudentGroupItem> studentGroupItemList = studentGroupItemDao.queryBuilder()
+                .where(StudentGroupItemDao.Properties.ItemCode.eq(mqttBean.getItemCode()),
+                        StudentGroupItemDao.Properties.ScheduleNo.eq(mqttBean.getScheduleNo()),
+                        StudentGroupItemDao.Properties.ExamPlaceName.eq(mqttBean.getExamPlaceName()),
+                        StudentGroupItemDao.Properties.SubitemCode.eq(mqttBean.getSubitemCode()),
+                        StudentGroupItemDao.Properties.GroupNo.eq(mqttBean.getGroupNo()),
+                        StudentGroupItemDao.Properties.GroupType.eq(mqttBean.getGroupType()))
+                .orderAsc(StudentGroupItemDao.Properties.TrackNo).list();
+        int position = 0;
+        for (int i = 0 ; i < studentGroupItemList.size() ; i++){
+            if (studentGroupItemList.get(i).getStudentCode().equals(mqttBean.getStudentCode())){
+                position = i + 1;
+                break;
+            }
+        }
+        if (position < studentGroupItemList.size()){
+            return studentGroupItemList.get(position);
+        }
+        return null;
+    }
+
+    public StudentGroupItem getLastStudent(StudentGroupItem mqttBean) {
+        List<StudentGroupItem> studentGroupItemList = studentGroupItemDao.queryBuilder()
+                .where(StudentGroupItemDao.Properties.ItemCode.eq(mqttBean.getItemCode()),
+                        StudentGroupItemDao.Properties.ScheduleNo.eq(mqttBean.getScheduleNo()),
+                        StudentGroupItemDao.Properties.ExamPlaceName.eq(mqttBean.getExamPlaceName()),
+                        StudentGroupItemDao.Properties.SubitemCode.eq(mqttBean.getSubitemCode()),
+                        StudentGroupItemDao.Properties.GroupNo.eq(mqttBean.getGroupNo()),
+                        StudentGroupItemDao.Properties.GroupType.eq(mqttBean.getGroupType()))
+                .orderAsc(StudentGroupItemDao.Properties.TrackNo).list();
+        int position = 0;
+        for (int i = 0 ; i < studentGroupItemList.size() ; i++){
+            if (studentGroupItemList.get(i).getStudentCode().equals(mqttBean.getStudentCode()) && i > 0){
+                position = i - 1;
+                break;
+            }
+        }
+        if (position == -1){
+            return null;
+        }
+        return studentGroupItemList.get(position);
+    }
+
+    public List<Item> getSubItemList(String itemCode) {
+        List<Item> items = itemDao.queryBuilder().where(ItemDao.Properties.ItemCode.eq(itemCode)).list();
+        int position = -1;
+        for (int i = 0 ; i < items.size() ; i++){
+            if (items.get(i).getItemCode().equals(items.get(i).getSubitemCode())){
+                position = i;
+                break;
+            }
+        }
+        if (position != -1){
+            items.remove(position);
+        }
+        return items;
+    }
+
+    public StudentGroupItem getMQTTBean(Item item, StudentGroupItem mqttBean) {
+        return studentGroupItemDao.queryBuilder().where(StudentGroupItemDao.Properties.ItemCode.eq(item.getItemCode()),
+                StudentGroupItemDao.Properties.SubitemCode.eq(item.getSubitemCode()),
+                StudentGroupItemDao.Properties.ScheduleNo.eq(mqttBean.getScheduleNo()),
+                StudentGroupItemDao.Properties.GroupType.eq(mqttBean.getGroupType()),
+                StudentGroupItemDao.Properties.GroupNo.eq(mqttBean.getGroupNo()),
+                StudentGroupItemDao.Properties.ExamPlaceName.eq(mqttBean.getExamPlaceName()),
+                StudentGroupItemDao.Properties.StudentCode.eq(mqttBean.getStudentCode())).unique();
     }
 }

@@ -11,6 +11,7 @@ import com.gwm.annotation.json.JSON;
 import com.gwm.annotation.json.Param;
 import com.gwm.messagesendreceive.MessageBus;
 import com.gwm.messagesendreceive.MessageBusMessage;
+import com.gwm.mvvm.BaseViewModel;
 import com.gwm.retrofit.Observable;
 
 import java.util.List;
@@ -36,6 +37,11 @@ public class DownStudentInfoPresenter extends JsonDataPresenter<DownStudentInfoP
 
     @Override
     protected void onNextResult(GroupInfoBean response, int id) {
+        if (response.code > 0){
+            ToastUtils.showShort(response.msg);
+            ((BaseViewModel)getViewModel()).sendLiveData("DIMMSION_PROGREESS");
+            return;
+        }
         if (response.data.dataInfo != null && !response.data.dataInfo.isEmpty()){
             for (GroupInfoBean.Group group : response.data.dataInfo){
                 GroupInfo dataGroup = new GroupInfo();
@@ -66,7 +72,7 @@ public class DownStudentInfoPresenter extends JsonDataPresenter<DownStudentInfoP
                         studentGroupItem.setGroupType(dataGroup.getGroupType());
                         studentGroupItem.setExamPlaceName(dataGroup.examPlaceName);
                         studentGroupItem.setStudentCode(studentBean.studentCode);
-                        studentGroupItem.setTrackNo(studentBean.trackNo);
+                        studentGroupItem.setTrackNo(Integer.parseInt(studentBean.trackNo));
                         studentGroupItem.setExamStatus(studentBean.examStatus);
                         studentGroupItem.setScheduleNo(group.scheduleNo);
                         DBManager.getInstance().insertMqttBean(studentGroupItem);
@@ -79,6 +85,7 @@ public class DownStudentInfoPresenter extends JsonDataPresenter<DownStudentInfoP
             }else{
                 ToastUtils.showShort("数据下载成功");
                 MessageBus.getBus().post(new MessageBusMessage("","DIMMSION_PROGREESS"));
+                ((BaseViewModel)getViewModel()).sendLiveData("DIMMSION_PROGREESS");
             }
         }
     }

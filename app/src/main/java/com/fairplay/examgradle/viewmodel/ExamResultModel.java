@@ -17,6 +17,7 @@ import com.orhanobut.logger.utils.LogUtils;
 import com.tencent.mmkv.MMKV;
 
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -33,6 +34,10 @@ public class ExamResultModel extends BaseViewModel<Object> {
             ToastUtils.showShort("当前成绩已锁定,请解锁");
             return;
         }
+        if(item.getSubitemCode().equals("04004") && score.equals("1")){
+            ToastUtils.showShort("排球-扣球项目不能打1分");
+            return;
+        }
         if (scoreCheck(item, score, currentScore)) return;
         //输入正确,对结果赋值
         currentScore.result.append(score);
@@ -46,6 +51,14 @@ public class ExamResultModel extends BaseViewModel<Object> {
      * @return
      */
     public boolean scoreCheck(Item item, String score, ExamScoreBean.Score currentScore) {
+        if (currentScore.result.length() == 0 && score.equals(".")){
+            ToastUtils.showShort("格式错误！");
+            return true;
+        }
+        if (currentScore.result.toString().contains(".") && score.equals(".")){
+            ToastUtils.showShort("格式错误！");
+            return true;      
+        }
         if ("score".equals(item.getUnit()) && item.getMarkScore() == 0){  //测量的得分项目不做处理  输多少就是多少
             if (currentScore.result.length() == 1 && currentScore.result.toString().equals("0")){
                 currentScore.result.deleteCharAt(0);
@@ -234,6 +247,7 @@ public class ExamResultModel extends BaseViewModel<Object> {
         MMKV mmkv = BaseApplication.getInstance().getMmkv();
         String username = mmkv.getString(MMKVContract.USERNAME, "");
         roundResult.setUserInfo(username);
+
         if (item.getMachineCode() != null)
             roundResult.setMachineCode(Integer.parseInt(item.getMachineCode()));
 //        roundResult.setRoundNo(examScoreBean.currentScorePosition);
@@ -294,6 +308,30 @@ public class ExamResultModel extends BaseViewModel<Object> {
                     }
                 }
             }else {     //测量项目非计时类
+                if (item.getTestType() == 4){   //测量类力量类项目
+                    ExamScoreBean.Score score = currentScoreBean.resultList.get(0);
+                    if (roundResult.getIsMultioleResult() == 1) {
+                        Long aLong = DBManager.getInstance().insertRoundResult(roundResult);
+                        roundResult.setId(aLong);
+                        for (int i = 0 ; i < currentScoreBean.resultList.size() ; i++){
+                            MultipleResult result = new MultipleResult();
+                            result.setRoundId(aLong);
+                            result.setDesc(currentScoreBean.resultList.get(i).desc);
+                            result.setOrder(currentScoreBean.resultList.get(i).order);
+                            result.setUnit(item.getUnit());
+                            result.setMachineScore(currentScoreBean.resultList.get(i).result.toString());
+                            result.setScore(String.valueOf(Double.parseDouble(currentScoreBean.resultList.get(i).result.toString())));
+                            DBManager.getInstance().insertMultipResult(result);
+                        }
+                    }else {
+                        String string = double2Str(Double.parseDouble(score.result.toString()) * 1000000.0);
+                        roundResult.setMachineResult(string);
+                        roundResult.setResult(score.result.toString());
+                        Long aLong = DBManager.getInstance().insertRoundResult(roundResult);
+                        roundResult.setId(aLong);
+                    }
+                    return null;
+                }
                 if (roundResult.getIsMultioleResult() == 0) {   //单值类项目
                     ExamScoreBean.Score score = currentScoreBean.resultList.get(0);
                     roundResult.setMachineResult(score.result.toString());
@@ -409,10 +447,22 @@ public class ExamResultModel extends BaseViewModel<Object> {
             return (long) (Double.parseDouble(sDate) *1000.0);
         }
     }
+    private double getValue(String sData){
+        return Double.parseDouble(sData) * 1000000.0;
+    }
 
     public void unLockStuScore(StudentGroupItem mqttBean, Item item, int currentRoundNo) {
         ScoreUnLockPresenter presenter = new ScoreUnLockPresenter();
         presenter.setViewModel(this);
         presenter.scoreUnLock(mqttBean,item,currentRoundNo);
+    }
+
+    public static String double2Str(Double d) {
+        if (d == null) {
+            return "";
+        }
+        NumberFormat nf = NumberFormat.getInstance();
+        nf.setGroupingUsed(false);
+        return (nf.format(d));
     }
 }

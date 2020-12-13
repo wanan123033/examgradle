@@ -9,6 +9,7 @@ import org.greenrobot.greendao.annotation.Generated;
 public class Schedule {
     @Id(autoincrement = true)
     private Long id;
+    @Unique
     private String scheduleNo; //日程序号 （场次）
     @NotNull
     private long beginTime;

@@ -78,7 +78,7 @@ public class TitleBarBuilder {
     }
 
     public float getLeftTextSize() {
-        return leftTextSize == 0.0f ? sp2px(16.0f) : leftTextSize;
+        return leftTextSize == 0.0f ? sp2px(25.0f) : leftTextSize;
     }
 
     public TitleBarBuilder setLeftTextSize(float leftTextSize) {
@@ -96,7 +96,7 @@ public class TitleBarBuilder {
     }
 
     public float getRightTextSize() {
-        return rightTextSize == 0 ? sp2px(16) : rightTextSize;
+        return rightTextSize == 0 ? sp2px(25) : rightTextSize;
     }
 
     public TitleBarBuilder setRightTextSize(float rightTextSize) {
@@ -123,7 +123,7 @@ public class TitleBarBuilder {
     }
 
     public float getTitleTextSize() {
-        return titleTextSize == 0 ? sp2px(18) : titleTextSize;
+        return titleTextSize == 0 ? sp2px(25) : titleTextSize;
     }
 
     public TitleBarBuilder setTitleTextSize(float titleTextSize) {

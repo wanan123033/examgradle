@@ -12,6 +12,7 @@ public class DataRtiveBean {
     public String subItemCode;
     public boolean isSelected = false;
     public String scheduleNo;
+    public int examType;
 
     @Override
     public boolean equals(Object o) {

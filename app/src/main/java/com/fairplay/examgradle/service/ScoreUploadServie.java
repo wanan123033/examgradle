@@ -37,7 +37,7 @@ public class ScoreUploadServie extends IntentService {
         StudentGroupItem mqttBean = DBManager.getInstance().getMQTTBean(mqttId);
         ScoreUploadPresenter presenter = new ScoreUploadPresenter();
         try {
-            presenter.scoreUpload(mqttBean.getTrackNo(),roundResult,mqttBean,item);
+            presenter.scoreUpload(String.valueOf(mqttBean.getTrackNo()),roundResult,mqttBean,item);
         } catch (JSONException e) {
             e.printStackTrace();
         }

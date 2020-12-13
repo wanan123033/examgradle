@@ -38,6 +38,7 @@
         android:supportsRtl="true"
         tools:replace="android:icon"
         android:theme="@style/AppTheme"
+        android:requestLegacyExternalStorage="true"
         android:name=".MyApplication">
         <activity android:name=".activity.SplashActivity"
             android:screenOrientation="landscape">
@@ -47,16 +48,16 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.MainActivity" android:screenOrientation="landscape">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
         <activity android:name=".activity.LoginActivity" android:launchMode="singleTask" android:screenOrientation="landscape"/>
         <activity android:name=".activity.ServerActivity" android:launchMode="singleTask" android:screenOrientation="landscape"/>
 <!--        <activity android:name=".activity.MainActivity" android:screenOrientation="landscape"/>-->
         <activity android:name=".activity.DataManagerActivity" android:screenOrientation="landscape"/>
-        <activity android:name=".activity.DataSelectActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".activity.DataSelectActivity" android:screenOrientation="landscape" android:launchMode="singleTask"/>
         <activity android:name="com.feipulai.common.dbutils.FileSelectActivity" android:screenOrientation="landscape"/>
         <activity android:name=".activity.DataDisplayActivity" android:screenOrientation="landscape"/>
         <activity android:name=".activity.ItemInitActivity" android:screenOrientation="landscape"/>

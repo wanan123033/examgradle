@@ -7,21 +7,21 @@ android {
         applicationId "com.fairplay.examgradle"
         minSdkVersion 20
         targetSdkVersion 29
-        versionCode 2
-        versionName "1.1.0"
+        versionCode 4
+        versionName "1.1.2"
         multiDexEnabled true
         ndk {
             abiFilters "armeabi-v7a"
         }
     }
-    signingConfigs {
-        config {
-            keyAlias 'examgradle'
-            keyPassword 'examgradle'
-            storeFile file('../examgradle.jks')
-            storePassword 'examgradle'
-        }
-    }
+//    signingConfigs {
+//        config {
+//            keyAlias 'examgradle'
+//            keyPassword 'examgradle'
+//            storeFile file('../examgradle.jks')
+//            storePassword 'examgradle'
+//        }
+//    }
 
     buildTypes {
         release {
@@ -29,9 +29,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
-        debug {
-            signingConfig signingConfigs.config
-        }
+//        debug {
+//            signingConfig signingConfigs.config
+//        }
     }
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
